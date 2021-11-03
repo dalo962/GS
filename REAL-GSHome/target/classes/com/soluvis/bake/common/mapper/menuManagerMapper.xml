@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.common.mapper.menuManagerMapper">
+	<select id="menuMngSel" parameterType="hashmap" resultType="menuMng" fetchSize="1000">
+        SELECT step1 as step1, step2 as step2, step3 as step3, use_yn as use_yn, menu_id as menu_id
+    	FROM ( SELECT A1.MENU_NM AS STEP1, A2.MENU_NM AS STEP2, NULL AS STEP3, A3.USE_YN AS USE_YN, A3.MENU_ID AS MENU_ID, A3.USER_ID AS USER_ID, A1.MENU_GRP_CD AS MENU_GRP_CD, A1.SORT AS SORT1, A2.SORT AS SORT2, NULL AS SORT3
+			   FROM   AX_MENU_M A1, AX_MENU_M A2, AX_USER_MENU_M A3
+			   WHERE  A1.MENU_ID = A2.PARENT_ID
+			   AND    A2.MENU_ID = A3.MENU_ID
+			   AND	  A1.MULTI_LANGUAGE IS NOT NULL
+    		   UNION ALL
+    		   SELECT A1.MENU_NM AS STEP1, A2.MENU_NM AS STEP2, A3.MENU_NM AS STEP3, A4.USE_YN AS USE_YN, A3.MENU_ID AS MENU_ID, A4.USER_ID AS USER_ID, A1.MENU_GRP_CD AS MENU_GRP_CD, A1.SORT AS SORT1, A2.SORT AS SORT2, A3.SORT AS SORT3
+			   FROM   AX_MENU_M A1, AX_MENU_M A2, AX_MENU_M A3, AX_USER_MENU_M A4
+			   WHERE  A1.MENU_ID = A2.PARENT_ID
+			   AND    A2.MENU_ID = A3.PARENT_ID
+    		   AND    A3.MENU_ID = A4.MENU_ID)
+    	WHERE  USER_ID = #{user_id}
+    	AND    MENU_GRP_CD = #{menu_grp_cd}
+		order by SORT1, SORT2, SORT3, MENU_ID
+    </select>
+    
+    <select id="menuMngGrpSel" parameterType="hashmap" resultType="menuMng" fetchSize="1000">
+        SELECT	menu_id as menu_id, user_id as user_id, grp_auth_cd as grp_auth_cd, use_yn as use_yn, parent_id as parent_id
+        from 	AX_USER_MENU_M
+        WHERE	grp_auth_cd = #{grp_auth_cd}
+		AND		menu_id = #{menu_id}
+		order by menu_id
+    </select>
+    
+    <select id="loginMenuidSel" parameterType="hashmap" resultType="Long" fetchSize="1000">
+        select	distinct authgroupm0_.MENU_ID as col_0_0_ 
+    	from	AX_AUTH_GROUP_MAP_M authgroupm0_,	AX_USER_MENU_M usermenum0_
+    	where	authgroupm0_.GRP_AUTH_CD = usermenum0_.GRP_AUTH_CD
+    	AND 	authgroupm0_.MENU_ID = usermenum0_.MENU_ID
+    	AND		authgroupm0_.GRP_AUTH_CD = #{grp_auth_cd}
+    	and 	usermenum0_.user_id = #{user_id}
+    	and 	usermenum0_.use_yn = 'Y'
+    	order by authgroupm0_.MENU_ID
+    </select>
+    
+    <update id="menuMngUdt" parameterType="menuMng">
+		UPDATE	AX_USER_MENU_M
+		SET		use_yn = #{use_yn}
+		WHERE	menu_id = #{menu_id}
+		AND		user_id = #{user_id}
+	</update>
+	
+    <insert id="menuMngIst" parameterType="menuMng">
+		INSERT 	INTO AX_USER_MENU_M (menu_id, user_id, grp_auth_cd, use_yn, parent_id)
+		select	a1.menu_id, a3.user_cd, a1.grp_auth_cd, 'Y' as use_yn, A2.PARENT_ID
+		from	AX_AUTH_GROUP_MAP_M a1, AX_MENU_M a2, AX_USER_AUTH_M a3
+		where	a1.grp_auth_cd = a3.grp_auth_cd
+		and 	a1.menu_id = a2.menu_id
+		and		a3.user_cd = #{user_id}
+		order by a1.menu_id
+	</insert>
+	
+	<insert id="menuMngGrpIst" parameterType="menuMng">
+		INSERT 	INTO AX_USER_MENU_M (menu_id, user_id, grp_auth_cd, use_yn, parent_id)
+		select	a1.menu_id, a3.user_cd, a1.grp_auth_cd, 'Y' as use_yn, A2.PARENT_ID
+		from	AX_AUTH_GROUP_MAP_M a1, AX_MENU_M a2, AX_USER_AUTH_M a3
+		where	a1.grp_auth_cd = a3.grp_auth_cd
+		and 	a1.menu_id = a2.menu_id
+		and		a3.grp_auth_cd = #{grp_auth_cd}
+    	and     a2.menu_id = #{menu_id}
+    	order by a1.menu_id
+	</insert>
+	
+	<delete id="menuMngDel" parameterType="menuMng">
+		DELETE	
+		FROM	AX_USER_MENU_M
+		WHERE	user_id = #{user_id}	
+	</delete>
+	
+	<delete id="menuMngGrpDel" parameterType="menuMng">
+		DELETE	
+		FROM	AX_USER_MENU_M
+		WHERE	grp_auth_cd = #{grp_auth_cd}
+		AND		menu_id = #{menu_id}
+	</delete>
+	
+	<delete id="menuMngidDel" parameterType="menuMng">
+		DELETE	
+		FROM	AX_USER_MENU_M
+		WHERE	menu_id = #{menu_id}	
+	</delete>
+	
+	
+	<select id="grpcheck" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		select	grp_auth_cd, menu_id
+      	from	AX_AUTH_GROUP_MAP_M
+      	where 	menu_id = #{menu_id}
+      	and 	grp_auth_cd = #{grp_auth_cd}
+      	order by grp_auth_cd
+    </select>
+    
+    <select id="menucheck" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+    	select 	MENU_ID, USER_ID, GRP_AUTH_CD, PARENT_ID
+      	from 	AX_USER_MENU_M
+      	where 	menu_id = #{menu_id}
+      	and 	USER_ID = #{user_id}
+      	order by menu_id
+    </select>
+    
+    <insert id="GrpIst" parameterType="menuMng">
+    	insert into AX_AUTH_GROUP_MAP_M
+    	values(#{grp_auth_cd}, #{SCH_AH}, #{SAV_AH}, #{EXL_AH}, 'N', 'N', 'N', 'N', 'N', 'N', sysdate, #{user_id}, sysdate, #{user_id}, #{menu_id})    
+	</insert>
+	
+	<insert id="MenuIst" parameterType="menuMng">
+		insert into AX_USER_MENU_M
+    	values(#{menu_id}, #{user_id}, #{grp_auth_cd}, 'Y', #{parent_id})  
+	</insert>
+	
+	<delete id="MenuDel" parameterType="menuMng">
+		DELETE	
+		FROM	AX_USER_MENU_M
+		where 	menu_id = #{menu_id}
+      	and 	USER_ID = #{user_id}
+	</delete>
+
+
+	<update id="LastLoginDateUpdate" parameterType="menuMng">
+		UPDATE	AX_USER_M
+		SET		LAST_LOGIN_DATE = sysdate,
+				IP = #{ip}
+		WHERE	USER_CD = #{user_id}
+	</update>
+</mapper>

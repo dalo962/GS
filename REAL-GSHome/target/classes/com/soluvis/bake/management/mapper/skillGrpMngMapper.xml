@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.management.mapper.skillGrpMngMapper">
+
+	<select id="selectSkillList" parameterType="hashmap" resultType="skillGrpMng" fetchSize="1000">
+		select	compId 		 as compId, 
+				pid			 as pid, 
+				id			 as id, 
+				chnName		 as chnName, 
+				skillName	 as skillName,
+				chnSort		 as chnSort,
+				skillSort	 as skillSort,
+				skillDbid	 as skillDbid, 
+				ctiSkillName as ctiSkillName, 
+				orgType		 as orgType, 
+				orgLevel	 as orgLevel, 
+				parentId	 as parentId
+		from 
+		(
+			select  a2.name as compName,
+					a1.parent_id as compId,
+		            '' as pid,
+		            to_char(a1.id) as id,
+		            --a1.name || ' (' || a2.name || ')' as chnName, 
+		            a1.name as chnName,
+		            '' as skillName,
+		            to_char(a1.sort) as chnSort,
+		            '0' as skillSort,
+		            a1.skill_dbid as skillDbid,
+		            a1.skill_name as ctiSkillName,
+		            a1.org_type as orgType,
+		            a1.org_level as orgLevel,
+		            a1.parent_id as parentId
+			from	ax_sk_org a1, ax_sk_org a2     
+        	where	a1.parent_id = a2.id
+            and 	a1.org_type = '11'    
+            and 	a2.org_type = '0'    
+            and     a1.deleted_at is null    
+            and     a2.deleted_at is null    
+            and     a1.org_level = '1'
+			<if test="compId != '' and compId != null">
+			and		a1.parent_id = #{compId}
+			</if> 
+			<if test="chnId != '' and chnId != null">
+			and		a1.id in ( ${chnId} )
+			</if> 
+			<if test="skillId != '' and skillId != null">
+			and     a1.id in (	select	parent_id 
+								from 	ax_sk_org
+								where	org_type = '11'
+								and		deleted_at is null
+								and		id in ( ${skillId} ) )
+			</if> 
+			<if test="skillName != '' and skillName != null">
+			and     a1.id in (	select	parent_id 
+								from 	ax_sk_org
+								where	org_type = '11'
+								and		deleted_at is null
+								and		name like '%' || #{skillName} || '%' )
+			</if>
+			union
+			select  '' as compName,
+					t2.parent_id as compId,
+					to_char(t1.parent_id) as pid,
+			        to_char(t1.id) as id,
+			        t2.name as chnName,
+			        t1.name as skillName,
+			        to_char(t2.sort) as chnSort,
+			        to_char(t1.sort) as skillSort,
+			        t1.skill_dbid as skillDbid,
+			        t1.skill_name as ctiSkillName,
+			        t1.org_type as orgType,
+			        t1.org_level as orgLevel,
+			        t1.parent_id as parentId
+			from    ax_sk_org t1, ax_sk_org t2
+			where   t1.parent_id = t2.id
+			and     t1.org_type = '11'			
+			and     t2.org_type = '11'			
+			and     t1.deleted_at is null
+			and     t2.deleted_at is null
+			and     t1.org_level = '2'
+			and     t1.skill_name is not null
+			<if test="compId != '' and compId != null">
+			and		t2.parent_id = #{compId}
+			</if> 
+			<if test="chnId != '' and chnId != null">
+			and		t1.parent_id in ( ${chnId} )
+			</if> 
+			<if test="skillId != '' and skillId != null">
+			and		t1.id in ( ${skillId} )
+			</if> 
+			<if test="skillName != '' and skillName != null">
+			and		t1.name like '%' || #{skillName} || '%'
+			</if> 
+		)
+		order by TO_NUMBER(orgLevel) asc, TO_NUMBER(chnSort) asc, TO_NUMBER(skillSort) asc		
+    </select>
+
+
+	<select id="selectSkillGrpList" parameterType="hashmap" resultType="skillGrpMng" fetchSize="1000">
+		select  compName	 as compName,
+				compId		 as compId,
+				pid			 as pid,
+				skgnm 		 as skgNm,
+				skillGrpName as skillGrpName,
+				id			 as id,		
+				--skillName	 as skillName,
+				case when skillName is not null then skillName else '목록' end      as skillName,
+				orgType		 as orgType,
+				orgLevel	 as orgLevel,
+				sort 		 as sort,
+				parentId	 as parentId,
+				skillDbid	 as skillDbid,
+				skillGubun	 as skillGubun,
+				skillLevel	 as skillLevel,
+				updated_at   as updated_at,
+        		updated_by   as updated_by
+		from
+		(
+			select 	t2.name as compName,
+            		t1.parent_id as compId,
+		            to_char('') as pid,
+		            t1.name as skgnm,
+		            --t1.name || ' (' || t2.name || ')' as skillGrpName,
+		            t1.name as skillGrpName,
+		            to_char(t1.id) as id,
+		            '' as skillName,
+		            to_char(t1.org_type) as orgType,
+		            to_char(t1.org_level) as orgLevel,
+		            t1.sort as sort,
+		            t1.parent_id as parentId,
+		            '' as skillDbid,
+		            '' as skillGubun,
+		            '' as skillLevel,
+		            (select aum.user_cd || '(' || aum.user_nm || ')' from ax_user_m aum where t1.updated_by = aum.user_cd) as updated_at,
+            		to_char(t1.updated_at, 'yyyy-mm-dd hh24:mi:ss') as updated_by
+        	from	ax_sk_org t1, ax_sk_org t2     
+        	where	t1.parent_id = t2.id 
+            and 	t1.org_type = '13'    
+            and 	t2.org_type = '0' 
+            and     t1.deleted_at is null              
+            and     t2.deleted_at is null 
+			<if test="compId != '' and compId != null">
+			and		t1.parent_id = #{compId}
+			</if> 
+			<if test="skillGrpId != '' and skillGrpId != null">
+			and		t1.id in ( ${skillGrpId} )
+			</if>
+			<if test="skGrpName != '' and skGrpName != null">
+			and		t1.name like '%' || #{skGrpName} || '%'
+			</if> 
+			union
+			select	t4.name as compName,
+		            t2.parent_id as compId,
+		            to_char(t1.org_id) as pid,
+		            t2.name as skgm,
+		            t2.name as skillGrpName,
+		            to_char(t1.skill_id) as id,
+		            t3.name as skillName,
+		            to_char(t3.org_type) as orgType,
+		            to_char(t3.org_level) as orgLevel,
+		            t1.sort as sort,
+		            t3.parent_id as parentId,
+		            to_char(t3.skill_dbid) as skillDbid,
+		            to_char(t1.skill_gubun) as skillGubun,
+		            to_char(t1.skill_level) as skillLevel,
+		            (select aum.user_cd || '(' || aum.user_nm || ')' from ax_user_m aum where t1.updated_by = aum.user_cd) as updated_at,
+            		to_char(t1.updated_at, 'yyyy-mm-dd hh24:mi:ss') as updated_by
+        	from	ax_sk_skg_struct t1, ax_sk_org t2, ax_sk_org t3, ax_sk_org t4
+        	where	t1.org_id = t2.id     
+            and     t1.skill_id = t3.id  
+            and     t2.parent_id = t4.id
+            and     t1.deleted_at is null     
+            and     t2.deleted_at is null     
+            and     t3.deleted_at is null     
+            and     t4.deleted_at is null 
+            and     t4.org_type = '0'     
+            and     t2.org_type = '13'     
+            and     t3.org_type = '11'
+			and     t3.skill_name is not null
+			<if test="compId != '' and compId != null">
+			and		t2.parent_id = #{compId}
+			</if>
+			<if test="chnId != '' and chnId != null">
+			and		t3.parent_id in ( ${chnId} )
+			</if> 
+			<if test="skillId != '' and skillId != null">
+			and		t3.id in ( ${skillId} )
+			</if>
+			<if test="skillGrpName != '' and skillGrpName != null">
+			and		t3.name like '%' || #{skillGrpName} || '%'
+			</if>  
+			<if test="skillGrpId != '' and skillGrpId != null">
+			and		t1.org_id in ( ${skillGrpId} )
+			</if> 
+			<if test="skGrpName != '' and skGrpName != null">
+			and		t2.name like '%' || #{skGrpName} || '%'
+			</if> 
+		)
+      	order by TO_NUMBER(pid) asc, skillname asc, TO_NUMBER(id) asc, TO_NUMBER(sort) asc
+    </select>
+    
+    <select  id="newOrgId" resultType="String" fetchSize="1000">
+    	<!-- select max(to_number(id))+1 as id from ax_sk_org -->
+    	select SEQ_ax_sk_org.nextval from dual 
+    </select>
+    
+    <insert id="insertSkillGrpOrg" parameterType="skillGrpMng">
+    	insert into ax_sk_org (id, name, parent_id, skill_dbid, org_level, sort, org_type, created_at, created_by, updated_at, updated_by)
+    	values(#{id, jdbcType=INTEGER}, #{name}, #{pid, jdbcType=INTEGER}, #{skillDbid, jdbcType=INTEGER}, #{orgLevel, jdbcType=INTEGER}, #{sort, jdbcType=INTEGER}, 13, sysdate, #{userCd}, sysdate, #{userCd})
+    </insert>
+    
+    <insert id="insertSkillGrpOrgToOrg" parameterType="skillGrpMng">
+    	insert into ax_sk_org_to_org (parent_id, child_id, created_at, created_by, updated_at, updated_by )
+    	values(#{pid, jdbcType=INTEGER}, #{id, jdbcType=INTEGER}, sysdate, #{userCd}, sysdate, #{userCd})
+    </insert>
+    
+    <insert id="insertSkillGrp" parameterType="skillGrpMng">
+    	insert into ax_sk_skg_struct (org_id, skill_id, skill_gubun, skill_level, sort, created_at, created_by, updated_at, updated_by)
+    	values(#{pid, jdbcType=INTEGER}, #{id, jdbcType=INTEGER}, #{skillGubun, jdbcType=VARCHAR}, #{skillLevel, jdbcType=INTEGER}, #{sort, jdbcType=INTEGER}, sysdate, #{userCd}, sysdate, #{userCd})
+    </insert>
+    
+    <update id="updateSkillGrpOrg" parameterType="skillGrpMng">
+    	update	ax_sk_org
+    	set		name	= #{name},
+    			sort	= #{sort, jdbcType=INTEGER},
+    			updated_at	= sysdate,
+    			updated_by	= #{userCd}
+    	where	id = #{id, jdbcType=INTEGER}
+    	and		parent_id	= #{pid, jdbcType=INTEGER}
+    	and		org_type	= '13'
+    </update>    
+    
+    <update id="updateSkillGrp" parameterType="skillGrpMng">
+    	update	ax_sk_skg_struct
+    	set		skill_gubun	= #{skillGubun, jdbcType=INTEGER},
+    			skill_level	= #{skillLevel, jdbcType=INTEGER},
+    			sort		= #{sort, jdbcType=INTEGER},
+    			updated_at	= sysdate,
+    			updated_by	= #{userCd}
+    	where	org_id		= #{pid, jdbcType=INTEGER}
+    	and		skill_id	= #{id, jdbcType=INTEGER}
+    </update>
+    
+    <update id="deleteSkillGrpOrg" parameterType="skillGrpMng">
+    	update	ax_sk_org
+    	set		deleted_at	= sysdate,
+    			deleted_by	= #{userCd}
+    	where	id			= #{id, jdbcType=INTEGER}
+    	and		parent_id	= #{pid, jdbcType=INTEGER}
+    </update>
+    
+    <update id="deleteSkillGrpOrgToOrg" parameterType="skillGrpMng">
+    	update	ax_sk_org_to_org
+    	set		deleted_at	= sysdate,
+    			deleted_by	= #{userCd}
+    	where	child_id	= #{id, jdbcType=INTEGER}
+    	and		parent_id	= #{pid, jdbcType=INTEGER}
+    </update>
+    
+    <update id="deleteSkillGrp" parameterType="skillGrpMng">
+    	delete	from ax_sk_skg_struct
+    	where	org_id		= #{pid, jdbcType=INTEGER}
+    	and		skill_id	= #{id, jdbcType=INTEGER}
+    </update>
+    
+    <insert id="insertGrpHist" parameterType="skillGrpMng">
+    	insert into ax_sk_grp_hist (dbid, row_date, menu_gubun, work_gubun, work_info, work_user_name, work_user_no, work_group )
+    	values(SEQ_ax_sk_grp_hist.nextval, sysdate, #{menuGb}, #{workGb}, #{workInfo}, #{workNm}, #{compId}, #{workGroup})
+    </insert>
+
+
+	<select id="selectSkGrpSk" parameterType="hashmap" resultType="skillGrpMng" fetchSize="1000">
+		SELECT	aso1.parent_id as compId, aso1.id as sgid, aso1.name as sgnm, aso2.id as skid, aso2.name as sknm, asg.skill_level as sklvl
+		FROM 	ax_sk_skg_struct asg, ax_sk_org aso1, ax_sk_org aso2
+		where 	aso1.id = asg.org_id
+		and 	aso2.id = asg.skill_id
+		and 	aso1.deleted_at is null
+		and 	aso2.deleted_At is null
+		and 	aso1.id = #{grpid}
+		order by aso2.name			
+	</select>
+</mapper>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.systemManager.mapper.ctiMapAgentOrgMapper">
+	<select id="selectAgentOrg" parameterType="hashmap" resultType="ctiMapAgentOrg" fetchSize="1000">
+		select	t1.compId,
+				t2.name as compName,
+				t1.partId,
+				t1.partName,
+				t1.id,
+				t1.name,
+				t1.orgType,
+				t1.sort,
+				t1.orgLevel,
+				t1.parentId,
+				t1.agroupDbid,
+				t1.agroupName
+		from
+		(
+			select	decode(t1.orgLevel, 0, t1.id, t2.parent_id) as compId,
+					t1.partId,
+					t1.partName,
+					t1.id,
+					t1.name,
+					t1.orgType,
+					t1.orgLevel,
+					t1.parentId,
+					t1.sort,
+					t1.agroupDbid,
+					t1.agroupName
+			from 
+			(
+				select	decode(t1.orgLevel, 1, t1.id, t2.id) as partId,
+						decode(t1.orgLevel, 1, t1.name, t2.name) as partName,
+						t1.id,
+						t1.name,
+						t1.orgType,
+						t1.orgLevel,
+						t1.parentId,
+						t1.sort,
+						t1.agroupDbid,
+						t1.agroupName
+				from 
+				(
+					select  ID as id,
+					        NAME as name,
+					        ORG_TYPE as orgType,
+					        SORT as sort,
+					        ORG_LEVEL as orgLevel,
+					        parent_id as parentId,
+					        agroup_dbid as agroupDbid,
+					        agroup_name as agroupName
+					from    ax_sk_org
+					where   org_type in ('0' , '12')
+					and		deleted_at is null
+				)t1, ax_sk_org t2
+				where	t1.parentId = t2.id(+)
+				and		t2.deleted_at is null
+			)t1,ax_sk_org_to_org t2
+			where	t1.partId = t2.child_id(+)
+			and		t2.deleted_at is null
+		)t1, ax_sk_org t2
+		where	t1.compId = t2.id
+		and		t2.deleted_at is null
+		<if test="compId != '' and compId != null">
+		and		t1.compId = #{compId}
+		</if> 
+		<if test="partId != '' and partId != null">
+		and		(t1.partId is null or t1.partId = #{partId})
+		</if> 
+		order by t1.orgLevel, t1.sort asc
+    </select>
+    
+    <select id="selectAgent" parameterType="hashmap" resultType="ctiMapAgentOrg" fetchSize="1000">
+		SELECT  compId,
+		        compName,
+		        partId,
+		        partName,
+		        id,
+		        name,
+		        agroupDbid,
+		        agroupName,
+		        orgLevel,
+		        orgType
+		FROM
+		(
+		<if test="orgLevel==0 and id != '' and id != null">
+		    SELECT  id    		AS compId,
+		            name        AS compName,
+		            NULL        AS partId,
+		            NULL        AS partName,
+		            id          AS id,
+		            name        AS name,
+		            agroup_dbid AS agroupDbid,
+		            agroup_name AS agroupName,
+		            org_level   AS orgLevel,
+		            org_type    AS orgType
+		    FROM ax_sk_org
+		    WHERE id = #{id}
+		</if>  
+		<if test="orgLevel==1 and id != '' and id != null">
+		    SELECT  t1.id       AS compId,
+		            t1.name     AS compName,
+		            t2.id       AS partId,
+		            t2.name     AS partName,
+		            t2.id       AS id,
+		            t2.name     AS name,
+		            t2.agroup_dbid AS agroupDbid,
+		            t2.agroup_name AS agroupName,
+		            t2.org_level   AS orgLevel,
+		            t2.org_type    AS orgType
+		    FROM ax_sk_org t1, ax_sk_org t2
+		    WHERE t1.id = t2.parent_id
+		    AND   t2.id = #{id}
+		</if>  
+		<if test="orgLevel==2 and id != '' and id != null">
+		    SELECT  t1.id       AS compId,
+		            t1.name     AS compName,
+		            t2.id       AS partId,
+		            t2.name     AS partName,
+		            t3.id       AS id,
+		            t3.name     AS name,
+		            t3.agroup_dbid AS agroupDbid,
+		            t3.agroup_name AS agroupName,
+		            t3.org_level   AS orgLevel,
+		            t3.org_type    AS orgType
+		    FROM ax_sk_org t1, ax_sk_org t2, ax_sk_org t3
+		    WHERE t1.id = t2.parent_id
+		    AND   t2.id = t3.parent_id
+		    AND   t3.id = #{id}
+		</if>  
+		)
+		order by compId, partId, id	    
+    </select>
+    
+    <select id="selectAgentDetail" parameterType="hashmap" resultType="ctiMapAgentOrg" fetchSize="1000">
+    
+		select	t2.parent_id as compId,
+				t3.name as compName,
+				t1.partId,
+				t1.partName,
+				t1.id,
+				t1.name,
+				t1.parentId,
+				t1.orgType,
+				t1.orgLevel,
+				t1.sort,
+				t1.agroupDbid,
+				t1.agroupName
+		from 
+		(
+			select	t2.parent_id as partId,
+					t3.name as partName,
+					t1.id, 
+					t1.name,
+					t1.parent_id as parentId,
+					t1.org_type as orgType,
+					t1.org_level as orgLevel,
+					t1.sort,
+					t1.AGROUP_DBID as agroupDbid,
+					t1.AGROUP_NAME as agroupName
+			from	ax_sk_org t1, ax_sk_org_to_org t2, ax_sk_org t3
+			where	t1.id = t2.child_id
+			and   	t2.parent_id = t3.id
+			and   	t1.org_level = '2'
+      		and     t1.org_type = '12'
+			and		t1.deleted_at is null
+			and		t2.deleted_at is null
+			and		t3.deleted_at is null
+		) t1, ax_sk_org_to_org t2, ax_sk_org t3
+		where	t1.partId = t2.child_id
+		and		t2.parent_id = t3.id
+		and		t2.deleted_at is null
+		and		t3.deleted_at is null
+		<if test="compId != '' and compId != null">
+		and		t2.parent_id = #{compId}
+		</if> 
+		<if test="partId != '' and partId != null">
+		and		t1.partId = #{partId}
+		</if> 
+		<if test="orgLevel==2 and id != '' and id != null">
+		<!-- <if test="id != '' and id != null"> -->
+		and		t1.id = #{id}
+		</if>  
+		<if test="agroupName != '' and agroupName != null">
+		and		t1.agroupName like '%'||#{agroupName}||'%'
+		</if>
+		and		t1.orgType = '12'
+		order by t1.orgLevel, t1.sort asc
+    
+    </select>
+    
+    <select  id="newOrgId" resultType="String" fetchSize="1000">
+    	<!-- select max(to_number(id))+1 as id from ax_sk_org -->
+    	select SEQ_ax_sk_org.nextval from dual
+    </select>
+    
+    <insert  id="insertAgentOrg" parameterType="ctiMapAgentOrg">
+   		insert into ax_sk_org (id, name, parent_id, org_level, sort, org_type, created_at, created_by, updated_at, updated_by )
+    	values(#{id, jdbcType=INTEGER}, #{name}, #{parentId, jdbcType=INTEGER}, #{orgLevel}, #{sort}, #{orgType}, sysdate, #{userCd}, sysdate, #{userCd})
+    </insert>
+    
+    <insert  id="insertAgentOrgToOrg" parameterType="ctiMapAgentOrg">
+    	insert into ax_sk_org_to_org (parent_id, child_id, created_at, created_by, updated_at, updated_by )
+    	values(#{parentId, jdbcType=INTEGER}, #{id, jdbcType=INTEGER}, sysdate, #{userCd}, sysdate, #{userCd})
+    </insert>
+    
+    <update  id="updateAgentOrg" parameterType="ctiMapAgentOrg">
+    	update	ax_sk_org 
+    	set 	name		= #{name},
+				parent_id	= #{parentId, jdbcType=INTEGER},
+    			org_level	= #{orgLevel},
+    			sort 		= #{sort},
+    			updated_at	= sysdate,
+    			updated_by	= #{userCd}
+    	where	id			= #{id, jdbcType=INTEGER}
+    	<!-- and		parent_id	= #{preParentId} -->
+    	and		org_type	= #{orgType}
+    </update>
+    
+    <update  id="updateAgentOrgToOrg" parameterType="ctiMapAgentOrg">
+    	update	ax_sk_org_to_org
+		set		parent_id	= #{parentId, jdbcType=INTEGER},
+				child_id	= #{id},
+				updated_at	= sysdate,
+				updated_by	= #{userCd}
+    	where	child_id	= #{id, jdbcType=INTEGER}
+    	and		parent_id	= #{preParentId, jdbcType=INTEGER}
+    </update>
+    
+    <update  id="deleteAgentOrg" parameterType="ctiMapAgentOrg">
+    	update	ax_sk_org
+    	set		deleted_at	= sysdate,
+    			deleted_by	= #{userCd}
+    	where	id			= #{id, jdbcType=INTEGER}
+    	<!-- and		parent_id	= #{parentId} -->
+    	and		org_type	= #{orgType}
+    </update>
+    
+    <update  id="deleteAgentOrgToOrg" parameterType="ctiMapAgentOrg">
+    	update	ax_sk_org_to_org
+    	set		deleted_at	= sysdate,
+    			deleted_by	= #{userCd}
+    	where	child_id	= #{id, jdbcType=INTEGER}
+    	and		parent_id	= #{preParentId, jdbcType=INTEGER}
+    </update>
+    
+    <update  id="updateAgentDetail" parameterType="ctiMapAgentOrg">
+    	update	ax_sk_org
+		set		agroup_dbid = #{agroupDbid, jdbcType=INTEGER},
+				agroup_name	= #{agroupName, jdbcType=VARCHAR},
+				updated_at	= sysdate,
+				updated_by	= #{userCd}
+    	where	id			= #{id, jdbcType=INTEGER}
+    	and		org_type	= #{orgType}
+		<!-- and		parent_id	= #{parentId} -->
+    </update>
+    
+    <insert id="insertGrpHist" parameterType="ctiMapAgentOrg">
+    	insert into ax_sk_grp_hist (dbid, row_date, menu_gubun, work_gubun, work_info, work_user_name, work_user_no )
+    	values(SEQ_ax_sk_grp_hist.nextval, sysdate, #{menuGb}, #{workGb}, #{workInfo}, #{workNm}, #{compId, jdbcType=INTEGER})
+    </insert>
+
+</mapper>

@@ -1,0 +1,45 @@
+package com.soluvis.bake.system.domain.user.auth;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import com.chequer.axboot.core.parameter.RequestParams;
+import com.querydsl.core.BooleanBuilder;
+import com.soluvis.bake.system.domain.BaseService;
+
+@Service
+public class UserAuthService extends BaseService<UserAuth, UserAuthId> {
+
+    private UserAuthRepository userAuthRepository;
+
+    @Inject
+    public UserAuthService(UserAuthRepository userAuthRepository) {
+        super(userAuthRepository);
+        this.userAuthRepository = userAuthRepository;
+    }
+
+    public List<UserAuth> get(RequestParams requestParams) {
+        String userCd = requestParams.getString("userCd", "");
+        String filter = requestParams.getString("filter", "");
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (isNotEmpty(userCd)) {
+            builder.and(qUserAuth.userCd.eq(userCd));
+        }
+
+        List<UserAuth> list = select().from(qUserAuth).where(builder).orderBy(qUserAuth.id.asc()).fetch();
+
+        if (isNotEmpty(filter)) {
+            list = filter(list, filter);
+        }
+        return list;
+    }
+
+    public List<UserAuth> findByUserCd(String userCd) {
+        return userAuthRepository.findByUserCd(userCd);
+    }
+}

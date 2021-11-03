@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.management.mapper.grpModHistoryMapper">
+	<select id="selectHisGrpList" parameterType="hashmap" resultType="grpModHistory" fetchSize="1000">
+		select	distinct work_group as grpnm
+		from 	ax_sk_grp_hist
+		where	work_group is not null
+		order by work_group
+	</select>
+
+	<select id="selectHisList" parameterType="hashmap" resultType="grpModHistory" fetchSize="1000">
+		select  to_char(row_date, 'yyyy-mm-dd hh24:mi:ss') as workDate,
+		        menu_gubun  	as menuGb,
+		        work_gubun  	as workGb,
+		        work_info   	as workInfo,
+		        work_user_name  as workName,
+		        work_user_no    as compId,
+		        work_agid 		as workAgId,
+		        work_agnm		as workAgNm,
+		        work_remark		as workRemark,
+		        work_group		as workGroup,
+		        work_agemid		as workAgEmId
+		from    ax_sk_grp_hist
+		where 	1=1
+		<if test="sysadm == 0">
+		and		menu_gubun not in ('스킬그룹 CTI 매핑', '상담사팀 CTI 매핑')
+		</if>
+		<if test="compId != '' and compId != null">
+		and 	work_user_no = #{compId}
+		</if> 
+		<if test="deptNm != '' and deptNm != null">
+		and		work_info like '%' ||  #{deptNm} || '%'
+		</if>
+		<if test="teamNm != '' and teamNm != null">
+		and		work_info like '%' ||  #{teamNm} || '%'
+		</if>
+		<if test="teamNm2 != '' and teamNm2 != null">
+		and		work_info like '%' ||  #{teamNm2} || '%'
+		</if>
+		<if test="agId != '' and agId != null">
+		and		work_agid in (${agId})
+		</if>
+		
+		<if test="agEmId != '' and agEmId != null">
+		and		work_agemid like '%' ||  #{agEmId} || '%'
+		</if>
+		<if test="agNm != '' and agNm != null">
+		and		work_agnm like '%' ||  #{agNm} || '%'
+		</if>
+		<if test="grpNm != '' and grpNm != null">
+		and		work_group = #{grpNm}
+		</if>
+		<if test="grpNm2 != '' and grpNm2 != null">
+		and		work_group like '%' ||  #{grpNm2} || '%'
+		</if>
+		<if test="menuGb != '' and menuGb != null">
+		and		menu_gubun = #{menuGb}
+		</if>
+		<if test="strDate != '' and strDate != null and endDate != '' and endDate != null">
+		and		to_char(row_date, 'yyyymmdd') between #{strDate} and #{endDate}
+		</if>
+		order by row_date desc
+	</select>
+</mapper>

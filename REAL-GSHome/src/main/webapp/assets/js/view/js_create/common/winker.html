@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WebSocket Test Client Program</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script type="text/javascript" src="./bytebuffer.js"></script>
+	<script type="text/javascript" src="./winker_const.js"></script>
+	<!--script type="text/javascript" src="./winker_api.js"></script-->	
+	<script type="text/javascript" src="./winker_api_gs.js"></script>
+	
+</head>
+<body>
+	<script type="text/javascript">
+		// Parameter 정의
+		// eventId
+		// eventMsg
+		// 1) EventStatInfo 일 때
+		// param1   : objectDBID
+		// param2   : objectType
+		// param3   : statId
+		// param4	: statVal
+		// 2) EventOrgInfo/EventAgentOrgInfo/EventSkillOrgInfo 일 때
+		// param1   : refid				reference id
+		// param2   : parentInfo		조직정보 요청 정보. name:dbid:type
+		// param3   : childInfo			조회된 조직 정보. dbid:type:name 의 "," 구분자 list. ex) 952:22:유선상담,950:22:무선상담
+		//                              상담원 목록이 올 때는 dbid:type:FirstName^LastName^EmpID^UserNamme에 "," 구분자 list. ex) 7255:3:정서영1^91918^KG99868^KG99868,7219:3:KG201673^90006^KG201673^KG201673
+		// param4	: N/A
+		var wWink = new winkWebSocket() ;
+		
+		function WinkEvent(eventId, eventMsg, param1, param2, param3, param4)
+		{
+			var msgArr = eventMsg.split("~") ;
+			
+			wWink.wLog("WinkEvent < ", WMessage[eventId] + "(" + eventId + ") " + eventMsg, false) ;
+			
+			switch(eventId)
+			{
+				case WMessageType.EventServerConnected :
+					document.getElementById("textConStatusP").value = "연결" ;
+					break ;
+				case WMessageType.EventServerDisconnected :
+					document.getElementById("textConStatusP").value = "끊김" ;
+					break ;
+				case WMessageType.EventStatInfo :
+					document.getElementById("textMsgr").value = eventMsg ;
+					document.getElementById("textObjectDBIDr").value = param1 ;
+					document.getElementById("textObjectTyper").value = WObject[param2] ;
+					document.getElementById("textStatIDr").value = param3 ;
+					document.getElementById("textStatValr").value = param4 ;
+					break ;
+				case WMessageType.EventOrgInfo :
+				case WMessageType.EventAgentOrgInfo :
+				case WMessageType.EventSkillOrgInfo :
+				case WMessageType.EventSwitchInfo :
+				case WMessageType.EventVDNList :
+				case WMessageType.EventQueueList :	// 현재는 Queue를 요청해도 EventVDNList로 이벤트가 옴.
+					document.getElementById("textOrgMsgr").value = eventMsg ;
+					document.getElementById("textOrgRefIDr").value = param1 ;
+					document.getElementById("textOrgParentr").value = param2 ;
+					document.getElementById("textOrgChildr").value = param3 ;
+					break ;
+				case WMessageType.EventSkillAdded :	// 스킬 추가 성공
+				case WMessageType.EventSkillUpdated	:	// 스킬 변경 성공
+				case WMessageType.EventSkillDeleted	:	// 스킬 삭제 성공
+					var refID = msgArr[1] ;			// 요청할 때 return 받은 referenceID  값과 비교가능
+					var reqMsg = msgArr[2] ;			// 요청할 때 전송했던 요청 내용. PersonDBID:SkillDbid:SkillLevel
+					
+					break ;
+					
+				case WMessageType.EventAgentLogout		:
+				case WMessageType.EventListenDN			:
+				case WMessageType.EventAnnexUpdated		:
+				case WMessageType.EventListenDNStopped	:
+					break ;
+				case WMessageType.EventAgentAddedToGroup	:
+				case WMessageType.EventAgentDeletedFromGroup	:
+				case WMessageType.EventAgentCreated		:
+					break ;
+				case WMessageType.EventAgentGroupCreated	:
+				case WMessageType.EventAgentGroupDeleted	:
+				case WMessageType.EventAgentGroupUpdated	:
+					break ;
+				case WMessageType.EventError :	// 필요할 경우 에러 처리합니다.
+					var refID = msgArr[1] ;			// 요청할 때 return 받은 referenceID  값과 비교가능
+					var reqMsg = msgArr[2] ;			// 요청할 때 전송했던 요청 내용.
+					
+					break ;
+				case WMessageType.EventLoginInvalid :	// 연결이 종료되어야 합니다.
+					wWink.wDisconnect() ;
+					break ;
+			}
+	
+			tmpStr = null ;
+			line = null ;
+		}; 
+		
+		function initialize_click(e) {		
+			var txtHostP	= document.getElementById("textHostP")==null?"":document.getElementById("textHostP").value;
+			var txtPortP	= document.getElementById("textPortP")==null?"":document.getElementById("textPortP").value;
+			var txtHostB	= document.getElementById("textHostB")==null?"":document.getElementById("textHostB").value;
+			var txtPortB	= document.getElementById("textPortB")==null?"":document.getElementById("textPortB").value;
+			var txtID 		= document.getElementById("textID")==null?"":document.getElementById("textID").value;
+			var txtPass 	= document.getElementById("textPass")==null?"":document.getElementById("textPass").value;
+			var txtMode 	= document.getElementById("textMode")==null?"":document.getElementById("textMode").value;
+			var txtCenter	= document.getElementById("textCenter")==null?"":document.getElementById("textCenter").value;
+			
+			wWink.wInitialize(txtHostP, txtPortP, txtHostB, txtPortB, txtID, txtPass, txtMode, txtCenter, WinkEvent, addLogText, true, true) ;
+			wWink.wConnectExt(true) ;
+
+			setTimeout(disconnect_click, 1000 ) ;
+			
+			txtHostP = null ;
+			txtPortP = null ;
+			txtHostB = null ;
+			txtPortB = null ;
+			txtID 		= null ;
+			txtExt 		= null ;
+			txtQueue	= null ;
+			txtMode		= null ;
+		};
+	
+		function connect_click(e) {
+			var txtHostP = document.getElementById("textHostP")==null?"":document.getElementById("textHostP").value;
+			var txtPortP = document.getElementById("textPortP")==null?"":document.getElementById("textPortP").value;
+			var txtHostB = document.getElementById("textHostB")==null?"":document.getElementById("textHostB").value;
+			var txtPortB = document.getElementById("textPortB")==null?"":document.getElementById("textPortB").value;
+	      
+			wWink.wConnect(txtHostP, txtPortP, txtHostB, txtPortB, WinkEvent, addLogText) ;
+
+			txtHostP = null ;
+			txtPortP = null ;
+			txtHostB = null ;
+			txtPortB = null ;
+		};
+
+		function disconnect_click(e) {  
+			wWink.wDisconnect() ;
+			
+			setTimeout(initialize_click, 1000 ) ;
+		};		
+	
+		function login_click(e) {
+			var txtID 		= document.getElementById("textID")==null?"":document.getElementById("textID").value;
+			var txtPass 	= document.getElementById("textPass")==null?"":document.getElementById("textPass").value;
+			var txtMode 	= document.getElementById("textMode")==null?"":document.getElementById("textMode").value;
+			var txtCenter	= document.getElementById("textCenter")==null?"":document.getElementById("textCenter").value;
+			
+			wWink.wLoginExt (txtID, txtPass, "1.1.100", txtMode, txtCenter) ;
+			
+			txtID 		= null ;
+			txtPass 	= null ;
+			txtMode		= null ;
+			txtCenter	= null ;
+		};
+		
+		function singleStatNameOpen_click(e) {
+			var txtObjectID = document.getElementById("textObjectName")==null?"":document.getElementById("textObjectName").value;
+			var txtStatID 	= document.getElementById("textStatIDName")==null?"":document.getElementById("textStatIDName").value;
+			
+			wWink.wOpenStat(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function singleStatNameClose_click(e) {
+			var txtObjectID = document.getElementById("textObjectName")==null?"":document.getElementById("textObjectName").value;
+			var txtStatID 	= document.getElementById("textStatIDName")==null?"":document.getElementById("textStatIDName").value;
+			
+			wWink.wCloseStat(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function singleStatOpen_click(e) {
+			var txtObjectID = document.getElementById("textObjectID")==null?"":document.getElementById("textObjectID").value;
+			var txtStatID 	= document.getElementById("textStatID")==null?"":document.getElementById("textStatID").value;
+			
+			wWink.wOpenStat(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function singleStatClose_click(e) {
+			var txtObjectID = document.getElementById("textObjectID")==null?"":document.getElementById("textObjectID").value;
+			var txtStatID 	= document.getElementById("textStatID")==null?"":document.getElementById("textStatID").value;
+			
+			wWink.wCloseStat(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+
+		function singleStatOpenAgent_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDAgent")==null?"":document.getElementById("textObjectIDAgent").value;
+			var txtStatID 	= document.getElementById("textStatIDAgent")==null?"":document.getElementById("textStatIDAgent").value;
+			
+			wWink.wOpenStatAgent(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function singleStatCloseAgent_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDAgent")==null?"":document.getElementById("textObjectIDAgent").value;
+			var txtStatID 	= document.getElementById("textStatIDAgent")==null?"":document.getElementById("textStatIDAgent").value;
+			
+			wWink.wCloseStatAgent(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+
+		function singleStatOpenSkill_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDSkill")==null?"":document.getElementById("textObjectIDSkill").value;
+			var txtStatID 	= document.getElementById("textStatIDSkill")==null?"":document.getElementById("textStatIDSkill").value;
+			
+			wWink.wOpenStatAgentGroup(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function singleStatCloseSkill_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDSkill")==null?"":document.getElementById("textObjectIDSkill").value;
+			var txtStatID 	= document.getElementById("textStatIDSkill")==null?"":document.getElementById("textStatIDSkill").value;
+			
+			wWink.wCloseStatAgentGroup(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+
+		function singleStatOpenDN_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDDN")==null?"":document.getElementById("textObjectIDDN").value;
+			var txtStatID 	= document.getElementById("textStatIDDN")==null?"":document.getElementById("textStatIDDN").value;
+			
+			wWink.wOpenStatDN(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function singleStatCloseDN_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDDN")==null?"":document.getElementById("textObjectIDDN").value;
+			var txtStatID 	= document.getElementById("textStatIDDN")==null?"":document.getElementById("textStatIDDN").value;
+			
+			wWink.wCloseStatDN(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function multiStatOpen_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDs")==null?"":document.getElementById("textObjectIDs").value;
+			var txtStatID 	= document.getElementById("textStatIDs")==null?"":document.getElementById("textStatIDs").value;
+			
+			wWink.wOpenStatExt(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function multiStatClose_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDs")==null?"":document.getElementById("textObjectIDs").value;
+			var txtStatID 	= document.getElementById("textStatIDs")==null?"":document.getElementById("textStatIDs").value;
+			
+			wWink.wCloseStatExt(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+
+		function multiStatOpenArr_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDs")==null?"":document.getElementById("textObjectIDs").value;
+			var txtStatID 	= document.getElementById("textStatIDs")==null?"":document.getElementById("textStatIDs").value;
+			
+			wWink.wOpenStatExt(txtObjectID.split("↑"), txtStatID.split("↑")) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function multiStatCloseArr_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDs")==null?"":document.getElementById("textObjectIDs").value;
+			var txtStatID 	= document.getElementById("textStatIDs")==null?"":document.getElementById("textStatIDs").value;
+			
+			wWink.wCloseStatExt(txtObjectID.split("↑"), txtStatID.split("↑")) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+
+		function multiStatOpenAgent_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDAgents")==null?"":document.getElementById("textObjectIDAgents").value;
+			var txtStatID 	= document.getElementById("textStatIDAgents")==null?"":document.getElementById("textStatIDAgents").value;
+			
+			wWink.wOpenStatAgentExt(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function multiStatCloseAgent_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDAgents")==null?"":document.getElementById("textObjectIDAgents").value;
+			var txtStatID 	= document.getElementById("textStatIDAgents")==null?"":document.getElementById("textStatIDAgents").value;
+			
+			wWink.wCloseStatAgentExt(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+
+		function multiStatOpenAgentArr_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDAgents")==null?"":document.getElementById("textObjectIDAgents").value;
+			var txtStatID 	= document.getElementById("textStatIDAgents")==null?"":document.getElementById("textStatIDAgents").value;
+			
+			wWink.wOpenStatAgentExt(txtObjectID.split("↑"), txtStatID.split("↑")) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function multiStatCloseAgentArr_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDAgents")==null?"":document.getElementById("textObjectIDAgents").value;
+			var txtStatID 	= document.getElementById("textStatIDAgents")==null?"":document.getElementById("textStatIDAgents").value;
+			
+			wWink.wCloseStatAgentExt(txtObjectID.split("↑"), txtStatID.split("↑")) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+
+		function multiStatOpenSkill_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDSkills")==null?"":document.getElementById("textObjectIDSkills").value;
+			var txtStatID 	= document.getElementById("textStatIDSkills")==null?"":document.getElementById("textStatIDSkills").value;
+			
+			wWink.wOpenStatAgentGroupExt(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function multiStatCloseSkill_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDSkills")==null?"":document.getElementById("textObjectIDSkills").value;
+			var txtStatID 	= document.getElementById("textStatIDSkills")==null?"":document.getElementById("textStatIDSkills").value;
+			
+			wWink.wCloseStatAgentGroupExt(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+
+		function multiStatOpenSkillArr_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDSkills")==null?"":document.getElementById("textObjectIDSkills").value;
+			var txtStatID 	= document.getElementById("textStatIDSkills")==null?"":document.getElementById("textStatIDSkills").value;
+			
+			wWink.wOpenStatAgentGroupExt(txtObjectID.split("↑"), txtStatID.split("↑")) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function multiStatCloseSkillArr_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDSkills")==null?"":document.getElementById("textObjectIDSkills").value;
+			var txtStatID 	= document.getElementById("textStatIDSkills")==null?"":document.getElementById("textStatIDSkills").value;
+			
+			wWink.wCloseStatAgentGroupExt(txtObjectID.split("↑"), txtStatID.split("↑")) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+
+		function multiStatOpenDN_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDDNs")==null?"":document.getElementById("textObjectIDDNs").value;
+			var txtStatID 	= document.getElementById("textStatIDDNs")==null?"":document.getElementById("textStatIDDNs").value;
+			
+			wWink.wOpenStatDNExt(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function multiStatCloseDN_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDDNs")==null?"":document.getElementById("textObjectIDDNs").value;
+			var txtStatID 	= document.getElementById("textStatIDDNs")==null?"":document.getElementById("textStatIDDNs").value;
+			
+			wWink.wCloseStatDNExt(txtObjectID, txtStatID) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+
+		function multiStatOpenDNArr_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDDNs")==null?"":document.getElementById("textObjectIDDNs").value;
+			var txtStatID 	= document.getElementById("textStatIDDNs")==null?"":document.getElementById("textStatIDDNs").value;
+			
+			wWink.wOpenStatDNExt(txtObjectID.split("↑"), txtStatID.split("↑")) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function multiStatCloseDNArr_click(e) {
+			var txtObjectID = document.getElementById("textObjectIDDNs")==null?"":document.getElementById("textObjectIDDNs").value;
+			var txtStatID 	= document.getElementById("textStatIDDNs")==null?"":document.getElementById("textStatIDDNs").value;
+			
+			wWink.wCloseStatDNExt(txtObjectID.split("↑"), txtStatID.split("↑")) ;
+			
+			txtObjectID = null ;
+			txtStatID = null ;
+		}
+		
+		function requestOrgCenterList_click(e) {
+
+			var refid = wWink.wGetOrgCenterList() ;
+			
+			document.getElementById("textRefIDCenter").value = refid ;
+			
+			refid = null ;
+		}
+
+		function requestAgentOrgList_click(e) {
+
+			var param1 = document.getElementById("textDBIDAgentOrg")==null?"":document.getElementById("textDBIDAgentOrg").value;
+			var refid = wWink.wGetOrgListForAgent(param1) ;
+			
+			document.getElementById("textRefIDAgentOrg").value = refid ;
+			
+			refid = null ;
+		}
+
+		function requestAgentList_click(e) {
+			
+			var param1 = document.getElementById("textDBIDAgentList")==null?"":document.getElementById("textDBIDAgentList").value;
+			var refid = wWink.wGetOrgAgentList(param1) ;
+			
+			document.getElementById("textRefIDAgentList").value = refid ;
+			
+			refid = null ;
+		}
+
+		function requestSkillOrgList_click(e) {
+
+			var param1 = document.getElementById("textDBIDSkill")==null?"":document.getElementById("textDBIDSkill").value;
+			var refid = wWink.wGetOrgListForSkill(param1) ;
+			
+			document.getElementById("textRefIDSkill").value = refid ;
+			
+			refid = null ;
+		}	
+
+		function requestSwitchList_click(e)
+		{
+			var refid = wWink.wGetSwitchList() ;
+			
+			document.getElementById("textRefIDSwitch").value = refid ;
+			
+			refid = null ;
+		}	
+
+		function requestVDNList_click(e) {
+
+			var param1 = document.getElementById("textDBIDVDN")==null?"":document.getElementById("textDBIDVDN").value;
+			var refid = wWink.wGetVDNList(param1) ;
+			
+			document.getElementById("textRefIDVDN").value = refid ;
+			
+			refid = null ;
+		}
+
+		function requestQueueList_click(e) {
+
+			var param1 = document.getElementById("textDBIDQueue")==null?"":document.getElementById("textDBIDQueue").value;
+			var refid = wWink.wGetACDQList(param1) ;
+			
+			document.getElementById("textRefIDQueue").value = refid ;
+			
+			refid = null ;
+		}
+		
+		function requestSkillAdd_click(e) {
+
+			var param1 = document.getElementById("textPersonDBIDAdd")==null?"":document.getElementById("textPersonDBIDAdd").value;
+			var param2 = document.getElementById("textSkillDBIDAdd")==null?"":document.getElementById("textSkillDBIDAdd").value;
+			var param3 = document.getElementById("textSkillLevelAdd")==null?"":document.getElementById("textSkillLevelAdd").value;
+			
+			var refid = wWink.wAddSkill(param1, param2, param3) ;
+			
+			document.getElementById("textRefIDAdd").value = refid ;
+			
+			refid = null ;
+		}
+
+		function requestSkillUpdate_click(e) {
+
+			var param1 = document.getElementById("textPersonDBIDUpdate")==null?"":document.getElementById("textPersonDBIDUpdate").value;
+			var param2 = document.getElementById("textSkillDBIDUpdate")==null?"":document.getElementById("textSkillDBIDUpdate").value;
+			var param3 = document.getElementById("textSkillLevelUpdate")==null?"":document.getElementById("textSkillLevelUpdate").value;
+			
+			var refid = wWink.wUpdateSkill(param1, param2, param3) ;
+			
+			document.getElementById("textRefIDUpdate").value = refid ;
+			
+			refid = null ;
+		}
+		
+		function requestSkillDelete_click(e) {
+
+			var param1 = document.getElementById("textPersonDBIDDelete")==null?"":document.getElementById("textPersonDBIDDelete").value;
+			var param2 = document.getElementById("textSkillDBIDDelete")==null?"":document.getElementById("textSkillDBIDDelete").value;
+
+			var refid = wWink.wDeleteSkill(param1, param2) ;
+			
+			document.getElementById("textRefIDDelete").value = refid ;
+			
+			refid = null ;
+		}
+		
+		
+		function requestAgentLogout_click(e) {
+
+			var param1 = document.getElementById("textRequesterDN")==null?"":document.getElementById("textRequesterDN").value;
+			var param2 = document.getElementById("textTargetDN")==null?"":document.getElementById("textTargetDN").value;
+
+			var refid = wWink.wLogoutDN(param1, param2) ;
+			
+			document.getElementById("textRefIDLogout").value = refid ;
+			
+			refid = null ;
+		}
+		
+		function requestCallSupervision_click(e) {
+
+			var param1 = document.getElementById("textRequesterDNCS")==null?"":document.getElementById("textRequesterDNCS").value;
+			var param2 = document.getElementById("textTargetDNCS")==null?"":document.getElementById("textTargetDNCS").value;
+
+			var refid = wWink.wListenDN(param1, param2) ;
+			
+			document.getElementById("textRefIDListen").value = refid ;
+			
+			refid = null ;
+		}	
+		
+		function requestCallSupervisionStop_click(e) {
+
+			var param1 = document.getElementById("textRequesterDNCS")==null?"":document.getElementById("textRequesterDNCS").value;
+			var param2 = document.getElementById("textTargetDNCS")==null?"":document.getElementById("textTargetDNCS").value;
+
+			var refid = wWink.wStopListenDN(param1, param2) ;
+			
+			document.getElementById("textRefIDListen").value = refid ;
+			
+			refid = null ;
+		}	
+
+		function requestAgentAdd2Group_click(e) {
+
+			var param1 = document.getElementById("textPersonDBIDAdd2G")==null?"":document.getElementById("textPersonDBIDAdd2G").value;
+			var param2 = document.getElementById("textAGDBIDAdd")==null?"":document.getElementById("textAGDBIDAdd").value;
+
+			var refid = wWink.wRequestAddAgentToGroup(param1, param2) ;
+			
+			document.getElementById("textRefIDA2GAdd").value = refid ;
+			
+			refid = null ;
+		}
+			
+		function requestAgentDelFGroup_click(e) {
+
+			var param1 = document.getElementById("textPersonDBIDDelFG")==null?"":document.getElementById("textPersonDBIDDelFG").value;
+			var param2 = document.getElementById("textAGDBIDDel")==null?"":document.getElementById("textAGDBIDDel").value;
+
+			var refid = wWink.wRequestDeleteAgentFromGroup(param1, param2) ;
+			
+			document.getElementById("textRefIDAFGDel").value = refid ;
+			
+			refid = null ;
+		}
+		
+		function requestCreateAgentGroup_click(e) {
+
+			var param1 = document.getElementById("textAddAgentGroupName")==null?"":document.getElementById("textAddAgentGroupName").value;
+			var param2 = document.getElementById("textAddAgentGroupOwnerDBID")==null?"":document.getElementById("textAddAgentGroupOwnerDBID").value;
+
+			var refid = wWink.wCreateAgentGroup(param1, param2) ;
+			
+			document.getElementById("textRefIDAddAgentGroup").value = refid ;
+			
+			refid = null ;
+		}
+		
+		function requestDeleteAgentGroup_click(e) {
+
+			var param1 = document.getElementById("textDeleteAgentGroupDBID")==null?"":document.getElementById("textDeleteAgentGroupDBID").value;
+
+			var refid = wWink.wDeleteAgentGroup(param1) ;
+			
+			document.getElementById("textRefIDDeleteAgentGroup").value = refid ;
+			
+			refid = null ;
+		}
+				
+		function requestUpdateAgentGroup_click(e) {
+
+			var param1 = document.getElementById("textUpdateAgentGroupDBID")==null?"":document.getElementById("textUpdateAgentGroupDBID").value;
+			var param2 = document.getElementById("textUpdateAgentGroupName")==null?"":document.getElementById("textUpdateAgentGroupName").value;
+
+			var refid = wWink.wUpdateAgentGroup(param1, param2) ;
+			
+			document.getElementById("textRefIDUpdateAgentGroup").value = refid ;
+			
+			refid = null ;
+		}			
+			
+		function requestUpdateAnnex_click(e) {
+
+			var param1 = document.getElementById("textAnnexDBID")==null?"":document.getElementById("textAnnexDBID").value;
+			var param2 = document.getElementById("textAnnexSection")==null?"":document.getElementById("textAnnexSection").value;
+			var param3 = document.getElementById("textAnnexOption")==null?"":document.getElementById("textAnnexOption").value;
+			var param4 = document.getElementById("textAnnexValue")==null?"":document.getElementById("textAnnexValue").value;
+
+			var refid = wWink.wUpdateAnnexOption(param1, param2, param3, param4) ;
+			
+			document.getElementById("textRefIDAnnex").value = refid ;
+			
+			refid = null ;
+		}	
+
+		function logList_click(e)
+		{
+			var loglist = document.getElementById("logList");
+			
+			document.getElementById("logText").value = loglist.options[loglist.selectedIndex].text ;
+		}
+	
+		// tLog를 호출할 때 이 함수를 callback으로 넣으면 아래가 호출된다.
+		function addLogText(strText)
+		{
+			// Create an Option object
+			var opt = document.createElement("option");
+			var loglist = document.getElementById("logList");
+
+			// Add an Option object to Drop Down/List Box
+			loglist.options.add(opt, 0);
+			loglist.options[0].selected = true;
+			
+			// Assign text and value to Option object
+			opt.text = strText;
+			opt.value = 1;	
+			
+			if ( loglist.length > 100 )
+			{
+				loglist.options[100] = null;
+			}
+			
+			opt = null ;
+			loglist = null ;
+		}
+    </script>
+    1. 서버 연결
+    <TABLE border="1" cellpadding="0" cellspacing="0" >
+		<TR align="center" bgcolor="00ff00">
+			<TD>MainHost</TD><TD>MainPort</TD><TD>상태</TD><TD bgcolor="00fff0">연결 API</TD>
+		</TR>
+		<TR align="center">
+			<TD><input type="text" id="textHostP" value="MPVCTIFRM001" style="width:100px;"></TD>
+			<TD><input type="text" id="textPortP" value="7611" style="width:100px;"></TD>
+			<TD><input type="text" id="textConStatusP" value="" style="width:100px;"></TD>
+			<TD>
+				<input type="submit" id="Initialize" value=" 초기화/연결" onclick="initialize_click()">
+				<!--input type="submit" id="Connect" value="연결" onclick="connect_click()"-->
+				<input type="button" id="Disconnect" value="끊기" onclick="disconnect_click()">
+			</TD>
+		</TR>
+		<TR align="center" bgcolor="00ff00">
+			<TD>BackupHost</TD><TD>BackupPort</TD><TD>상태</TD>
+		</TR>
+		<TR>			
+			<TD><input type="text" id="textHostB" value="MPVCTIFRM001" style="width:100px;"></TD>
+			<TD><input type="text" id="textPortB" value="7611" style="width:100px;"></TD>
+			<TD><input type="text" id="textConStatusB" value="-" style="width:100px;"></TD>
+		</TR>
+	</TABLE>
+    2. 로그인 상태 처리(향후 기능 필요시 사용)
+	<TABLE border="1" cellpadding="0" cellspacing="0">
+		<TR align="center"  bgcolor="00ff00">
+			<TD>AgentID</TD><TD>Password</TD><TD>LoginMode</TD><TD>Version</TD><TD>센터</TD><TD bgcolor="00fff0">로그인API</TD>
+		</TR>
+		<TR align="center">
+			<TD><input type="text" id="textID" value="sup1admin" style="width:100px;"></TD>
+			<TD><input type="text" id="textPass" value="a" style="width:100px;"></TD>
+			<TD><input type="text" id="textMode" value="LoginModeWinkAdmin" style="width:100px;"></TD>
+			<TD><input type="text" id="textVer" value="1.1.100" style="width:100px;"></TD>
+			<TD><input type="text" id="textCenter" value="서울" style="width:100px;"></TD>
+			<TD>
+				<!--<input type="submit" value="로그인"    onclick="login_click()">-->
+			</TD>
+		</TR>
+	</TABLE>
+	3. 통계 요청/취소(Type 값 : DN(VDN/ACDQ)=2, Person(상담원)=3, AgentGroup(업무/Skill)=5)
+	<TABLE border="1" cellpadding="0" cellspacing="0" >
+		<TR align="center"  bgcolor="00ff00">
+			<TD bgcolor="00fff0">대상</TD><TD>ObjectID(dbid^type)</TD><TD>StatID</TD><TD bgcolor="00fff0">단일 통계 요청</TD>
+		</TR>
+		<TR>
+			<TD>Type로구분</TD>
+			<TD><input type="text" id="textObjectID" value="501^3" style="width:300px;"></TD>
+			<TD><input type="text" id="textStatID"   value="100" style="width:200px;"></TD>
+			<TD>
+				<input type="submit" value="요청" onclick="singleStatOpen_click()">
+				<input type="submit" value="취소" onclick="singleStatClose_click()">
+			</TD>
+		</TR>
+		<TR align="center"  bgcolor="00ff00">
+			<TD bgcolor="00fff0">대상</TD><TD>ObjectID(dbid)</TD><TD>StatID</TD><TD bgcolor="00fff0">단일 통계 객체별 요청</TD>
+		</TR>
+		<TR>
+			<TD>상담원</TD>
+			<TD><input type="text" id="textObjectIDAgent" value="501" style="width:300px;"></TD>
+			<TD><input type="text" id="textStatIDAgent"   value="100" style="width:200px;"></TD>
+			<TD>
+				<input type="submit" value="요청" onclick="singleStatOpenAgent_click()">
+				<input type="submit" value="취소" onclick="singleStatCloseAgent_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD>Skill/업무</TD>
+			<TD><input type="text" id="textObjectIDSkill" value="601" style="width:300px;"></TD>
+			<TD><input type="text" id="textStatIDSkill"   value="200" style="width:200px;"></TD>
+			<TD>
+				<input type="submit" value="요청" onclick="singleStatOpenSkill_click()">
+				<input type="submit" value="취소" onclick="singleStatCloseSkill_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD>DN</TD>
+			<TD><input type="text" id="textObjectIDDN" value="701" style="width:300px;"></TD>
+			<TD><input type="text" id="textStatIDDN"   value="300" style="width:200px;"></TD>
+			<TD>
+				<input type="submit" value="요청" onclick="singleStatOpenDN_click()">
+				<input type="submit" value="취소" onclick="singleStatCloseDN_click()">
+			</TD>
+		</TR>
+		<TR align="center" bgcolor="00ff00">
+			<TD bgcolor="00fff0">대상</TD><TD>ObjectIDs(dbid^type↑dbid^type....)</TD><TD>StatIDs(statid↑statid↑....)</TD><TD bgcolor="00fff0">복수 통계 요청</TD>
+		</TR>		
+		<TR>
+			<TD>Type로구분</TD>
+			<TD><input type="text" id="textObjectIDs" value="501^3↑502^3" style="width:300px;"></TD>
+			<TD><input type="text" id="textStatIDs"   value="100↑101" style="width:200px;"></TD>
+			<TD>
+				<input type="submit" value="String요청" onclick="multiStatOpen_click()">
+				<input type="submit" value="String취소" onclick="multiStatClose_click()">
+				<input type="submit" value="Array요청" onclick="multiStatOpenArr_click()">
+				<input type="submit" value="Array취소" onclick="multiStatCloseArr_click()">
+			</TD>
+		</TR>
+		<TR align="center" bgcolor="00ff00">
+			<TD bgcolor="00fff0">대상</TD><TD>ObjectIDs(dbid↑dbid....)</TD><TD>StatIDs(statid↑statid↑....)</TD><TD bgcolor="00fff0">복수 통계 객체별 요청</TD>
+		</TR>		
+		<TR>
+			<TD>상담원</TD>
+			<TD><input type="text" id="textObjectIDAgents" value="501↑502" style="width:300px;"></TD>
+			<TD><input type="text" id="textStatIDAgents"   value="100↑101" style="width:200px;"></TD>
+			<TD>
+				<input type="submit" value="String요청" onclick="multiStatOpenAgent_click()">
+				<input type="submit" value="String취소" onclick="multiStatCloseAgent_click()">
+				<input type="submit" value="Array요청" onclick="multiStatOpenAgentArr_click()">
+				<input type="submit" value="Array취소" onclick="multiStatCloseAgentArr_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD>Skill/업무</TD>
+			<TD><input type="text" id="textObjectIDSkills" value="601↑602" style="width:300px;"></TD>
+			<TD><input type="text" id="textStatIDSkills"   value="200↑201" style="width:200px;"></TD>
+			<TD>
+				<input type="submit" value="String요청" onclick="multiStatOpenSkill_click()">
+				<input type="submit" value="String취소" onclick="multiStatCloseSkill_click()">
+				<input type="submit" value="Array요청" onclick="multiStatOpenSkillArr_click()">
+				<input type="submit" value="Array취소" onclick="multiStatCloseSkillArr_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD>DN</TD>
+			<TD><input type="text" id="textObjectIDDNs" value="701↑702" style="width:300px;"></TD>
+			<TD><input type="text" id="textStatIDDNs"   value="300↑301" style="width:200px;"></TD>
+			<TD>
+				<input type="submit" value="String요청" onclick="multiStatOpenDN_click()">
+				<input type="submit" value="String취소" onclick="multiStatCloseDN_click()">
+				<input type="submit" value="Array요청" onclick="multiStatOpenDNArr_click()">
+				<input type="submit" value="Array취소" onclick="multiStatCloseDNArr_click()">
+			</TD>
+		</TR>
+		<TR align="center"  bgcolor="00ff00">
+			<TD bgcolor="00fff0">대상</TD><TD>ObjectID Name</TD><TD>StatID</TD><TD bgcolor="00fff0">단일 통계 NAME으로 요청</TD>
+		</TR>
+		<TR>
+			<TD>Name으로요청</TD>
+			<TD><input type="text" id="textObjectName" value="서울_콜센터" style="width:300px;"></TD>
+			<TD><input type="text" id="textStatIDName"   value="100" style="width:200px;"></TD>
+			<TD>
+				<input type="submit" value="요청" onclick="singleStatNameOpen_click()">
+				<input type="submit" value="취소" onclick="singleStatNameClose_click()">
+			</TD>
+		</TR>
+	</TABLE>
+	4. 통계 수신 내용
+	<TABLE border="1" cellpadding="0" cellspacing="0" >
+		<TR align="center"  bgcolor="00ff00">
+			<TD>수신 내용 전체</TD><TD>ObjectDBID</TD><TD>ObjectType</TD><TD>StatID</TD><TD>StatVal</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textMsgr" 	  value="" style="width:300px;"></TD>
+			<TD><input type="text" id="textObjectDBIDr" value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textObjectTyper" value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textStatIDr"   value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textStatValr"  value="" style="width:100px;"></TD>
+		</TR>
+	</TABLE>
+	5. 조직 요청
+	<TABLE border="1" cellpadding="0" cellspacing="0" >
+		<TR align="center"  bgcolor="00ff00">
+			<TD>DBID</TD><TD>RefID</TD><TD bgcolor="00fff0">조직요청</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textDBIDCenter" value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textRefIDCenter"   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="Center요청" onclick="requestOrgCenterList_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textDBIDAgentOrg" value="0" style="width:100px;"></TD>
+			<TD><input type="text" id="textRefIDAgentOrg"   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="Agent조직요청" onclick="requestAgentOrgList_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textDBIDAgentList" value="0" style="width:100px;"></TD>
+			<TD><input type="text" id="textRefIDAgentList"   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="Agent목록요청" onclick="requestAgentList_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textDBIDSkill" value="0" style="width:100px;"></TD>
+			<TD><input type="text" id="textRefIDSkill"   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="Skill조직요청" onclick="requestSkillOrgList_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textDBIDSwitch" value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textRefIDSwitch"   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="Switch요청" onclick="requestSwitchList_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textDBIDVDN" value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textRefIDVDN"   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="VDN요청" onclick="requestVDNList_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textDBIDQueue" value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textRefIDQueue"   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="Queue요청" onclick="requestQueueList_click()">
+			</TD>
+		</TR>
+	</TABLE>
+	6. 수신 조직 정보 내용
+	<TABLE border="1" cellpadding="0" cellspacing="0" >
+		<TR align="center"  bgcolor="00ff00">
+			<TD>수신 내용 전체</TD><TD>RefID</TD><TD>ParentInfo</TD><TD>ChildInfo</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textOrgMsgr" 	  value="" style="width:500px;"></TD>
+			<TD><input type="text" id="textOrgRefIDr" value="" style="width:150px;"></TD>
+			<TD><input type="text" id="textOrgParentr" value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textOrgChildr"   value="" style="width:300px;"></TD>
+		</TR>
+	</TABLE>
+	7. 스킬 변경
+	<TABLE border="1" cellpadding="0" cellspacing="0" >
+		<TR align="center"  bgcolor="00ff00">
+			<TD>RefID</TD><TD>PersonDBID</TD><TD>SkillDBID</TD><TD>SkillLevel</TD><TD bgcolor="00fff0">스킬명령</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textRefIDAdd" 		value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textPersonDBIDAdd"   value="7384" style="width:150px;"></TD>
+			<TD><input type="text" id="textSkillDBIDAdd"   	value="166" style="width:150px;"></TD>
+			<TD><input type="text" id="textSkillLevelAdd"   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="스킬추가" onclick="requestSkillAdd_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textRefIDUpdate" value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textPersonDBIDUpdate"   value="7384" style="width:150px;"></TD>
+			<TD><input type="text" id="textSkillDBIDUpdate"   value="166" style="width:150px;"></TD>
+			<TD><input type="text" id="textSkillLevelUpdate"   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="스킬변경" onclick="requestSkillUpdate_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textRefIDDelete" value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textPersonDBIDDelete"   value="7384" style="width:150px;"></TD>
+			<TD><input type="text" id="textSkillDBIDDelete"   value="166" style="width:150px;"></TD>
+			<TD><input type="text" id="textSkillLevelDelete"   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="스킬삭제" onclick="requestSkillDelete_click()">
+			</TD>
+		</TR>
+	</TABLE>
+	8. CTI 기능
+	<TABLE border="1" cellpadding="0" cellspacing="0" >
+		<TR align="center"  bgcolor="00ff00">
+			<TD>RefID</TD><TD>요청자 내선</TD><TD>대상 내선</TD><TD bgcolor="00fff0">내선명령</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textRefIDLogout" 	value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textRequesterDN" 	value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textTargetDN" 		value="" style="width:100px;"></TD>
+			<TD>
+				<input type="submit" value="Logout" onclick="requestAgentLogout_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textRefIDListen" 	value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textRequesterDNCS" 	  value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textTargetDNCS" value="" style="width:100px;"></TD>
+			<TD>
+				<input type="submit" value="Listen" onclick="requestCallSupervision_click()">
+				<input type="submit" value="ListenStop" onclick="requestCallSupervisionStop_click()">
+			</TD>
+		</TR>
+	</TABLE>
+	9. CfgTranactionAnnexUpdate 기능
+	<TABLE border="1" cellpadding="0" cellspacing="0" >
+		<TR align="center"  bgcolor="00ff00">
+			<TD>RefID</TD><TD>DBID</TD><TD>section</TD><TD>option</TD><TD>value</TD><TD bgcolor="00fff0">명령</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textRefIDAnnex" 		value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textAnnexDBID" 		value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textAnnexSection" 	value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textAnnexOption" 	value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textAnnexValue" 		value="" style="width:100px;"></TD>
+			<TD>
+				<input type="submit" value="Annex" onclick="requestUpdateAnnex_click()">
+			</TD>
+		</TR>
+	</TABLE>
+	10. 상담원을 그룹에 추가/삭제
+	<TABLE border="1" cellpadding="0" cellspacing="0" >
+		<TR align="center"  bgcolor="00ff00">
+			<TD>RefID</TD><TD>PersonDBID</TD><TD>AgentGroupDBID(;구분)</TD><TD bgcolor="00fff0">명령</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textRefIDA2GAdd" 		value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textPersonDBIDAdd2G"   value="445;7451" style="width:150px;"></TD>
+			<TD><input type="text" id="textAGDBIDAdd"   	value="104" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="추가" onclick="requestAgentAdd2Group_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textRefIDAFGDel" value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textPersonDBIDDelFG"   value="445;7451" style="width:150px;"></TD>
+			<TD><input type="text" id="textAGDBIDDel"   value="104" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="삭제" onclick="requestAgentDelFGroup_click()">
+			</TD>
+		</TR>
+	</TABLE>
+
+	11. 상담원 그룹 생성/삭제/변경
+	<TABLE border="1" cellpadding="0" cellspacing="0" >
+		<TR align="center"  bgcolor="00ff00">
+			<TD>RefID</TD><TD>AgentGroupName</TD><TD>AgentGroupDBID</TD><TD>OwnerDBID</TD><TD bgcolor="00fff0">명령</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textRefIDAddAgentGroup" value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textAddAgentGroupName" 		value="-" style="width:100px;"></TD>
+			<TD><input type="text" id=""   							value="" style="width:150px;"></TD>
+			<TD><input type="text" id="textAddAgentGroupOwnerDBID"   	value="104" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="생성" onclick="requestCreateAgentGroup_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textRefIDDeleteAgentGroup" value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="" value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textDeleteAgentGroupDBID"   value="445;7451" style="width:150px;"></TD>
+			<TD><input type="text" id=""   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="삭제" onclick="requestDeleteAgentGroup_click()">
+			</TD>
+		</TR>
+		<TR>
+			<TD><input type="text" id="textRefIDUpdateAgentGroup" value="-" style="width:100px;"></TD>
+			<TD><input type="text" id="textUpdateAgentGroupName" value="" style="width:100px;"></TD>
+			<TD><input type="text" id="textUpdateAgentGroupDBID"   value="445;7451" style="width:150px;"></TD>
+			<TD><input type="text" id=""   value="-" style="width:150px;"></TD>
+			<TD>
+				<input type="submit" value="변경" onclick="requestUpdateAgentGroup_click()">
+			</TD>
+		</TR>
+	</TABLE>
+	
+	* Event List<br>
+	<select id="logList" name="logList" size="15" style="width:1000px;" onclick="logList_click()">
+		<option value=1>SoftPhone log list....</option>
+	</select><br>
+	* Event Detail<br>
+	<textarea id="logText" rows="5" style="font-family:monospace; color:red;width:1000px;"></textarea><br>
+</body>
+</html>
+

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.management.mapper.skillLvlSummaryMapper">
+	<select id="selectSummary" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		select 	*
+		from (	select	ao2.id 			as compid,
+						ao2.name 		as compnm, 
+						ao1.name 		as gpname, 
+						ass.org_id 		as gpid, 
+						<if test="loginchk == 1">
+        				(select count(*) from gcti.cfg_person cp where cp.apply_group = ass.org_id 
+        				and last_name in (SELECT CA.LOGID FROM md_gim.CAGENT_DY CA WHERE cp.last_name = CA.LOGID AND WORKMODE NOT IN (0,10) AND ROWNUM = 1)) as cnt,
+        				</if>
+        				<if test="loginchk == 0">
+        				(select count(*) from gcti.cfg_person cp where cp.apply_group = ass.org_id) as cnt,  
+        				</if>        				
+        				(select count(*) from gcti.cfg_person where apply_group = ass.org_id and default_group != apply_group) as modify_gp,
+        				ass.skill_level as sklvl, 
+        				ass.skill_id  	as skid
+				from 	ax_sk_skg_struct ass, ax_sk_org ao1, ax_sk_org ao2
+				where 	ass.org_id = ao1.id
+				and 	ao1.parent_id = ao2.id
+				and 	ass.deleted_at is null
+				and     ao1.org_type = 13
+				and 	ao2.org_type = 0			
+				and 	ao1.deleted_at is null
+				and 	ao2.deleted_at is null
+				<if test="compId != '' and compId != null">
+				and		ao2.id = #{compId}
+				</if>
+				<if test="gpId != '' and gpId != null">
+				and		ass.org_id in (${gpId})
+				</if>
+				<if test="gpName != '' and gpName != null">
+				and		ao1.name like '%' || #{gpName} || '%'
+				</if> )
+		pivot (max(sklvl) for skid in ( ${skId} ))		
+		order by gpid
+	</select>
+	
+	
+	<select id="selectSkList" parameterType="hashmap" resultType="skillLvlSummary" fetchSize="1000">
+		select	DISTINCT  
+		        to_char(t1.skill_id)	as id,
+		        t3.name 				as skillName		  
+		from	ax_sk_skg_struct t1,
+		        ax_sk_org t2,
+		        ax_sk_org t3     
+		where	t1.org_id = t2.id     
+		and     t1.skill_id = t3.id     
+		and     t1.deleted_at is null     
+		and     t2.deleted_at is null     
+		and     t3.deleted_at is null     
+		and     t2.org_type = '13'     
+		and     t3.org_type = '11'     
+		and     t3.skill_name is not null           
+		and     t2.parent_id = #{compId}
+		ORDER BY TO_NUMBER(ID)
+	</select>
+	
+	
+	<select id="selectAgList" parameterType="hashmap" resultType="skillLvlSummary" fetchSize="1000">
+		select  t3.name 		as compNm, 
+				t2.name			as deptNm, 
+				cg.name			as teamNm,
+				cp.last_name 	as last_name,
+        		cp.employee_id 	as employee_id, 
+        		cp.first_name 	as first_name, 
+        		(SELECT WORKMODE FROM md_gim.CAGENT_DY CA WHERE cp.last_name = CA.LOGID AND WORKMODE NOT IN (0,10) AND ROWNUM = 1) state,
+        		(select name from ax_sk_org where id = default_group) 	as default_group, 
+        		(select name from ax_sk_org where id = apply_group) 	as apply_group
+		from 	gcti.cfg_person cp, gcti.cfg_group cg, gcti.cfg_agent_group cag, ax_sk_org t1, ax_sk_org t2, ax_sk_org t3
+		where 	cp.dbid = cag.agent_dbid
+		and 	cag.group_dbid = cg.dbid
+		and 	cg.dbid = t1.agroup_dbid
+		and 	t1.parent_id = t2.id
+		and 	t2.parent_id = t3.id
+		and 	t1.org_type = 12
+		and		t2.org_type = 12
+		and 	t3.org_type = 0
+		and 	t1.deleted_at is null
+		and 	t2.deleted_at is null
+		and 	t3.deleted_at is null
+		and 	cp.apply_group = #{gpId}
+		<if test="loginCheck == 1">
+		and   	cp.last_name in (SELECT DISTINCT LOGID FROM md_gim.CAGENT_DY CA WHERE WORKMODE NOT IN (0,10))
+		</if>   
+		order by first_name
+	</select>
+</mapper>

@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.systemManager.mapper.statListManagerMapper">
+	<select id="statTypeListSel" resultType="statLstMng" fetchSize="1000">
+		SELECT	code as type, name as name
+		FROM	AX_COMMON_CODE_M 
+		WHERE	GROUP_CD = 'STAT_TYPE'
+		ORDER BY SORT
+    </select>
+    
+	<select id="mednListSel" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	DISTINCT seq as seq, 'MEDN' as stat_id, colname as colname, asname as asname, hanname as hanname, gubun as gubun, type as type, stype as stype
+		FROM	AX_MEDN_FACTOR
+		<if test="seq != '' and seq != null">
+		WHERE	seq = #{seq}
+		</if>
+		ORDER BY seq
+    </select>
+    
+    <select id="skillListSel" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	DISTINCT seq as seq, 'SKILL' as stat_id, colname as colname, asname as asname, hanname as hanname, gubun as gubun, type as type, stype as stype
+		FROM	AX_SKILL_FACTOR 
+		<if test="seq != '' and seq != null">
+		WHERE	seq = #{seq}
+		</if>
+		ORDER BY seq
+    </select>
+    
+    <select id="agentListSel" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	DISTINCT seq as seq, 'AGENT' as stat_id, colname as colname, asname as asname, hanname as hanname, gubun as gubun, type as type, stype as stype
+		FROM	AX_AGENT_FACTOR
+		<if test="seq != '' and seq != null">
+		WHERE	seq = #{seq}
+		</if>
+		ORDER BY seq
+    </select>
+    
+    <select id="realListSel" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	stat_id as stat_id, stat_type as stat_type, stat_group as stat_group, stat_nm as stat_nm, stat_desc as stat_desc, stat_unit as stat_unit, stat_opt1 as stat_opt1, stat_opt2 as stat_opt2, stat_opt3 as stat_opt3
+		FROM 	AX_STAT_ITEM
+		WHERE 	STAT_TYPE = #{stat_type}
+		<if test="stat_id != '' and stat_id != null">
+		AND		stat_id = #{stat_id}
+		</if>
+		<if test="stat_nm != '' and stat_nm != null">
+		AND		stat_nm = #{stat_nm}
+		</if>
+		ORDER BY stat_id
+    </select>
+    
+    <insert id="mednListIst" parameterType="hashmap">
+		INSERT 	INTO AX_MEDN_FACTOR (colname, hanname, seq, use_yn, gubun, type, dispname, stype, sgroup, asname)
+		VALUES	(#{colname}, #{hanname}, #{seq}, #{use_yn}, #{gubun}, #{type}, #{dispname}, #{stype}, '-', #{asname})
+	</insert>
+	
+	<insert id="skillListIst" parameterType="hashmap">
+		INSERT 	INTO AX_SKILL_FACTOR (colname, hanname, seq, use_yn, gubun, type, dispname, stype, sgroup, asname)
+		VALUES	(#{colname}, #{hanname}, #{seq}, #{use_yn}, #{gubun}, #{type}, #{dispname}, #{stype}, '-', #{asname})
+	</insert>
+	
+	<insert id="agentListIst" parameterType="hashmap">
+		INSERT 	INTO AX_AGENT_FACTOR (colname, hanname, seq, use_yn, gubun, type, dispname, stype, sgroup, asname)
+		VALUES	(#{colname}, #{hanname}, #{seq}, #{use_yn}, #{gubun}, #{type}, #{dispname}, #{stype}, '-', #{asname})
+	</insert>
+	
+	<insert id="realListIst" parameterType="hashmap">
+		INSERT 	INTO AX_STAT_ITEM(stat_id, stat_type, stat_group, stat_nm, stat_desc, stat_opt1, stat_opt2, stat_unit, stat_opt3)
+		VALUES	(#{stat_id}, #{stat_type}, #{stat_group}, #{stat_nm}, #{stat_desc}, #{stat_opt1}, #{stat_opt2}, #{stat_unit}, #{stat_opt3})
+	</insert>
+	
+    <update id="mednListUdt" parameterType="hashmap">
+		UPDATE	AX_MEDN_FACTOR
+		SET		hanname = #{hanname},
+				gubun = #{gubun},
+				type = #{type},
+				stype = #{stype},
+				asname = #{asname},
+				colname = #{colname}
+		WHERE	seq = #{seq}
+		AND		dispname = #{dispname}
+	</update>
+	
+	 <update id="skillListUdt" parameterType="hashmap">
+		UPDATE	AX_SKILL_FACTOR
+		SET		hanname = #{hanname},
+				gubun = #{gubun},
+				type = #{type},
+				stype = #{stype},
+				asname = #{asname},
+				colname = #{colname}
+		WHERE	seq = #{seq}
+		AND		dispname = #{dispname}
+	</update>
+	
+	 <update id="agentListUdt" parameterType="hashmap">
+		UPDATE	AX_AGENT_FACTOR
+		SET		hanname = #{hanname},
+				gubun = #{gubun},
+				type = #{type},
+				stype = #{stype},
+				asname = #{asname},
+				colname = #{colname}
+		WHERE	seq = #{seq}
+		AND		dispname = #{dispname}
+	</update>
+	
+	 <update id="realListUdt" parameterType="hashmap">
+		UPDATE AX_STAT_ITEM
+    	   SET STAT_GROUP = #{stat_group},
+    	       STAT_DESC = #{stat_desc},
+    	       STAT_UNIT = #{stat_unit},
+    	       STAT_OPT1 = #{stat_opt1},
+    	       STAT_OPT2 = #{stat_opt2},
+    	       STAT_OPT3 = #{stat_opt3}
+    	 WHERE STAT_ID = #{stat_id}
+    	   AND STAT_TYPE = #{stat_type}
+    	   AND STAT_NM = #{stat_nm}
+	</update>
+	
+    <delete id="mednListDel" parameterType="hashmap">
+		DELETE	
+		FROM	AX_MEDN_FACTOR
+		WHERE	seq = #{seq}
+		AND		colname = #{colname}
+	</delete>
+	
+	<delete id="skillListDel" parameterType="hashmap">
+		DELETE	
+		FROM	AX_SKILL_FACTOR
+		WHERE	seq = #{seq}
+		AND		colname = #{colname}
+	</delete>
+	
+	<delete id="agentListDel" parameterType="hashmap">
+		DELETE	
+		FROM	AX_AGENT_FACTOR
+		WHERE	seq = #{seq}
+		AND		colname = #{colname}
+	</delete>
+	
+	<delete id="realListDel" parameterType="hashmap">
+		DELETE	
+		FROM	AX_STAT_ITEM
+		WHERE	STAT_ID = #{stat_id}
+    	AND		STAT_TYPE = #{stat_type}
+    	AND		STAT_NM = #{stat_nm}	
+	</delete>
+	
+	<select id="userList" resultType="statLstMng">
+		SELECT	USER_CD AS USER_CD
+		FROM	AX_USER_M
+		ORDER BY USER_CD
+    </select>
+    
+    <insert id="userFacIst" parameterType="hashmap">
+		INSERT 	INTO AX_USER_FACTOR (user_id, user_group, stat_gubun, stat_seq, stat_yn, sort, dispname)
+		VALUES	(#{user_cd}, 'SYSTEM_ACCESS', #{stat_gubun}, #{stat_seq}, #{stat_yn}, #{stat_seq}, #{dispname})
+	</insert>
+
+	<delete id="userFacDel" parameterType="hashmap">
+		DELETE	
+		FROM	AX_USER_FACTOR
+		WHERE	stat_gubun = #{stat_gubun}
+    	AND		stat_seq = #{stat_seq}
+	</delete>
+	
+	<delete id="userDel" parameterType="hashmap">
+		DELETE	
+		FROM	AX_USER_FACTOR
+		WHERE	user_id = #{user_id}
+	</delete>
+	
+	<select id="userFacSel" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	(ROWNUM - 1) AS rm, A.USER_ID AS user_id, A.stat_gubun as stat_gubun, A.stat_seq as stat_seq, A.stat_yn as stat_yn, A.sort as sort, A.dispname as dispname
+		FROM	(SELECT USER_ID AS user_id, stat_gubun as stat_gubun, stat_seq as stat_seq, stat_yn as stat_yn, sort as sort, dispname as dispname
+		FROM	AX_USER_FACTOR
+		WHERE	user_id = #{user_id}
+		<if test="stat_gubun != '' and stat_gubun != null">
+		AND		stat_gubun = #{stat_gubun}
+		</if>
+		<if test="dispname != '' and dispname != null">
+		AND		dispname = #{dispname}
+		</if>
+		order by sort) A
+		order by rm
+    </select>
+    
+    <update id="userFacUdt" parameterType="hashmap">
+		UPDATE	AX_USER_FACTOR
+    	   SET	sort = #{stat_nseq},
+    	   		stat_yn = #{stat_yn}
+    	 WHERE	user_id = #{user_id}   
+    	 AND	stat_gubun = #{stat_gubun}
+    	 AND	stat_seq = #{stat_oseq} 
+    	 AND	dispname = #{dispname}	 
+	</update>
+	
+	
+	
+	<insert id="rinitFacIst" parameterType="hashmap">
+		INSERT 	INTO AX_REPORT_INIT (stat_gubun, stat_seq, stat_yn, dispname)
+		VALUES	(#{stat_gubun}, #{stat_seq}, #{stat_yn}, #{dispname})
+	</insert>
+	
+	 <update id="rinitFacUdt" parameterType="hashmap">
+		UPDATE	AX_REPORT_INIT
+    	   SET	stat_yn = #{stat_yn}
+    	 WHERE	stat_gubun = #{stat_gubun}
+    	 AND	stat_seq = #{stat_seq}
+    	 <if test="dispname != '' and dispname != null">
+		 AND	dispname = #{dispname}
+		 </if> 
+	</update>
+	
+	<delete id="rinitFacDel" parameterType="hashmap">
+		DELETE	
+		FROM	AX_REPORT_INIT
+		WHERE	stat_gubun = #{stat_gubun}
+    	AND		stat_seq = #{stat_seq}
+	</delete>
+	
+	
+	
+	
+	<select id="mednListSelmodal" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	seq as seq, 'MEDN' as stat_id, colname as colname, asname as asname, hanname as hanname, gubun as gubun, type as type, stype as stype, use_yn as use_yn, dispname as dispname, sgroup as sgroup
+		FROM	AX_MEDN_FACTOR
+		WHERE	1=1
+		<if test="dispname != '' and dispname != null">
+		AND		dispname = #{dispname}
+		</if>
+		<if test="seq != '' and seq != null">
+		AND		seq = #{seq}
+		</if>
+		<if test="useyn != '' and useyn != null">
+		AND		use_yn = #{useyn}
+		</if>
+		ORDER BY seq
+    </select>
+    
+    <select id="skillListSelmodal" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	seq as seq, 'SKILL' as stat_id, colname as colname, asname as asname, hanname as hanname, gubun as gubun, type as type, stype as stype, use_yn as use_yn, dispname as dispname, sgroup as sgroup
+		FROM	AX_SKILL_FACTOR 
+		WHERE	1=1
+		<if test="dispname != '' and dispname != null">
+		AND		dispname = #{dispname}
+		</if>
+		<if test="seq != '' and seq != null">
+		AND		seq = #{seq}
+		</if>
+		<if test="useyn != '' and useyn != null">
+		AND		use_yn = #{useyn}
+		</if>
+		ORDER BY seq
+    </select>
+    
+    <select id="agentListSelmodal" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	seq as seq, 'AGENT' as stat_id, colname as colname, asname as asname, hanname as hanname, gubun as gubun, type as type, stype as stype, use_yn as use_yn, dispname as dispname, sgroup as sgroup
+		FROM	AX_AGENT_FACTOR
+		WHERE	1=1
+		<if test="dispname != '' and dispname != null">
+		AND		dispname = #{dispname}
+		</if>
+		<if test="seq != '' and seq != null">
+		AND		seq = #{seq}
+		</if>
+		<if test="useyn != '' and useyn != null">
+		AND		use_yn = #{useyn}
+		</if>
+		ORDER BY seq
+    </select>
+	
+	<update id="mednListUdtmodal" parameterType="hashmap">
+		UPDATE	AX_MEDN_FACTOR
+		SET		use_yn = #{use_yn},
+				sgroup = #{sgroup}
+		WHERE	seq = #{seq}
+		AND		colname = #{colname}
+		AND		dispname = #{dispname} 
+	</update>
+	
+	 <update id="skillListUdtmodal" parameterType="hashmap">
+		UPDATE	AX_SKILL_FACTOR
+		SET		use_yn = #{use_yn},
+				sgroup = #{sgroup}		
+		WHERE	seq = #{seq}
+		AND		colname = #{colname}
+		AND		dispname = #{dispname}
+	</update>
+	
+	 <update id="agentListUdtmodal" parameterType="hashmap">
+		UPDATE	AX_AGENT_FACTOR
+		SET		use_yn = #{use_yn},
+				sgroup = #{sgroup}
+		WHERE	seq = #{seq}
+		AND		colname = #{colname}
+		AND		dispname = #{dispname}
+	</update>
+	
+	
+	
+	<select id="userAuthSel" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	A1.USER_CD AS user_cd, A2.GRP_AUTH_CD AS grp_auth_cd, A1.COMPANY_CD as company_cd, A3.SORT as sort
+		FROM	AX_USER_M A1, AX_USER_AUTH_M A2, AX_COMMON_CODE_M A3
+		where 	a1.user_cd = a2.user_cd
+		AND     a2.GRP_AUTH_CD = a3.code
+    	AND		a3.group_cd = 'AUTH_GROUP'
+		AND		a1.user_cd = #{user_cd}
+		order by user_cd
+    </select>
+    
+    
+    <select id="selectHistoryTime" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	CODE, NAME, DATA1, DATA2, REMARK
+		FROM	AX_COMMON_CODE_M
+		WHERE	GROUP_CD = #{group_cd}
+		AND		USE_YN = 'Y'
+		AND		CODE = #{codeSelect}
+		AND		REMARK = #{comSelect}
+		order by SORT
+	</select>	
+	
+	
+	<select id="userAuthLst" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	A1.USER_CD AS user_cd, A2.GRP_AUTH_CD AS grp_auth_cd, A1.COMPANY_CD as company_cd, A3.SORT as sort
+		FROM	AX_USER_M A1, AX_USER_AUTH_M A2, ax_common_code_m A3
+		where 	a1.user_cd = a2.user_cd
+		AND     a2.GRP_AUTH_CD = a3.code
+    	AND		a3.group_cd = 'AUTH_GROUP'
+		AND		a2.GRP_AUTH_CD  = #{GRP_AUTH_CD}
+		order by user_cd
+    </select>
+    
+    
+    <select id="ivrMaxSize" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	CODE, NAME, DATA1, DATA2, REMARK
+		FROM	AX_COMMON_CODE_M
+		WHERE	GROUP_CD = #{group_cd}
+		AND		USE_YN = 'Y'
+		order by SORT
+	</select>	
+</mapper>

@@ -1,0 +1,35 @@
+{
+  "name": "ax5ui-palette",
+  "version": "1.4.113",
+  "authors": [
+    "ThomasJ <tom@axisj.com>"
+  ],
+  "description": "",
+  "main": "dist/ax5palette.js",
+  "keywords": [
+    "bootstrap",
+    "jquery",
+    "ax5ui",
+    "plugin",
+    "bootstrap jQuery plugins",
+    "color palette",
+    "palette",
+    "ax5ui-palette",
+    "javascript ui"
+  ],
+  "dependencies": {
+    "jquery": "",
+    "ax5core": ">=1.4.41"
+  },
+  "license": "MIT",
+  "homepage": "ax5.io",
+  "_release": "1.4.113",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.4.113",
+    "commit": "2ac0b0969d066d7a68dfda0f8cc1b70a115b986b"
+  },
+  "_source": "https://github.com/ax5ui/ax5ui-palette.git",
+  "_target": "*",
+  "_originalSource": "ax5ui-palette"
+}

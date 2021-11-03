@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.ivrManagement.mapper.ivrDnisTimeListMapper">
+   <select id="DnisListGet" parameterType="hashmap" resultType="ivrDnisTime" fetchSize="1000">
+		SELECT	dnis 		as 	dnis,	
+				useyn 		as 	useyn, 
+				lc_useyn	as 	lc_useyn,
+				substr(wr_stime,0,2)  || ':' || substr(wr_stime,3,2)  || ':' || substr(wr_stime,5,2)	as 	wr_stime,
+				substr(wr_etime,0,2)  || ':' || substr(wr_etime,3,2)  || ':' || substr(wr_etime,5,2)	as 	wr_etime,
+				substr(lcstime,0,2)   || ':' || substr(lcstime,3,2)   || ':' || substr(lcstime,5,2)		as 	lc_stime,
+				substr(lcetime,0,2)   || ':' || substr(lcetime,3,2)   || ':' || substr(lcetime,5,2)		as 	lc_etime,
+				substr(sat_stime,0,2) || ':' || substr(sat_stime,3,2) || ':' || substr(sat_stime,5,2)	as 	sat_stime, 
+				substr(sat_etime,0,2) || ':' || substr(sat_etime,3,2) || ':' || substr(sat_etime,5,2)	as 	sat_etime,
+				substr(sun_stime,0,2) || ':' || substr(sun_stime,3,2) || ':' || substr(sun_stime,5,2)	as 	sun_stime,
+				substr(sun_etime,0,2) || ':' || substr(sun_etime,3,2) || ':' || substr(sun_etime,5,2) 	as 	sun_etime,
+				substr(hl_stime,0,2)  || ':' || substr(hl_stime,3,2)  || ':' || substr(hl_stime,5,2)	as 	hl_stime,
+				substr(hl_etime,0,2)  || ':' || substr(hl_etime,3,2)  || ':' || substr(hl_etime,5,2)	as	hl_etime,
+				crt_dt 		as 	crt_dt, 
+				crt_by 		as 	crt_by, 
+				upt_dt 		as 	upt_dt, 
+				upt_by 		as 	upt_by
+		FROM 	givr.ax_ivr_worktime
+		WHERE	1=1
+		<if test="dnis != '' and dnis != null">
+		AND		dnis = #{dnis}
+		</if>
+		<if test="delchk == 1">
+		AND		delyn = 'N'
+		</if>
+		ORDER BY dnis asc, crt_dt asc
+    </select>
+    
+    <insert id="DnisListIst" parameterType="hashmap">
+		INSERT 	INTO givr.ax_ivr_worktime (dnis, useyn, lc_useyn, wr_stime, wr_etime, lcstime, lcetime, sat_stime, sat_etime, sun_stime, sun_etime, hl_stime, hl_etime, crt_dt, crt_by, delyn)	
+		VALUES	(#{dnis}, #{useyn}, #{lc_useyn}, #{wr_stime}, #{wr_etime}, #{lc_stime}, #{lc_etime}, #{sat_stime}, #{sat_etime}, #{sun_stime}, #{sun_etime}, #{hl_stime}, #{hl_etime}, #{crt_dt}, #{crt_by}, 'N')
+	</insert>
+	
+    <update id="DnisListUdt" parameterType="hashmap">
+		UPDATE	givr.ax_ivr_worktime
+		SET		useyn = #{useyn},
+				lc_useyn = #{lc_useyn},
+				wr_stime = #{wr_stime},
+				wr_etime = #{wr_etime},
+				lcstime = #{lc_stime},
+				lcetime = #{lc_etime},
+				sat_stime = #{sat_stime},
+				sat_etime = #{sat_etime},
+				sun_stime = #{sun_stime},
+				sun_etime = #{sun_etime},
+				hl_stime = #{hl_stime},
+				hl_etime = #{hl_etime},
+				upt_dt = #{upt_dt},
+				upt_by = #{upt_by}
+		WHERE	dnis = #{dnis}
+	</update>
+	
+    <update id="DnisListDel" parameterType="hashmap">
+		UPDATE	givr.ax_ivr_worktime
+		SET		delyn = 'Y'
+		WHERE	dnis = #{dnis}	
+	</update>
+	
+	<update id="DnisListDelUdt" parameterType="hashmap">
+		UPDATE	givr.ax_ivr_worktime
+		SET		delyn = 'N'
+		WHERE	dnis = #{dnis}	
+	</update>
+</mapper>

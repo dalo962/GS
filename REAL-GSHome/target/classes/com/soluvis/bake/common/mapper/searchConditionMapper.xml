@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.soluvis.bake.common.mapper.searchConditionMapper">
+
+	<select id="skillOrg" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+	
+	    select nvl(parent_id,0) as pid, id, name
+	    from ax_sk_org
+	    where deleted_at is null
+	    order by parent_id asc, sort asc
+		
+    </select>
+
+	<select id="company" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+	
+		select	id, name, agroup_dbid as ctiCompId, sort
+		from	ax_sk_org
+		where	org_type = '0'
+		and		org_level = '0'
+		<if test="Id != '' and Id != null">
+		and		Id = #{Id}
+		</if>
+		and 	deleted_at is null
+		order by sort asc, id asc
+		
+    </select>
+    
+    <select id="channel" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+    
+		select	t1.id as id, t1.name as name, t1.agroup_dbid as ctiChnId, t1.parent_id as parent_id, s1.sort
+		from	ax_sk_org t1, ax_sk_org_to_org t2, ax_sk_org s1
+		where	t1.id = t2.child_id
+		and 	t1.parent_id = s1.id
+		<if test="compId != '' and compId != null">
+		and		t2.parent_id = #{compId}
+		</if> 
+		<if test="Id != '' and Id != null">
+		and		t1.id = #{Id}
+		</if>
+		and		t1.org_type = '11'
+		and		t1.org_level = '1'
+		and		t1.deleted_at is null
+		and		t2.deleted_at is null
+		order by s1.sort, t1.sort asc
+    
+    </select>
+    
+    <select id="skill" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+    
+	  	select	t2.id as id, t2.name, t2.agroup_dbid as ctiSkillId
+	  		, t2.skill_dbid as skillId, t2.sort as sort, t2.parent_id as parent_id, t1.tsort, t1.ssort
+	    from
+		    (
+			    select	t1.id, t1.name, t1.sort tsort, s1.sort ssort
+				from	ax_sk_org t1, ax_sk_org_to_org t2, ax_sk_org s1
+				where	t1.id = t2.child_id
+				and		t1.parent_id = s1.id
+				<if test="compId != '' and compId != null">
+				and		t2.parent_id in (${compId})
+				</if> 
+			    and		t1.org_type = '11'
+				and		t1.org_level = '1'
+				and		t1.deleted_at is null
+				and		t2.deleted_at is null
+		    )t1, ax_sk_org t2, ax_sk_org_to_org t3
+	    where	t1.id = t3.parent_id
+	    and		t2.id = t3.child_id
+	    and		t2.org_type = '11'
+		and		t2.org_level = '2'
+		and		t2.deleted_at is null
+		and		t3.deleted_at is null
+		<if test="filter != '' and filter != null">
+		and     t2.skill_name is not null
+		</if>
+		<if test="agnamenull != '' and agnamenull != null">
+		and     t2.agroup_name is not null
+		</if>
+		<if test="chnId != '' and chnId != null">
+		and		t1.id in ( ${chnId} )
+		</if>
+		<if test="skId != '' and skId != null">
+		and		t2.id in (${skId})
+		</if>
+		order by t1.ssort asc, t1.tsort, t2.sort asc
+    
+    </select>
+    
+    <select id="skillRt" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+    
+	  	select	t2.id as id, t2.name, t2.agroup_dbid as ctiSkillId
+	  		, t2.skill_dbid , t2.sort as sort, t2.parent_id as parent_id, t1.tsort, t1.ssort
+	    from
+		    (
+			    select	t1.id, t1.name, t1.sort tsort, s1.sort ssort
+				from	ax_sk_org t1, ax_sk_org_to_org t2, ax_sk_org s1
+				where	t1.id = t2.child_id
+				and		t1.parent_id = s1.id
+				<if test="compId != '' and compId != null">
+				and		t2.parent_id in (${compId})
+				</if> 
+			    and		t1.org_type = '11'
+				and		t1.org_level = '1'
+				and		t1.deleted_at is null
+				and		t2.deleted_at is null
+		    )t1, ax_sk_org t2, ax_sk_org_to_org t3
+	    where	t1.id = t3.parent_id
+	    and		t2.id = t3.child_id
+	    and		t2.org_type = '11'
+		and		t2.org_level = '2'
+		and		t2.deleted_at is null
+		and		t3.deleted_at is null
+		and 	t2.agroup_dbid is not null
+		<if test="filter != '' and filter != null">
+		and     t2.skill_name is not null
+		</if>
+		<if test="chnId != '' and chnId != null">
+		and		t1.id = #{chnId}
+		</if>
+		<if test="skId != '' and skId != null">
+		and		t2.id in (${skId})
+		</if>
+		order by t1.ssort asc, t1.tsort, t2.sort asc
+    
+    </select>
+    
+    <select id="skillGrp" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+    
+	    select	t1.id, t1.name
+		from	ax_sk_org t1, ax_sk_org_to_org t2
+		where	t1.id = t2.child_id
+	    and		t1.deleted_at is null
+	    and		t2.deleted_at is null
+	    and		t1.org_type = '13'
+		and		t1.org_level = '1'
+		<if test="compId != '' and compId != null">
+		and		t2.parent_id = #{compId}
+		</if> 
+		order by t1.sort asc, t1.id asc
+    
+    </select>
+    
+    <select id="team" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+    
+	  	select	t1.name as partName, t2.id as id, t2.name, t2.agroup_dbid as ctiTeamId, t2.sort, t1.parent_id, t1.sort, t1.ssort
+	    from
+		    (
+			    select	t1.id, t1.name, t1.sort, t1.parent_id, s1.sort ssort
+				from	ax_sk_org t1, ax_sk_org_to_org t2, ax_sk_org s1
+				where	t1.id = t2.child_id
+        		and  	t1.parent_id = s1.id
+				<if test="compId != '' and compId != null">
+				and		t2.parent_id = #{compId}
+				</if> 
+			    and		t1.org_type = '12'
+				and		t1.org_level = '1'
+				and 	t1.deleted_at is null
+				and 	t2.deleted_at is null
+		    )t1, ax_sk_org t2, ax_sk_org_to_org t3
+	    where	t1.id = t3.parent_id
+	    and		t2.id = t3.child_id
+	    and		t2.org_type = '12'
+		and		t2.org_level = '2'
+		<if test="filter != '' and filter != null">
+		and     t2.agroup_name is not null
+		</if>
+		<if test="partId != '' and partId != null">
+		and		t1.id in ( ${partId} )
+		</if>
+		<if test="Id != '' and Id != null">
+		and		t2.Id = #{Id}
+		</if>
+		and 	t2.deleted_at is null
+		and 	t3.deleted_at is null
+		and   	t2.id not in ('638','645','702','649','657')
+		order by t1.ssort asc, t1.sort, t2.sort asc
+    
+    </select>
+    
+    <select id="part" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+    
+		select	t1.id as id, t1.name as name, t1.parent_id as parent_id, s1.sort
+		from	ax_sk_org t1, ax_sk_org_to_org t2, ax_sk_org s1
+		where	t1.id = t2.child_id
+		and		t1.parent_id = s1.id
+		<if test="compId != '' and compId != null">
+		and		t2.parent_id = #{compId}
+		</if> 
+		and		t1.org_type = '12'
+		and		t1.org_level = '1'
+		and		t1.deleted_at is null
+	    and		t2.deleted_at is null
+		<if test="Id != '' and Id != null">
+		and		t1.Id = #{Id}
+		</if>
+		and		t1.id not in ('637','644','648','656')
+		order by s1.sort asc, t1.sort asc
+    
+    </select>
+    
+    <select id="agent" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+		SELECT	DISTINCT team_name, agent_id as agid, agent_dbid as ctiAgentId, agent_name as agname
+		FROM	AX_A_STRUCT
+		WHERE 	1=1	
+		<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
+		AND		(to_char(delete_at,'yyyy-mm-dd') BETWEEN #{s_day} AND #{e_day} or delete_at is null)
+		</if>
+		<if test="compId != '' and compId != null">
+		and		company_cd = #{compId}
+		</if> 
+		<if test="partId != '' and partId != null">
+		and		dept_cd = #{partId}
+		</if> 
+		<if test="teamId != '' and teamId != null">
+		and		team_cd = #{teamId}
+		</if>
+		<if test="agname != '' and agname != null">
+		and		AGENT_NAME in (${agname})
+		</if>
+		<if test="agid != '' and agid != null">
+		and		agent_id in (${agid})
+		</if>
+		<if test="agsname != '' and agsname != null">
+		and		agent_id in (${agsname})
+		</if>
+		order by agent_name
+    </select>
+    
+    <select id="agentCfg" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+		select	t1.agentId as id, t1.agentName as name
+		from 
+			(
+				select	t2.dbid as groupDbid,
+						t2.name as groupName,
+						t3.dbid as agentDbid,
+						t3.first_name as agentName,
+						t3.last_name as agentId
+				from gcti.cfg_agent_group t1, gcti.cfg_group t2, gcti.cfg_person t3
+				where t1.group_dbid = t2.dbid
+				and t1.agent_dbid = t3.dbid
+			)t1, 
+			(
+				select	t4.id as compId,
+						t4.name as compName,
+						t3.id as partId,
+						t3.name as partName,
+						t1.id as teamId,
+						t1.name as teamName,
+						t1.agroup_dbid as agroupDbid,
+						t1.agroup_name as agroupName,
+						t1.skill_dbid as skillDbid,
+						t1.skill_name as skillName
+				from ax_sk_org t1, ax_sk_org_to_org t2, ax_sk_org t3, ax_sk_org t4
+				where t1.id = t2.child_id
+				and   t2.parent_id = t3.id
+				and   t3.parent_id = t4.id
+				and   t1.deleted_at is null
+				and   t2.deleted_at is null
+				and   t3.deleted_at is null
+				and   t4.deleted_at is null
+			)t2
+		where	t1.groupDbid = t2.agroupDbid
+		<if test="compId != '' and compId != null">
+		and		t2.compId = #{compId}
+		</if> 
+		<if test="partId != '' and partId != null">
+		and		t2.partId in ( ${partId} )
+		</if> 
+		<if test="teamId != '' and teamId != null">
+		and		t2.teamId in ( ${teamId} )
+		</if> 
+		order by t1.agentName asc
+    </select>
+    
+    <select id="agentGrp" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+    
+	    select	t1.id, t1.name
+		from	ax_sk_org t1, ax_sk_org_to_org t2
+		where	t1.id = t2.child_id
+	    and		t1.deleted_at is null
+	    and		t2.deleted_at is null
+	    and		t1.org_type = '14'
+		and		t1.org_level = '1'
+		<if test="compId != '' and compId != null">
+		and		t2.parent_id = #{compId}
+		</if> 
+		order by t1.name asc, t1.sort asc
+    
+    </select>
+
+    <select id="sockInfo" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+	    select	upper(code) as code,
+	    		group_cd as groupCd,
+	    		group_nm as groupNm,
+	    		name as name
+	    from	ax_common_code_m
+	    where	group_cd = upper('websocket')
+	    order by	group_nm asc, sort asc
+    </select>
+    
+    <select id="dnis" resultType="searchCondition" fetchSize="1000">
+    
+		select	t1.name as objectNm
+  			, t1.data5 as objectCd
+			, min(t1.sort) as sort
+		from	AX_COMMON_CODE_M t1
+		where	t1.group_cd = 'DNIS_CODE'
+		group by t1.name, t1.data5
+		order by sort asc
+    
+    </select>      
+
+     <select id="codeSelect" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+	    SELECT DISTINCT GROUP_CD as groupCd, group_nm as groupNm
+		FROM ax_common_code_m
+		ORDER BY group_nm, GROUP_CD
+    </select>
+    
+    
+    <select id="groupcdSelect" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+	    SELECT	group_cd as groupCd, group_nm as groupNm, code as code, name as name, sort as sort, data1 as data1, data2 as data2
+		FROM 	AX_COMMON_CODE_M
+		where 	group_cd = #{group_cd}
+		<if test="code != '' and code != null">
+		AND		code = #{code}
+		</if>
+		<if test="data1 != '' and data1 != null">
+		AND		data1 = #{data1}
+		</if>
+		AND		USE_YN = 'Y'
+		order by sort
+    </select>
+
+
+
+	<select id="dispcompany" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+	
+		select	id, name, agroup_dbid as ctiCompId, sort
+		from	ax_sk_org
+		where	org_type = '0'
+		and		org_level = '0'
+		<if test="Id != '' and Id != null">
+		and		Id in (${Id})
+		</if>
+		and 	deleted_at is null
+		order by sort asc, id asc
+		
+    </select>
+    
+    
+
+    <select id="dispchannel" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+		select	t1.id as id, t1.name as name, t1.agroup_dbid as ctiChnId, t1.parent_id as parent_id, s1.sort
+		from	ax_sk_org t1, ax_sk_org_to_org t2, ax_sk_org s1
+		where	t1.id = t2.child_id
+		and 	t1.parent_id = s1.id
+		<if test="compId != '' and compId != null">
+		and		t2.parent_id in (${compId})
+		</if> 
+		<if test="Id != '' and Id != null">
+		and		t1.id in (${Id})
+		</if>
+		and		t1.org_type = '11'
+		and		t1.org_level = '1'
+		and		t1.deleted_at is null
+		and		t2.deleted_at is null
+		order by  s1.sort asc, t1.sort asc
+    </select>
+    
+    
+    <select id="disppart" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+    
+		select	t1.id as id, t1.name as name, t1.parent_id as parent_id, s1.sort
+		from	ax_sk_org t1, ax_sk_org_to_org t2, ax_sk_org s1
+		where	t1.id = t2.child_id
+		and		t1.parent_id = s1.id
+		<if test="compId != '' and compId != null">
+		and		t2.parent_id in (${compId})
+		</if> 
+		and		t1.org_type = '12'
+		and		t1.org_level = '1'
+		and		t1.deleted_at is null
+	    and		t2.deleted_at is null
+		<if test="Id != '' and Id != null">
+		and		t1.Id in (${Id})
+		</if>
+		and		t1.id not in ('637','644','648','656')
+		order by s1.sort asc, t1.sort asc
+    
+    </select>
+    
+    
+    <select id="dispteam" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
+    
+	  	select	t1.name as partName, t2.id as id, t2.name, t2.agroup_dbid as ctiTeamId, t2.sort , t1.parent_id as parent_id, t1.sort, t1.ssort
+	    from
+		    (
+			    select	t1.id, t1.name, t1.sort, t1.parent_id, s1.sort ssort
+				from	ax_sk_org t1, ax_sk_org_to_org t2, ax_sk_org s1
+				where	t1.id = t2.child_id
+        		and  	t1.parent_id = s1.id
+				<if test="compId != '' and compId != null">
+				and		t2.parent_id in (${compId})
+				</if> 
+			    and		t1.org_type = '12'
+				and		t1.org_level = '1'
+				and 	t1.deleted_at is null
+				and 	t2.deleted_at is null
+		    )t1, ax_sk_org t2, ax_sk_org_to_org t3
+	    where	t1.id = t3.parent_id
+	    and		t2.id = t3.child_id
+	    and		t2.org_type = '12'
+		and		t2.org_level = '2'
+		<if test="filter != '' and filter != null">
+		and     t2.agroup_name is not null
+		</if>
+		<if test="partId != '' and partId != null">
+		and		t1.id in ( ${partId} )
+		</if>
+		<if test="Id != '' and Id != null">
+		and		t2.Id in (${Id})
+		</if>
+		and 	t2.deleted_at is null
+		and 	t3.deleted_at is null
+		and   	t2.id not in ('638','645','702','649','657')
+		order by t1.ssort asc, t1.sort, t2.sort asc
+    
+    </select>
+    
+</mapper>

@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.management.mapper.skillLvlChnMainMapper">
+
+    <select id="selectDispSkill" parameterType="hashmap" resultType="skillLvlChnMain" fetchSize="1000">
+		select	decode(t1.orgLevel, 1, t1.id, t2.id) as chnId,
+				decode(t1.orgLevel, 1, t1.name, t2.name) as chnName,
+				t1.id as skillId,
+				t1.name as skillName,
+				t1.orgType,
+				t1.orgLevel,
+				t1.parentId,
+		        t2.sort as parentSort,
+				t1.sort,
+				t1.skillDbid,
+				t1.skillName as ctiSkillName
+		from
+		(
+			select  ID as id,
+			        NAME as name,
+			        ORG_TYPE as orgType,
+			        SORT as sort,
+			        ORG_LEVEL as orgLevel,
+			        parent_id as parentId,
+			        skill_dbid as skillDbid,
+			        skill_name as skillName
+			from    ax_sk_org
+			where   org_type = '11'
+			and		deleted_at is null
+      		and     skill_name is not null
+		)t1, ax_sk_org t2
+		where	t1.parentId = t2.id(+)
+		and		t2.deleted_at is null
+		<if test="compId != '' and compId != null">
+		and   	t2.parent_id = #{compId}
+		</if>
+		and		t2.org_type = '11'
+		<if test="chnId != '' and chnId != null">
+		and		decode(t1.orgLevel, 1, t1.id, t2.id) in ( ${chnId} )
+		</if> 
+		order by parentSort, sort
+    </select>
+    
+	<select id="selectSkill" parameterType="hashmap" resultType="skillLvlChnMain" fetchSize="1000">
+		select pid, id, chnName, skillName, chnSort, skillSort, skillDbid, ctiSkillName, orgLevel
+		from 
+		(
+			select  '' as pid,
+			        to_char(id) as id,
+			        name as chnName,
+			        '' as skillName,
+			        to_char(sort) as chnSort,
+			        '0' as skillSort,
+			        skill_dbid as skillDbid,
+			        skill_name as ctiSkillName,
+			        org_level as orgLevel
+			from    ax_sk_org
+			where   org_type = '11'
+			and     deleted_at is null
+			and     org_level = '1'
+			<if test="compId != '' and compId != null">
+			and		parent_id = #{compId}
+			</if> 
+			<if test="chnId != '' and chnId != null">
+			and		id in ( ${chnId} )
+			</if> 
+			<if test="skillId != '' and skillId != null">
+			and     id in ( 
+						select	parent_id from ax_sk_org
+						where	org_type = '11'
+						and		deleted_at is null
+						and		id in ( ${skillId} )
+					)
+			</if> 
+			<if test="skillName != '' and skillName != null">
+			and     id in ( 
+						select	parent_id from ax_sk_org
+						where	org_type = '11'
+						and		deleted_at is null
+						and		name like '%' || #{skillName} || '%'
+					)
+			</if> 
+			union
+			select  to_char(t1.parent_id) as pid,
+			        to_char(t1.id) as id,
+			        t2.name as chnName,
+			        t1.name as skillName,
+			        to_char(t2.sort) as chnSort,
+			        to_char(t1.sort) as skillSort,
+			        t1.skill_dbid as skillDbid,
+			        t1.skill_name as ctiSkillName,
+			        t1.org_level as orgLevel
+			from    ax_sk_org t1, ax_sk_org t2
+			where   t1.org_type = '11'
+			and     t1.parent_id = t2.id
+			and     t1.deleted_at is null
+			and     t1.org_level = '2'
+      		and     t1.skill_name is not null
+			<if test="compId != '' and compId != null">
+			and		t2.parent_id = #{compId}
+			</if> 
+			<if test="chnId != '' and chnId != null">
+			and		t1.parent_id in ( ${chnId} )
+			</if> 
+			<if test="skillId != '' and skillId != null">
+			and		t1.id in ( ${skillId} )
+			</if> 
+			<if test="skillName != '' and skillName != null">
+			and     t1.name like '%' || #{skillName} || '%'
+			</if> 
+		)
+		order by TO_NUMBER(orgLevel) asc, TO_NUMBER(chnSort) asc, TO_NUMBER(skillSort) asc
+    </select>
+
+	<select id="selectAgtSkill" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		select  *
+		from
+		(
+		    select  decode(agtDbid, NULL, '', teamId) AS pid,
+                	id,
+                	skillid, 
+                	partId, 
+                	partName, 
+                	teamId, 
+                	teamName,
+                	agtDbid, 
+                	agtId,
+                	agtLogId,
+                	(SELECT WORKMODE FROM md_gim.CAGENT_DY CA WHERE agtLogId = CA.LOGID AND WORKMODE NOT IN (0,10) AND ROWNUM = 1) STATE,
+                	agtName, 
+                	agtSklLvl,
+                	parentSort, 
+                	sort,
+		            uptEmpId, 
+		            decode(uptdate, null, '', uptdate) as uptDate,
+		            default_group_nm,
+		            default_group,
+		            apply_group_nm,
+		            apply_group,
+		            protect_skill
+		    from 
+		    (
+				select  ''  as skillId,
+				        pid,
+				        id,
+				        partId as partId,
+				        partName,
+				        teamId,
+				        teamName,
+				        '' as agtDbid,
+				        '' as agtId,
+				        '' as agtLogId,
+				        '' as agtName,
+				        '' as agtSklLvl,
+				        parentSort,
+				        sort,
+				        '' as uptEmpId,
+				        '' as uptDate,
+				        '' as default_group,
+				        '' as default_group_nm,
+				        '' as apply_group,
+				        '' as apply_group_nm,
+				        '' as protect_skill				        
+				from
+				(
+					select  to_char(parent_id) as pid,
+							to_char(id) as id,
+							to_char(decode(org_level, 1, id, parent_id)) as partId,
+							to_char(decode(org_level, 1, name, prior name)) as partName,
+							to_char(decode(org_level, 1, null, id)) as teamId,
+							to_char(decode(org_level, 1, null, name)) as teamName,
+							to_char(prior sort) as parentSort,
+							to_char(sort) as sort
+					from  ax_sk_org
+					where org_type = '12'
+					and   deleted_at is null
+          			and   id not in (select id from ax_sk_org where org_type = '12' and deleted_at is null and org_level = 2 and agroup_name is null)
+					<choose>
+						<when test="agtSklLvl != '' and agtSklLvl != null">
+						and   id in 
+						      	(
+							        select DISTINCT t2.id
+							        from ax_sk_org t1, ax_sk_org t2, gcti.Cfg_Skill_Level t3, gcti.Cfg_Agent_Group t4, gcti.Cfg_person t5, (select id, name from ax_sk_org where deleted_at is null and org_type = 13) t6
+							        where   t1.skill_dbid = t3.skill_dbid
+							        and   t3.person_dbid = t4.agent_dbid
+							        and   t4.group_dbid = t2.agroup_dbid
+							        and   t4.agent_dbid = t5.dbid
+							        and   t2.org_type = '12'
+							        and   t1.org_type = '11'
+							        and   t1.deleted_at       IS NULL
+							        and   t2.deleted_at       IS NULL
+							        and   t1.id in ( ${dispSkillId} )
+									and	  t3.level_ in ( ${agtSklLvl} )
+									and   t5.apply_group = t6.id(+)									
+									<if test="partId != '' and partId != null">
+									and   t2.parent_id in (${partId})
+									</if>
+									<if test="teamId != '' and teamId != null">
+									and   t2.id in (${teamId})
+									</if>
+									<if test="teamName != '' and teamName != null">
+									and   t2.name like '%' || (#{teamName}) || '%'
+									</if>
+									<if test="agtLogId != '' and agtLogId != null">
+									and   t5.last_name in (${agtLogId})
+									</if>
+									<if test="agtLogName != '' and agtLogName != null">
+									and   t5.last_name in (${agtLogName})
+									</if>
+									<if test="agtId != '' and agtId != null">
+									and   t5.employee_id like '%' || #{agtId} || '%'
+									</if>					
+									<if test="skGrpId != '' and skGrpId != null">
+									and   t5.apply_group in ( ${skGrpId} )
+									</if>
+									<if test="skGrpName != '' and skGrpName != null">
+									and   t6.name like '%' || #{skGrpName} || '%' 
+									</if>	
+									<if test="loginCheck == 1">
+									and   t5.last_name in (SELECT DISTINCT LOGID FROM md_gim.CAGENT_DY CA WHERE WORKMODE NOT IN (0,10))
+									</if>		
+						        )
+						</when>
+						<when test="agtSklLvl == '' or agtSklLvl == null"> 
+						and   id in 
+						      	(
+							        select DISTINCT t1.id
+							        from   ax_sk_org t1, gcti.Cfg_person t2, gcti.Cfg_Agent_Group t3, (select id, name from ax_sk_org where deleted_at is null and org_type = 13) t4
+							        where  t2.dbid  = t3.agent_dbid
+							        and    t3.group_dbid   = t1.agroup_dbid
+							        and    t1.org_type     = '12'
+							        and    t1.deleted_at  IS NULL
+							        and    t2.apply_group = t4.id(+)
+									<if test="partId != '' and partId != null">
+									and    t1.parent_id in (${partId})
+									</if>
+									<if test="teamId != '' and teamId != null">
+									and    t1.id in (${teamId})
+									</if>
+									<if test="teamName != '' and teamName != null">
+									and	   t1.name like '%' || (#{teamName}) || '%'
+									</if>
+									<if test="agtLogId != '' and agtLogId != null">
+									and    t2.last_name in (${agtLogId})
+									</if>
+									<if test="agtLogName != '' and agtLogName != null">
+									and    t2.last_name in (${agtLogName})
+									</if>
+									<if test="agtId != '' and agtId != null">
+									and    t2.employee_id like '%' || #{agtId} || '%'
+									</if>
+									<if test="skGrpId != '' and skGrpId != null">
+									and    t2.apply_group in ( ${skGrpId} )
+									</if>
+									<if test="skGrpName != '' and skGrpName != null">
+									and    t4.name like '%' || #{skGrpName} || '%' 
+									</if>		
+									<if test="loginCheck == 1">
+									and    t2.last_name in (SELECT DISTINCT LOGID FROM md_gim.CAGENT_DY CA WHERE WORKMODE NOT IN (0,10))
+									</if>								
+						        )
+						</when>
+					</choose>
+					start with id = #{compId}
+					CONNECT BY PRIOR id = parent_id
+				)
+				where teamId is not null
+		        union
+		        select  to_char(t1.skillId)     as skillId,
+                        to_char(t2.pid) 		as pid,
+                        to_char(t2.id) 			as id,
+                    	to_char(t2.partId)    	as partId,
+		                to_char(t2.partName)  	as partName,
+                    	to_char(t2.teamId)    	as teamId,
+		                to_char(t2.teamName)  	as teamName,
+		                to_char(t2.agtDbid)     as agtDbid,
+		                to_char(t2.agtId)       as agtId,
+		                to_char(t2.agtLogId)	as agtLogId,
+		                to_char(t2.agtName)     as agtName,
+		                to_char(t2.agtSklLvl)   as agtSklLvl,
+		                ''						as parentSort,
+		                ''						as sort,
+		                t3.uptEmpId				as uptEmpId,
+		                t3.uptDate				as uptDate,
+		                to_char(t2.default_group)   	as default_group,
+		                to_char(t2.default_group_nm)   	as default_group_nm,
+		                to_char(t2.apply_group)   		as apply_group,
+		                to_char(t2.apply_group_nm)   	as apply_group_nm,
+		                to_char(t2.protect_skill)		as protect_skill
+		        from
+		        (
+		            select  t1.id as skillId,
+		                    t1.name as skillName,
+		                    t1.org_type as orgType,
+		                    t1.sort as sort,
+		                    t1.org_level as orgLevel,
+		                    t1.skill_dbid as skillDbid,
+		                    t1.skill_name as skillCfgName,
+		                    t1.parent_id as parentId
+		            from    ax_sk_org t1, ax_sk_org t2
+		            where   t1.org_type= '11'
+		            and     t2.parent_id = #{compId}
+		            and     t1.parent_id = t2.id
+		            and     t1.deleted_at is null
+					<if test="agtSklLvl != '' and agtSklLvl != null">
+		            and		t1.id in ( ${dispSkillId} )
+					</if> 
+		        )t1,
+		        (
+	                select  t1.id as pid,
+	                        to_char('S' || t2.agent_dbid) as id,
+	                        t4.id as partId,
+	                        t4.name as partName,
+	                        t1.id as teamId,
+	                        t1.name as teamName,
+	                        t3.employee_id as agtId,
+	                        t3.last_name as agtLogId,
+	                        t3.first_name as agtName,
+	                        to_char(t2.agent_dbid) as agtDbid,
+	                        t1.sort,
+	                        t6.level_ as agtSklLvl,
+	                        t5.dbid as skillDbid,
+	                        t5.name as skillName,
+	                        t3.default_group as default_group,
+	                        (select name from ax_sk_org aso where org_type = 13 and deleted_at is null and aso.id = t3.default_group) as default_group_nm,
+		            		t3.apply_group as apply_group,
+		            		(select name from ax_sk_org aso where org_type = 13 and deleted_at is null and aso.id = t3.apply_group) as apply_group_nm,
+		            		t3.protect_skill
+	                from  ax_sk_org t1, gcti.cfg_agent_group t2, gcti.cfg_person t3, ax_sk_org t4, gcti.cfg_skill t5, gcti.cfg_skill_level t6
+	                where t1.AGROUP_DBID = t2.group_dbid
+	                and   t2.agent_dbid = t3.dbid
+			        and   t5.dbid(+) = t6.skill_dbid
+	                and   t3.dbid = t6.person_dbid(+)
+	                and   t1.parent_id = t4.id
+	                and   t1.org_type = '12'
+	                and   t1.deleted_at is null
+	                and   t4.deleted_at is null
+	                and   t4.parent_id = #{compId}
+                    and   t1.agroup_name is not null
+					<if test="agtSklLvl != '' and agtSklLvl != null">
+					and	  t6.level_ in ( ${agtSklLvl} )
+					</if>					
+		        )t2,
+                (
+                    select  t1.dbid, t1.agtDbid, t2.uptEmpId, t1.uptDate
+                    from  
+                    (
+                      select  max(ash.dbid) as dbid, 
+                              ash.AGENT_ID as agtId, ash.AGENT_DBID as agtDbid, 
+                              to_char(to_date( max(ash.UPDATED_DATE||ash.UPDATED_TIME), 'YYYYMMDDHH24MISS'), 'YYYY-MM-DD HH24:MI:SS') as uptDate
+                      from    ax_sk_agent_skill_hist ash, gcti.cfg_person gcp
+                      where   ash.agent_dbid = gcp.dbid
+                      and 	  ash.agent_id = gcp.last_name
+                      group by (ash.AGENT_ID, ash.AGENT_DBID)
+                      
+                    ) t1,
+                    (
+                      select  ash.dbid, ash.updated_id as uptEmpId
+                      from    ax_sk_agent_skill_hist ash, gcti.cfg_person gcp
+                      where   ash.agent_dbid = gcp.dbid
+                      and 	  ash.agent_id = gcp.last_name
+                    )t2
+                    where t1.dbid =t2.dbid
+                )t3
+		        where	t1.skillDbid(+) = t2.skillDbid
+            	and		t2.agtDbid = t3.agtDbid(+)
+				<if test="agtSklLvl != '' and agtSklLvl != null">
+    			and		t1.skillId in ( ${dispSkillId} )
+				</if> 
+				<if test="skGrpId != '' and skGrpId != null">
+				and   	t2.apply_group in ( ${skGrpId} ) 
+				</if>
+				<if test="skGrpName != '' and skGrpName != null">
+				and   	t2.apply_group_nm like '%' || #{skGrpName} || '%' 
+				</if> 
+				<if test="loginCheck == 1">
+				and     t2.agtLogId in (SELECT DISTINCT LOGID FROM md_gim.CAGENT_DY CA WHERE WORKMODE NOT IN (0,10))
+				</if>
+		    )
+			where 1=1
+			<if test="partId != '' and partId != null">
+			and   partId in ( ${partId} )
+			</if>
+			<if test="teamId != '' and teamId != null">
+			and   teamId in ( ${teamId} )
+			</if>
+			<if test="teamName != '' and teamName != null">
+			and   teamName like '%' || #{teamName} || '%'
+			</if>
+			<if test="agtLogId != '' and agtLogId != null">
+			and   agtLogId in ( ${agtLogId} ) or agtLogId is null 
+			</if>
+			<if test="agtLogName != '' and agtLogName != null">
+			and   agtLogId in (${agtLogName}) or agtLogId is null
+			</if>
+			<if test="agtId != '' and agtId != null">
+			and   agtId like '%' || #{agtId} || '%' or agtId is null
+			</if>
+						
+		)
+		PIVOT ( max(agtSklLvl) for skillId in 
+		  ( 
+		  		${dispSkillId}
+		  )
+		)
+		order by TO_NUMBER(parentSort) asc, TO_NUMBER(sort) asc, TO_NUMBER(pid) desc, agtName asc
+    </select>
+    
+    <insert id="insertAgtSkillHist" parameterType="skillLvlChnMain">
+      insert into ax_sk_agent_skill_hist (dbid, updated_date, updated_time, agent_id, agent_dbid, updated_skill_dbid, updated_skill_level, updated_id)
+      select SEQ_ax_sk_agent_skill_hist.nextval, to_char(sysdate,'yyyymmdd'), to_char(sysdate,'hh24miss'), #{agtLogId}, #{agtDbid}, #{skillDbid}, #{skillLevel}, user_Cd || '(' || user_nm || ')'
+      from ax_user_m
+      where user_cd = #{userCd}
+    </insert>
+    
+    <insert id="insertGrpHist" parameterType="skillLvlChnMain">
+    	insert into ax_sk_grp_hist (dbid, 
+							    	row_date, 
+							    	menu_gubun,
+							    	work_gubun, 
+							    	work_info, 
+							    	work_user_name, 
+							    	work_user_no, 
+							    	work_agid, 
+							    	work_agnm,
+							    	work_agemid )
+    					values(		SEQ_ax_sk_grp_hist.nextval, 
+							    	sysdate,
+							    	#{menuGb}, 
+							    	#{workGb}, 
+							    	#{workInfo}, 
+							    	#{workNm}, 
+							    	#{compId}, 
+							    	#{workAgId}, 
+							    	#{workAgNm},
+							    	#{workAgEmId}
+							    )
+    </insert>
+    
+    
+    <select id="selectAgtTab" parameterType="hashmap" resultType="skillLvlChnMain" fetchSize="1000">
+		select	cp.last_name 	as logid, 
+				cp.first_name 	as first_name, 
+				ao.name 		as skill_name, 
+				csl.level_ 		as skill_lvl
+		from	gcti.cfg_person cp, gcti.cfg_skill cs, gcti.cfg_skill_level csl, ax_sk_org ao
+		where	cp.dbid = csl.person_dbid
+		and		csl.skill_dbid = cs.dbid
+		and		ao.skill_dbid = cs.dbid
+		and     ao.deleted_at is null
+		and		cp.last_name = #{logid}
+		and 	cp.first_name = #{first_name}
+		order by cp.last_name, cp.first_name, ao.name
+    </select>
+</mapper>

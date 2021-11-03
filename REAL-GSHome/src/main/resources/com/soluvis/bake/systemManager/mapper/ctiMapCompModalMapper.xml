@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.systemManager.mapper.ctiMapCompModalMapper">
+    <select  id="newOrgId" resultType="String" fetchSize="1000">
+    	<!-- select max(to_number(id))+1 as id from ax_sk_org -->
+    	select SEQ_ax_sk_org.nextval from dual
+    </select>
+    
+    <insert  id="insertCompOrg" parameterType="ctiMapCompModal">
+   		insert into ax_sk_org (id, name, org_level, sort, org_type, created_at, created_by, updated_at, updated_by )
+    	values(#{id, jdbcType=INTEGER}, #{name}, #{orgLevel}, #{sort}, #{orgType}, sysdate, #{userCd}, sysdate, #{userCd})
+    </insert>
+    
+    <update  id="updateCompOrg" parameterType="ctiMapCompModal">
+    	update	ax_sk_org 
+    	set 	name		= #{name},
+    			sort 		= #{sort},
+    			updated_at	= sysdate,
+    			updated_by	= #{userCd}
+    	where	id			= #{id, jdbcType=INTEGER}
+    	<!-- and		parent_id	= #{preParentId} -->
+    	and		org_type	= #{orgType}
+    </update>
+    
+    <update  id="deleteCompOrg" parameterType="ctiMapCompModal">
+    	update	ax_sk_org
+    	set		deleted_at	= sysdate,
+    			deleted_by	= #{userCd}
+    	where	(id			= #{id, jdbcType=INTEGER}
+    	or		parent_id 	= #{id, jdbcType=INTEGER})
+    </update>
+    
+    <update  id="deleteSkillOrg" parameterType="ctiMapCompModal">
+    	update	ax_sk_org
+    	set		deleted_at	= sysdate,
+    			deleted_by	= #{userCd}
+    	where	parent_id in ( select id from ax_sk_org where parent_id = #{id, jdbcType=INTEGER} )
+    </update>
+    
+    <update  id="deleteCompOrgToOrg" parameterType="ctiMapCompModal">
+    	update	ax_sk_org_to_org
+    	set		deleted_at	= sysdate,
+    			deleted_by	= #{userCd}
+    	where	parent_id	= #{id, jdbcType=INTEGER}
+    </update>
+    
+    <update id = "deleteSkillOrgToOrg" parameterType="ctiMapCompModal">
+        update	ax_sk_org_to_org
+    	set		deleted_at	= sysdate,
+    			deleted_by	= #{userCd}
+        where parent_id in (select child_id from ax_sk_org_to_org where parent_id  = #{id, jdbcType=INTEGER} )
+    </update>
+    
+    <insert id="insertHist" parameterType="ctiMapCompModal">
+    	insert into ax_sk_grp_hist (dbid, row_date, menu_gubun, work_gubun, work_info, work_user_name, work_user_no )
+    	values(SEQ_ax_sk_grp_hist.nextval, sysdate, #{menuGb}, #{workGb}, #{workInfo}, #{workNm}, #{id, jdbcType=INTEGER})
+    </insert>
+
+</mapper>

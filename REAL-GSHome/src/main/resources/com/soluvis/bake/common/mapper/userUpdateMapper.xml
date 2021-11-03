@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.common.mapper.userUpdateMapper">
+	<select id="userinfo" resultType="userUp" parameterType="hashmap" >
+        SELECT 	A.USER_CD AS USER_CD, A.USER_NM AS USER_NM, C.NAME AS GRP_AUTH_CD
+		FROM  	AX_USER_M A, AX_USER_AUTH_M B, AX_COMMON_CODE_M C
+		WHERE 	A.USER_CD = B.USER_CD
+        AND     B.GRP_AUTH_CD = C.CODE
+		AND		A.USER_CD = #{user_cd}
+    </select>
+    
+	<update id="userup" parameterType="hashmap" >
+        UPDATE	AX_USER_M
+        SET 	USER_PS = #{user_ps},
+        		PASSWORD_UPDATE_DATE = sysdate   
+        WHERE 	USER_CD = #{user_cd}  
+    </update>
+	
+</mapper>

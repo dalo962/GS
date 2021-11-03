@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weblogic-web-app xmlns:xsi="http://xmlns.oracle.com/weblogic/weblogic-web-app">
+        <session-descriptor>
+                <timeout-secs>1800</timeout-secs>
+        </session-descriptor>   
+	
+        <context-root>/</context-root>
+
+        <jsp-descriptor>
+            <keepgenerated>true</keepgenerated>
+            <page-check-seconds>1</page-check-seconds>
+        </jsp-descriptor>
+
+        <container-descriptor>
+                <!--<prefer-web-inf-classes>true</prefer-web-inf-classes> -->
+                <servlet-reload-check-secs>1</servlet-reload-check-secs>
+                <resource-reload-check-secs>2</resource-reload-check-secs>
+		<prefer-application-packages>
+			<package-name>org.slf4j.*</package-name>
+			<package-name>org.springframework.*</package-name>
+			<package-name>javax.persistence.*</package-name>
+			<package-name>javassist</package-name>
+			<package-name>com.fasterxml.jackson</package-name>
+			<package-name>org.apache.commons.*</package-name>
+			<package-name>com.google.common.*</package-name>
+		</prefer-application-packages>
+        </container-descriptor>
+</weblogic-web-app>

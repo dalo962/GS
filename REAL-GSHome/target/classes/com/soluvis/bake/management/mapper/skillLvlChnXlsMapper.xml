@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.management.mapper.skillLvlChnXlsMapper">
+	
+	<select id="selectDispSkill" parameterType="hashmap" resultType="skillLvlChnXls" fetchSize="1000">
+		select	t2.parent_id as compId,
+				decode(t1.orgLevel, 1, t1.id, t2.id) as chnId,
+				decode(t1.orgLevel, 1, t1.name, t2.name) as chnName,
+				t1.id as skillId,
+				t1.name as skillName,
+				t1.orgType,
+				t1.orgLevel,
+				t1.parentId,
+		        t2.sort as parentSort,
+				t1.sort,
+				t1.skillDbid,
+				t1.skillName as ctiSkillName
+		from
+		(
+			select  ID as id,
+			        NAME as name,
+			        ORG_TYPE as orgType,
+			        SORT as sort,
+			        ORG_LEVEL as orgLevel,
+			        parent_id as parentId,
+			        skill_dbid as skillDbid,
+			        skill_name as skillName
+			from    ax_sk_org
+			where   org_type = '11'
+			and		deleted_at is null
+      		and     skill_name is not null
+		)t1, ax_sk_org t2
+		where	t1.parentId = t2.id(+)
+		and		t2.deleted_at is null
+		<if test="compId != '' and compId != null">
+		and   	t2.parent_id = #{compId}
+		</if>
+		and		t2.org_type = '11'
+		order by parentSort, sort
+    </select>
+    
+    
+	<select id="selectAgCheck" parameterType="hashmap" resultType="skillLvlChnXls" fetchSize="1000">
+    	select	t2.compid 			as id, 
+		    	t2.compname 		as name, 
+		    	t2.partName 		as partName,
+		    	t2.teamName 		as teamName,
+		    	t1.agentDbid 		as agtDbid, 
+		    	t1.agentId 			as agtLogId, 
+		    	t1.agentName 		as agtName, 
+		    	t1.employee_id 		as agtId,
+    			t1.default_group 	as defaultGrp, 
+    			(select name from ax_sk_org aso where org_type = 13 and deleted_at is null and aso.id = t1.default_group) defaultGrp_nm,
+    			t1.apply_group 		as applyGrp,
+    			(select name from ax_sk_org aso where org_type = 13 and deleted_at is null and aso.id = t1.apply_group) applyGrp_nm,
+    			t1.protect_skill 	as protect_skill
+		from 
+			(
+				select	t2.dbid as groupDbid,
+						t2.name as groupName,
+						t3.dbid as agentDbid,
+						t3.first_name as agentName,                        
+						t3.last_name as agentId,
+                        t3.employee_id as employee_id,
+                        t3.default_group as default_group,            
+            			t3.apply_group as apply_group,
+            			t3.protect_skill as protect_skill
+				from gcti.cfg_agent_group t1, gcti.cfg_group t2, gcti.cfg_person t3
+				where t1.group_dbid = t2.dbid
+				and t1.agent_dbid = t3.dbid
+			)t1, 
+			(
+				select	t4.id as compId,
+						t4.name as compName,
+						t3.id as partId,
+						t3.name as partName,
+						t1.id as teamId,
+						t1.name as teamName,
+						t1.agroup_dbid as agroupDbid,
+						t1.agroup_name as agroupName,
+						t1.skill_dbid as skillDbid,
+						t1.skill_name as skillName
+				from ax_sk_org t1, ax_sk_org_to_org t2, ax_sk_org t3, ax_sk_org t4
+				where t1.id = t2.child_id
+				and   t2.parent_id = t3.id
+				and   t3.parent_id = t4.id
+				and   t1.deleted_at is null
+				and   t2.deleted_at is null
+				and   t3.deleted_at is null
+				and   t4.deleted_at is null
+			)t2
+		where	t1.groupDbid = t2.agroupDbid
+		<!-- and		t2.partName = #{partNm} -->
+		and 	t1.agentId = #{last_name}
+		and 	t1.agentName = #{fisrt_name}
+		order by t1.agentName asc
+    </select>
+   
+   
+    <select id="selectSgCheck" parameterType="hashmap" resultType="skillLvlChnXls" fetchSize="1000">
+    	select 	id as id, name as name, parent_id
+		from 	ax_sk_org
+		where 	org_type = 13
+		and 	deleted_at is null
+		and		name = #{compName}
+		and		parent_id = #{compId}
+    </select>
+   
+   
+   <select id="selectSkgStruct" parameterType="hashmap" resultType="skillLvlChnXls" fetchSize="1000">
+    	select 	t1.id as id, t1.name as name, t2.skill_name skillName, t3.skill_id as skillId, t2.skill_dbid as skillDbid, t3.skill_level as skillLevel, t2.sort sort
+		from 	ax_sk_org t1, ax_sk_org t2, ax_sk_skg_struct t3
+		where 	t1.id = t3.org_id
+		and  	t2.id = t3.skill_id
+		and 	t1.org_type = 13
+		and 	t1.deleted_at is null
+		and 	t2.org_type = 11
+		and 	t2.deleted_at is null
+		and 	t3.deleted_at is null
+		<if test="id != '' and id != null">
+		and 	t1.id = #{id}
+		</if>
+		<if test="name != '' and name != null">
+		and 	t1.name = #{name}
+		</if>
+		order by t2.sort
+   </select>
+   
+   
+   <select id="skillAgtDelCheck" parameterType="hashmap" resultType="skillLvlChnXls" fetchSize="1000">
+    	SELECT	CP.DBID agtDbid, CP.LAST_NAME logid, CP.FIRST_NAME first_name, CS.NAME skillName, CS.DBID skillId, CSL.LEVEL_ skilllvl
+		FROM 	GCTI.CFG_PERSON CP, GCTI.CFG_SKILL CS, GCTI.CFG_SKILL_LEVEL CSL
+		WHERE 	CP.DBID = CSL.PERSON_DBID
+		AND 	CSL.SKILL_DBID = CS.DBID
+		AND		CP.DBID = #{dbid}
+		ORDER BY CS.DBID
+    </select> 
+    
+    
+   <update id="udtDaGroup" parameterType="hashmap">
+		UPDATE	gcti.cfg_person
+		SET		default_group = #{dgroup},
+				apply_group = #{agroup},
+				protect_skill = 'X'
+		WHERE	dbid = #{dbid}
+	</update>
+	
+	<update id="udtDGroup" parameterType="hashmap">
+		UPDATE	gcti.cfg_person
+		SET		default_group = #{dgroup}				
+		WHERE	dbid = #{dbid}
+	</update>
+    
+    <insert id="insertAgtSkillHist" parameterType="skillLvlChnXls">
+      insert into ax_sk_agent_skill_hist (dbid, updated_date, updated_time, agent_id, agent_dbid, updated_skill_dbid, updated_skill_level, updated_id)
+      select SEQ_ax_sk_agent_skill_hist.nextval, to_char(sysdate,'yyyymmdd'), to_char(sysdate,'hh24miss'), #{agtLogId}, #{agtDbid}, #{skillDbid}, #{skillLevel}, user_Cd || '(' || user_nm || ')'
+      from ax_user_m
+      where user_cd = #{userCd}
+    </insert>
+    
+    <insert id="insertGrpHist" parameterType="skillLvlChnXls">
+    	insert into ax_sk_grp_hist (dbid, 
+							    	row_date, 
+							    	menu_gubun,
+							    	work_gubun, 
+							    	work_info, 
+							    	work_user_name, 
+							    	work_user_no, 
+							    	work_agid, 
+							    	work_agnm,
+							    	work_agemid,
+							    	work_group
+							    	)
+    					values(		SEQ_ax_sk_grp_hist.nextval, 
+							    	sysdate,
+							    	#{menuGb}, 
+							    	#{workGb}, 
+							    	#{workInfo}, 
+							    	#{workNm}, 
+							    	#{compId}, 
+							    	#{workAgId}, 
+							    	#{workAgNm},
+							    	#{workAgEmId},
+							    	#{workGp}
+							    )
+    </insert>
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.ivrManagement.mapper.ivrUrlListMapper">
+   <select id="UrlListGet" parameterType="hashmap" resultType="ivrUrl" fetchSize="1000">
+		SELECT	url_nm as url_nm, 
+				svr_ip as svr_ip, 
+				crt_dt as crt_dt, 
+				crt_by as crt_by, 
+				upt_dt as upt_dt, 
+				upt_by as upt_by,
+				file_rst as file_rst
+		FROM 	givr.ax_ivr_url
+		<if test="url_nm != '' and url_nm != null">
+		WHERE	url_nm = #{url_nm}
+		</if>
+		ORDER BY url_nm asc, crt_dt asc
+    </select>
+    
+    <insert id="UrlListIst" parameterType="hashmap">
+		INSERT 	INTO givr.ax_ivr_url (url_nm, svr_ip, crt_dt, crt_by, file_rst)	
+		VALUES	(#{url_nm}, #{svr_ip}, #{crt_dt}, #{crt_by}, null)
+	</insert>
+	
+    <update id="UrlListUdt" parameterType="hashmap">
+		UPDATE	givr.ax_ivr_url
+		SET		svr_ip = #{svr_ip},
+				upt_dt = #{upt_dt},
+				upt_by = #{upt_by}
+		WHERE	url_nm = #{url_nm}
+	</update>
+	
+    <delete id="UrlListDel" parameterType="hashmap">
+		DELETE	
+		FROM	givr.ax_ivr_url
+		WHERE	url_nm = #{url_nm}	
+	</delete>
+	
+	
+	<update id="UrlFileUdt" parameterType="hashmap">
+		UPDATE	givr.ax_ivr_url
+		SET		file_rst = #{file_rst}
+		WHERE	url_nm = #{url_nm}
+		AND		svr_ip = #{svr_ip}
+	</update>
+	
+	
+	<select id="IvrUrlGet" parameterType="hashmap" resultType="ivrUrl" fetchSize="1000">
+		SELECT 	group_cd as group_cd, group_nm as group_nm, code as code, remark as remark, name as url
+		FROM 	AX_COMMON_CODE_M
+		WHERE 	GROUP_CD = 'IVR_SYNC_URL'
+		AND		USE_YN = 'Y'
+		AND 	CODE = #{code}
+	</select>
+</mapper>
