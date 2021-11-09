@@ -1,4 +1,4 @@
-package com.soluvis.bakeRt.ivrManagement.controller;
+package com.soluvis.bakeGR.ivrManagement.controller;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -39,8 +39,8 @@ import com.soluvis.bake.system.utils.SessionUtils;
  * @desc   ivr 블랙컨슈머 리스트를 조회한다.
  */
 @Controller
-@RequestMapping(value = "/api/ivr/ivrBlackList")
-public class ivrBlackListController extends commController{
+@RequestMapping(value = "/gr/api/ivr/ivrHoliday")
+public class ivrGRHolidayController extends commController{
 	
 	@Inject
 	private ivrBlackListService ivrBlackListService;	

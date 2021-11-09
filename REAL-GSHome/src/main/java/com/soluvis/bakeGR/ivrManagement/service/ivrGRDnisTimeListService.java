@@ -1,11 +1,11 @@
-package com.soluvis.bakeRt.ivrManagement.service;
+package com.soluvis.bakeGR.ivrManagement.service;
 
 import java.util.List;
 import java.util.Map;
 
 import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
 
-public interface ivrEmergencyMentService {
+public interface ivrGRDnisTimeListService {
 		
 	public List<ivrBlackList> BlackListGet(Map<String,Object> params);
 	

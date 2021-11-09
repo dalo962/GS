@@ -1,4 +1,4 @@
-package com.soluvis.bakeRt.ivrManagement.domain;
+package com.soluvis.bakeGR.ivrManagement.domain;
 
 import org.apache.ibatis.type.Alias;
 
@@ -9,8 +9,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Alias("ivrBlack")
-public class ivrBlackList extends BaseJpaModel<String>{
+@Alias("ivrGRBlack")
+public class ivrGRCallback extends BaseJpaModel<String>{
 	
 	private String id;
 	private String ani; 	//전화번호 

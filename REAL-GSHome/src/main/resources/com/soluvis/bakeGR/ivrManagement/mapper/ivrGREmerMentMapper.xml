@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bakeGR.ivrManagement.mapper.ivrGREmerMentMapper">
+   <select id="EmerMentListGet" parameterType="hashmap" resultType="ivrGREmerMent" fetchSize="1000">
+		SELECT  dnis            as dnis,
+		        stime           as stime,
+		        etime           as etime,
+		        va_yn           as va_yn,
+		        ment            as ment,
+		        crt_dt          as crt_dt,
+		        crt_by          as crt_by,
+		        upt_dt          as upt_dt,
+		        upt_by          as upt_by        
+		FROM    givr.ax_ivr_emerment_gr
+		WHERE   1=1
+    </select>
+    
+    <insert id="EmerMentListIst" parameterType="hashmap">
+		INSERT 	INTO givr.ax_ivr_blackconsumer (ani, flag, crt_dt, crt_by)	
+		VALUES	(#{ani}, #{flag}, #{crt_dt}, #{crt_by})
+	</insert>
+	
+    <update id="EmerMentListUdt" parameterType="hashmap">
+		UPDATE	givr.ax_ivr_blackconsumer
+		SET		flag = #{flag},
+				upt_dt = #{upt_dt},
+				upt_by = #{upt_by}
+		WHERE	ani = #{ani}
+	</update>
+	
+    <delete id="EmerMentListDel" parameterType="hashmap">
+		DELETE	
+		FROM	givr.ax_ivr_blackconsumer
+		WHERE	ani = #{ani}	
+	</delete>    
+</mapper>

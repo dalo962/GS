@@ -1,4 +1,4 @@
-package com.soluvis.bakeRt.ivrManagement.service;
+package com.soluvis.bakeGR.ivrManagement.service;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
 import com.soluvis.bake.ivrManagement.mapper.ivrBlackListMapper;
 
 @Service
-public class ivrEmergencyMentServiceImpl implements ivrBlackListService{
+public class ivrGRBlackListServiceImpl implements ivrGRBlackListService{
 	
 	@Autowired
 	private ivrBlackListMapper ivrBlackListMapper;

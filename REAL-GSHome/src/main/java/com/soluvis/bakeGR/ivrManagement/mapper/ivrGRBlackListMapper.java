@@ -1,4 +1,4 @@
-package com.soluvis.bakeRt.ivrManagement.mapper;
+package com.soluvis.bakeGR.ivrManagement.mapper;
 
 import java.util.List;
 import java.util.Map;
@@ -9,7 +9,7 @@ import com.chequer.axboot.core.mybatis.MyBatisMapper;
 import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
 
 @Repository
-public interface ivrEmergencyMentMapper extends MyBatisMapper{	
+public interface ivrGRBlackListMapper extends MyBatisMapper{	
 
 	// 조회
 	List<ivrBlackList> BlackListGet(Map<String,Object> params);
