@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Alias("ivrGRBlack")
+@Alias("ivrGRDnisTime")
 public class ivrGRDnisTimeList extends BaseJpaModel<String>{
 	
 	private String id;

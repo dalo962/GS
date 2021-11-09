@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Alias("ivrGRBlack")
+@Alias("ivrGRCAllback")
 public class ivrGRCallback extends BaseJpaModel<String>{
 	
 	private String id;

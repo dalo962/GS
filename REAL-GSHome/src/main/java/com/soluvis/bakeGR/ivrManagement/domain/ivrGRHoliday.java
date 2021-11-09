@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Alias("ivrGRBlack")
+@Alias("ivrGRHoliday")
 public class ivrGRHoliday extends BaseJpaModel<String>{
 	
 	private String id;
