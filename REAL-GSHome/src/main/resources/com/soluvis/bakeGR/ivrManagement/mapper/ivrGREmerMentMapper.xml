@@ -3,7 +3,8 @@
 
 <mapper namespace="com.soluvis.bakeGR.ivrManagement.mapper.ivrGREmerMentMapper">
    <select id="EmerMentListGet" parameterType="hashmap" resultType="ivrGREmerMent" fetchSize="1000">
-		SELECT  dnis            as dnis,
+		SELECT  seq            	as seq,
+		        dnis           	as dnis,
 		        stime           as stime,
 		        etime           as etime,
 		        va_yn           as va_yn,
@@ -14,24 +15,29 @@
 		        upt_by          as upt_by        
 		FROM    givr.ax_ivr_emerment_gr
 		WHERE   1=1
+		ORDER BY stime asc, dnis asc
     </select>
     
     <insert id="EmerMentListIst" parameterType="hashmap">
-		INSERT 	INTO givr.ax_ivr_blackconsumer (ani, flag, crt_dt, crt_by)	
-		VALUES	(#{ani}, #{flag}, #{crt_dt}, #{crt_by})
+		INSERT 	INTO givr.ax_ivr_emerment_gr (seq, dnis, stime, etime, va_yn, ment, crt_dt, crt_by)	
+		VALUES	(#{seq}, #{dnis}, #{stime}, #{etime}, #{va_yn}, #{ment}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="EmerMentListUdt" parameterType="hashmap">
-		UPDATE	givr.ax_ivr_blackconsumer
-		SET		flag = #{flag},
+		UPDATE	givr.ax_ivr_emerment_gr
+		SET		dnis = #{dnis},
+				stime = #{stime},
+				etime = #{etime},
+				va_yn = #{va_yn},
+				ment = #{ment},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
-		WHERE	ani = #{ani}
+		WHERE	seq = #{seq}
 	</update>
 	
     <delete id="EmerMentListDel" parameterType="hashmap">
 		DELETE	
-		FROM	givr.ax_ivr_blackconsumer
-		WHERE	ani = #{ani}	
+		FROM	givr.ax_ivr_emerment_gr
+		WHERE	seq = #{seq}	
 	</delete>    
 </mapper>

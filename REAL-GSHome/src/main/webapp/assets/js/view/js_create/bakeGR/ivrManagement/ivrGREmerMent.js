@@ -4,7 +4,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	axboot.ajax({
             type: "GET",
             cache: false,
-            url: "/api/ivr/ivrBlackList/BlackListSearch",
+            url: "/gr/api/ivr/ivrEmerMent/EmerMentSearch",
             data: "",
             callback: function (res) {
                 caller.gridView01.setData(res);
@@ -27,39 +27,46 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	saveList = saveList.concat(caller.gridView01.getData("deleted"));
     	
     	var reqExp = /^[0-9]*$/;
-    	var blani = 0;
-    	var blflag = 0;
-    	var blnumber = 0;
+    	var bldnis = 0;
+    	var blstime = 0;
+    	var bletime = 0;
+    	var blvayn = 0;
     	saveList.forEach(function (n){
-    		if(n.ani == null || n.ani == "")
+    		if(n.dnis == null || n.dnis == "")
     		{
-    			blani = blani + 1;
+    			bldnis = bldnis + 1;
     		}
-    		if(n.flag == null || n.ani == "")
+    		if(n.stime == null || n.stime == "")
     		{
-    			blflag = blflag + 1;
+    			blstime = blstime + 1;
     		}
-    		if(n.ani != null || n.ani != "")
+    		if(n.etime == null || n.etime == "")
     		{
-    			if(reqExp.test(n.ani) == false)
-    			{
-    			blnumber = blnumber + 1;
-    			}
+    			bletime = bletime + 1;
     		}
+    		if(n.vayn == null || n.vayn == "")
+    		{
+    			blvayn = blvayn + 1;
+    		}    		
     	});
-    	if(blani > 0) 
+    	if(bldnis > 0) 
     	{ 
-    		alert("블랙컨슈머 번호를 입력하시기 바랍니다."); 
+    		alert("대표번호를 입력하시기 바랍니다."); 
     		return;
     	}
-    	if(blflag > 0) 
+    	if(blstime > 0) 
     	{ 
-    		alert("블랙컨슈머 사용유무를 선택하시기 바랍니다."); 
+    		alert("시작시간을 입력하시기 바랍니다."); 
     		return;
     	}
-    	if(blnumber > 0) 
+    	if(bletime > 0) 
     	{ 
-    		alert("블랙컨슈머 번호는 숫자만 입력하시기 바랍니다."); 
+    		alert("종료시간을 입력하시기 바랍니다."); 
+    		return;
+    	}
+    	if(blvayn > 0) 
+    	{ 
+    		alert("성우여부를 선택하시기 바랍니다."); 
     		return;
     	}
 
@@ -71,7 +78,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		    	axboot.ajax({
 		            type: "POST",
 		            cache: false,
-		            url: "/api/ivr/ivrBlackList/BlackListSave",
+		            url: "/gr/api/ivr/ivrEmerMent/EmerMentSave",
 		            data: JSON.stringify(saveList),
 		            callback: function (res) {
 		            	alert(res.message);
@@ -281,43 +288,34 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             showLineNumber:true,
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
-            	{key: "ani", label: "블랙컨슈머 번호", width: 200, align: "center", sortable: true, editor: {
-            		type: "text", disabled:function(){
-            				var dis = "";
-            				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
-            				{
-            					dis = true
-            				}
-            				else
-            				{
-            					dis = false;
-            				}
-            				return dis;
-            			}
-            	}},
-                {key: "flag", label: "사용유무", width: 120, align: "center", sortable: true, editor: {
+            	{key: "seq", label: "seq", width: 0, align: "center"},
+            	{key: "dnis", label: "대표번호", width: 200, align: "center", sortable: true},
+            	{key: "stime", label: "시작시간", width: 140, align: "center", sortable: true, editor:"text"},
+            	{key: "etime", label: "종료시간", width: 140, align: "center", sortable: true, editor:"text"},
+                {key: "va_yn", label: "성우여부", width: 120, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
                 			optionValue: "value", optionText: "text"
                 		},
                 		options: [
-                			{value: "Y", text: "사용"},
-                			{value: "N", text: "미사용"}
+                			{value: "1", text: "사용"},
+                			{value: "0", text: "미사용"}
                     	]
                 	}
                 }, formatter: function() {
                 	switch(this.item.flag) {
-                		case "Y":
+                		case "1":
             				return "사용";
             				break; 	
-                		case "N":
+                		case "0":
                 			return "미사용";
                 			break;                    		
                 		default :
                 			return "선택";
                 			break;
                 	}
-                }},         
+                }},    
+                {key: "ment", label: "멘트", width: 300, align: "center", sortable: true, editor:"text"},
                 {key: "crt_dt", label: "작성일자", width: 200, align: "center", sortable: true,
                 	formatter: function() {
                 		var crdt = "";

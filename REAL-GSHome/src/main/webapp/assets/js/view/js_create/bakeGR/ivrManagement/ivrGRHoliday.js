@@ -4,7 +4,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	axboot.ajax({
             type: "GET",
             cache: false,
-            url: "/api/ivr/ivrBlackList/BlackListSearch",
+            url: "/gr/api/ivr/ivrHoliday/HolidaySearch",
             data: "",
             callback: function (res) {
                 caller.gridView01.setData(res);
@@ -27,39 +27,26 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	saveList = saveList.concat(caller.gridView01.getData("deleted"));
     	
     	var reqExp = /^[0-9]*$/;
-    	var blani = 0;
-    	var blflag = 0;
-    	var blnumber = 0;
+    	var hlholiday = 0;
+    	var hluseyn = 0;
     	saveList.forEach(function (n){
-    		if(n.ani == null || n.ani == "")
+    		if(n.holiday == null || n.holiday == "")
     		{
-    			blani = blani + 1;
+    			hlholiday = hlholiday + 1;
     		}
-    		if(n.flag == null || n.ani == "")
+    		if(n.hl_useyn == null || n.hl_useyn == "")
     		{
-    			blflag = blflag + 1;
-    		}
-    		if(n.ani != null || n.ani != "")
-    		{
-    			if(reqExp.test(n.ani) == false)
-    			{
-    			blnumber = blnumber + 1;
-    			}
+    			hluseyn = hluseyn + 1;
     		}
     	});
-    	if(blani > 0) 
+    	if(hlholiday > 0) 
     	{ 
-    		alert("블랙컨슈머 번호를 입력하시기 바랍니다."); 
+    		alert("휴일을 입력하시기 바랍니다."); 
     		return;
     	}
-    	if(blflag > 0) 
+    	if(hluseyn > 0) 
     	{ 
-    		alert("블랙컨슈머 사용유무를 선택하시기 바랍니다."); 
-    		return;
-    	}
-    	if(blnumber > 0) 
-    	{ 
-    		alert("블랙컨슈머 번호는 숫자만 입력하시기 바랍니다."); 
+    		alert("휴일 사용유무를 선택하시기 바랍니다."); 
     		return;
     	}
 
@@ -71,7 +58,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		    	axboot.ajax({
 		            type: "POST",
 		            cache: false,
-		            url: "/api/ivr/ivrBlackList/BlackListSave",
+		            url: "/gr/api/ivr/ivrHoliday/HolidaySave",
 		            data: JSON.stringify(saveList),
 		            callback: function (res) {
 		            	alert(res.message);
@@ -281,7 +268,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             showLineNumber:true,
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
-            	{key: "ani", label: "블랙컨슈머 번호", width: 200, align: "center", sortable: true, editor: {
+            	{key: "ani", label: "휴일", width: 200, align: "center", sortable: true, editor: {
             		type: "text", disabled:function(){
             				var dis = "";
             				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
@@ -301,23 +288,24 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			optionValue: "value", optionText: "text"
                 		},
                 		options: [
-                			{value: "Y", text: "사용"},
-                			{value: "N", text: "미사용"}
+                			{value: "1", text: "사용"},
+                			{value: "0", text: "미사용"}
                     	]
                 	}
                 }, formatter: function() {
                 	switch(this.item.flag) {
-                		case "Y":
+                		case "1":
             				return "사용";
             				break; 	
-                		case "N":
+                		case "0":
                 			return "미사용";
                 			break;                    		
                 		default :
                 			return "선택";
                 			break;
                 	}
-                }},         
+                }},      
+                {key: "description", label: "사유", width: 140, align: "center", editor:"text"},
                 {key: "crt_dt", label: "작성일자", width: 200, align: "center", sortable: true,
                 	formatter: function() {
                 		var crdt = "";
