@@ -24,12 +24,6 @@ public class statListManagerServiceImpl implements statListManagerService{
 	}
 	
 	@Override
-	public List<statListManager> mednListSel(Map<String,Object> params)
-	{		
-		return statLstMngMapper.mednListSel(params);
-	}
-	
-	@Override
 	public List<statListManager> skillListSel(Map<String,Object> params)
 	{		
 		return statLstMngMapper.skillListSel(params);
@@ -41,18 +35,6 @@ public class statListManagerServiceImpl implements statListManagerService{
 		return statLstMngMapper.agentListSel(params);
 	}
 	
-	@Override
-	public List<statListManager> realListSel(Map<String,Object> params)
-	{		
-		return statLstMngMapper.realListSel(params);
-	}
-	
-	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int mednListIst(Map<String,Object> params)
-	{		
-		return statLstMngMapper.mednListIst(params);
-	}
 	@Override
 	@Transactional(rollbackFor=Exception.class)
 	public int skillListIst(Map<String,Object> params)
@@ -69,20 +51,6 @@ public class statListManagerServiceImpl implements statListManagerService{
 	
 	@Override
 	@Transactional(rollbackFor=Exception.class)
-	public int realListIst(Map<String,Object> params)
-	{		
-		return statLstMngMapper.realListIst(params);
-	}
-	
-	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int mednListUdt(Map<String,Object> params)
-	{		
-		return statLstMngMapper.mednListUdt(params);
-	}
-	
-	@Override
-	@Transactional(rollbackFor=Exception.class)
 	public int skillListUdt(Map<String,Object> params)
 	{		
 		return statLstMngMapper.skillListUdt(params);
@@ -93,19 +61,6 @@ public class statListManagerServiceImpl implements statListManagerService{
 	public int agentListUdt(Map<String,Object> params)
 	{		
 		return statLstMngMapper.agentListUdt(params);
-	}
-	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int realListUdt(Map<String,Object> params)
-	{		
-		return statLstMngMapper.realListUdt(params);
-	}
-	
-	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int mednListDel(Map<String,Object> params)
-	{		
-		return statLstMngMapper.mednListDel(params);
 	}
 	
 	@Override
@@ -121,14 +76,6 @@ public class statListManagerServiceImpl implements statListManagerService{
 	{		
 		return statLstMngMapper.agentListDel(params);
 	}
-	
-	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int realListDel(Map<String,Object> params)
-	{		
-		return statLstMngMapper.realListDel(params);
-	}
-	
 	
 	@Override
 	public List<statListManager> userList()
@@ -166,35 +113,6 @@ public class statListManagerServiceImpl implements statListManagerService{
 	}
 
 
-	
-	
-	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int rinitFacIst(Map<String,Object> params)
-	{		
-		return statLstMngMapper.rinitFacIst(params);
-	}
-	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int rinitFacUdt(Map<String,Object> params)
-	{		
-		return statLstMngMapper.rinitFacUdt(params);
-	}
-	
-	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int rinitFacDel(Map<String,Object> params)
-	{		
-		return statLstMngMapper.rinitFacDel(params);
-	}
-	
-	
-	
-	@Override
-	public List<statListManager> mednListSelmodal(Map<String,Object> params)
-	{		
-		return statLstMngMapper.mednListSelmodal(params);
-	}
 	@Override
 	public List<statListManager> skillListSelmodal(Map<String,Object> params)
 	{		
@@ -205,13 +123,7 @@ public class statListManagerServiceImpl implements statListManagerService{
 	{		
 		return statLstMngMapper.agentListSelmodal(params);
 	}
-	
-	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int mednListUdtmodal(Map<String,Object> params)
-	{		
-		return statLstMngMapper.mednListUdtmodal(params);
-	}
+
 	@Override
 	@Transactional(rollbackFor=Exception.class)
 	public int skillListUdtmodal(Map<String,Object> params)
@@ -248,9 +160,10 @@ public class statListManagerServiceImpl implements statListManagerService{
 	
 	
 	@Override
-	public List<statListManager> ivrMaxSize(Map<String,Object> params)
+	@Transactional(rollbackFor=Exception.class)
+	public int userFacIstSetting(Map<String,Object> params)
 	{		
-		return statLstMngMapper.ivrMaxSize(params);
+		return statLstMngMapper.userFacIstSetting(params);
 	}
 }
 

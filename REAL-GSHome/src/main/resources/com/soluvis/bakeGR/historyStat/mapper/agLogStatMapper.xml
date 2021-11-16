@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bakeGR.historyStat.mapper.agLogStatMapper">
+	<select id="agLogSel" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+      		select  substr(u2k(logintimets),0,10) as row_date,  aas.company_name as company_name, aas.dept_name as dept_name, aas.team_name as team_name,
+        			aas.agent_name, aas.agent_id as agent_id, u2k(logintimets) as logindt, decode(logouttimets, 0, null, u2k(logouttimets)) as logoutdt
+       		from 	WINK1.agentlogin al, (SELECT	DISTINCT COMPANY_NAME, DEPT_NAME, TEAM_NAME, agent_id as agent_id, agent_name as agent_name, agent_dbid as agent_dbid                     
+                                  			FROM	WDM.AX_A_STRUCT 
+                                  			WHERE 	1=1
+							                <if test="center != '' and center != null">
+											AND		company_cd = #{center}		
+											</if>	
+											<if test="grp != '' and grp != null">
+											AND		dept_cd = #{grp}		
+											</if>
+											<if test="team != '' and team != null">
+											AND		team_cd = #{team}		
+											</if>
+											<if test="name != '' and name != null">
+											AND		agent_name in (${name}) 		
+											</if>
+											<if test="id != '' and id != null">
+											AND		agent_id in (${id})		
+											</if>
+											<if test="names != '' and names != null">
+											AND		agent_id in (${names})		
+											</if>
+											) aas
+				where	al.person = aas.agent_dbid
+				and 	al.skill = -1
+            	<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
+				AND		substr(u2k(logintimets),0,10) between #{s_day} and #{e_day}
+				</if>
+		ORDER BY row_date, agent_name, logindt
+    </select>
+    
+	<select id="agLogHstSel_temp" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		SELECT	nvl(a1.row_Date, a2.row_Date) as row_date, nvl(a1.starttime, a2.starttime) as starttime,
+        		nvl(a1.company_name, a2.company_name) as company_name, nvl(a1.dept_name, a2.dept_name) as dept_name, nvl(a1.team_name, a2.team_name) as team_name,
+        		nvl(a1.agent_name, a2.agent_name) as agent_name, nvl(a1.logid, a2.logid) as agent_id, a1.logindt as logindt, a2.logoutdt as logoutdt  
+		FROM  (	SELECT	row_date as row_date, starttime as starttime, logid as logid, row_number() over(partition by starttime order by starttime) pt, 
+						to_CHAR(LOGINOUT_DATE, 'YYYY-MM-DD HH24:MI:SS') as LOGINDT, COMPANY_NAME, DEPT_NAME, TEAM_NAME, agent_name
+       			FROM 	WDM.AGENT_LOGIN_HIST, (SELECT	DISTINCT COMPANY_NAME, DEPT_NAME, TEAM_NAME, agent_id as agent_id, agent_name as agent_name, agent_dbid as agent_dbid                     
+                                  			FROM	WDM.AX_A_STRUCT 
+                                  			WHERE 	1=1
+							                <if test="center != '' and center != null">
+											AND		company_cd = #{center}		
+											</if>	
+											<if test="grp != '' and grp != null">
+											AND		dept_cd = #{grp}		
+											</if>
+											<if test="team != '' and team != null">
+											AND		team_cd = #{team}		
+											</if>
+											<if test="name != '' and name != null">
+											AND		agent_name in (${name})		
+											</if>
+											) aas
+				WHERE	LOGINOUT_FLAG = 'I'
+            	AND 	logid = aas.agent_id
+            	<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
+				AND		row_date between #{s_day} and #{e_day}
+				</if>
+				<if test="id != '' and id != null">
+				AND		logid in (${id})		
+				</if>
+				<if test="names != '' and names != null">
+				AND		logid in (${names})		
+				</if>
+      			) A1 full outer join
+      			(SELECT	row_date as row_date, starttime as starttime, logid as logid, row_number() over(partition by starttime order by starttime) pt, 
+						to_CHAR(LOGINOUT_DATE, 'YYYY-MM-DD HH24:MI:SS') as logoutdt, COMPANY_NAME, DEPT_NAME, TEAM_NAME, agent_name
+       			FROM 	WDM.AGENT_LOGIN_HIST, (SELECT	DISTINCT COMPANY_NAME, DEPT_NAME, TEAM_NAME, agent_id as agent_id, agent_name as agent_name, agent_dbid as agent_dbid                      
+                                  			FROM	WDM.AX_A_STRUCT 
+                                  			WHERE 	1=1
+							                <if test="center != '' and center != null">
+											AND		company_cd = #{center}		
+											</if>	
+											<if test="grp != '' and grp != null">
+											AND		dept_cd = #{grp}		
+											</if>
+											<if test="team != '' and team != null">
+											AND		team_cd = #{team}		
+											</if>
+											<if test="name != '' and name != null">
+											AND		agent_name in (${name}) 		
+											</if>
+											) aas
+				WHERE	LOGINOUT_FLAG = 'O'
+            	AND 	logid = aas.agent_id
+            	<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
+				AND		row_date between #{s_day} and #{e_day}
+				</if>
+				<if test="id != '' and id != null">
+				AND		logid in (${id})		
+				</if>
+				<if test="names != '' and names != null">
+				AND		logid in (${names})		
+				</if>
+      			) A2 
+      			on	a1.row_Date = a2.row_Date
+       			and a1.starttime = a2.starttime
+       			and a1.logid = a2.logid 
+ 				and a1.pt = a2.pt
+		ORDER BY row_date, starttime, agent_name
+    </select>
+</mapper>

@@ -40,22 +40,6 @@
                 },
                 header: false
             },
-            "MENU_MANAGER": {
-                width: 700,
-                height: 800,
-                iframe: {
-                	url: "/jsp/jsp_create/common/menuManager.jsp"
-                },
-                header: false
-            },
-            "HELP_LIST": {
-            	width: 1750,
-                height: 888,
-                iframe: {
-                	url: "/jsp/jsp_create/common/helpList.jsp"
-                },
-                header: false
-            },
             "STAT_MENU_MANAGER": {
                 width: 700,
                 height: 800,
@@ -64,67 +48,43 @@
                 },
                 header: false
             },
-            "DEPART_FACTOR_MODAL": {
+            "SKCALL_FACTOR_MODAL": {
                 width: 500,
                 height: 500,
                 iframe: {
-                    url: "/jsp/jsp_create/historyStat/departmentStatModal.jsp"
+                    url: "/jsp/jsp_create/bakeGR/historyStat/skCallStatTab.jsp"
                 },
                 header: false
             },
-            "WORK_FACTOR_MODAL": {
+            "SKWAIT_FACTOR_MODAL": {
                 width: 500,
                 height: 500,
                 iframe: {
-                    url: "/jsp/jsp_create/historyStat/workStatModal.jsp"
+                    url: "/jsp/jsp_create/bakeGR/historyStat/skWaitStatTab.jsp"
                 },
                 header: false
             },
-            "COM_FACTOR_MODAL": {
+            "AGCALL_FACTOR_MODAL": {
                 width: 500,
                 height: 500,
                 iframe: {
-                    url: "/jsp/jsp_create/historyStat/combineStatModal.jsp"
+                    url: "/jsp/jsp_create/bakeGR/historyStat/agCallStatTab.jsp"
                 },
                 header: false
             },
-            "TIME_FACTOR_MODAL": {
+            "AGPRODT_FACTOR_MODAL": {
                 width: 500,
                 height: 500,
                 iframe: {
-                    url: "/jsp/jsp_create/historyStat/timetoStatModal.jsp"
+                    url: "/jsp/jsp_create/bakeGR/historyStat/agProdtStatTab.jsp"
                 },
                 header: false
             },
-            "WORKCALL_FACTOR_MODAL": {
+            "AGSKILL_FACTOR_MODAL": {
                 width: 500,
                 height: 500,
                 iframe: {
-                    url: "/jsp/jsp_create/historyStat/workCallStatModal.jsp"
-                },
-                header: false
-            },
-            "AGENTCALL_FACTOR_MODAL": {
-                width: 500,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/historyStat/agentCallStatModal.jsp"
-                },
-                header: false
-            },
-            "AGENTSTATUS_FACTOR_MODAL": {
-                width: 500,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/historyStat/agentStatusStatModal.jsp"
-                },
-                header: false
-            },
-            "INCALLS_FACTOR_MODAL": {
-                width: 500,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/historyStat/incallsNumStatModal.jsp"
+                    url: "/jsp/jsp_create/bakeGR/historyStat/agSkillStatTab.jsp"
                 },
                 header: false
             },
@@ -132,111 +92,7 @@
                 width: 1650,
                 height: 800,
                 iframe: {
-                    url: "/jsp/jsp_create/historyStat/callTraceTab.jsp"
-                },
-                header: false
-            },
-            "WIZARD_FACTOR_MODAL": {
-                width: 500,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/management/reportWizardModal.jsp"
-                },
-                header: false
-            },
-            "IVR_ARSTREE_MODAL": {
-                width: 1300,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/outsideStat/ivrArsTreeSub.jsp"
-                },
-                header: false
-            },
-            "IVR_TRACE_MODAL": {
-                width: 1650,
-                height: 800,
-                iframe: {
-                    url: "/jsp/jsp_create/outsideStat/ivrTraceSub.jsp"
-                },
-                header: false
-            },
-            "WZ_DEPART_FACTOR_MODAL": {
-                width: 500,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/management/temp/WdepartmentStatModal.jsp"
-                },
-                header: false
-            },
-            "WZ_WORK_FACTOR_MODAL": {
-                width: 500,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/management/temp/WworkStatModal.jsp"
-                },
-                header: false
-            },
-            "WZ_COM_FACTOR_MODAL": {
-                width: 500,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/management/temp/WcombineStatModal.jsp"
-                },
-                header: false
-            },
-            "WZ_TIME_FACTOR_MODAL": {
-                width: 500,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/management/temp/WtimetoStatModal.jsp"
-                },
-                header: false
-            },
-            "WZ_WORKCALL_FACTOR_MODAL": {
-                width: 500,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/management/temp/WworkCallStatModal.jsp"
-                },
-                header: false
-            },
-            "WZ_AGENTCALL_FACTOR_MODAL": {
-                width: 500,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/management/temp/WagentCallStatModal.jsp"
-                },
-                header: false
-            },
-            "WZ_AGENTSTATUS_FACTOR_MODAL": {
-                width: 500,
-                height: 500,
-                iframe: {
-                    url: "/jsp/jsp_create/management/temp/WagentStatusStatModal.jsp"
-                },
-                header: false
-            },
-            "DEPART_RT_FACTOR_MODAL": {
-                width: 690,
-                height: 600,
-                iframe: {
-                    url: "/jsp/jsp_create/realStat/departRTStateModal.jsp"
-                },
-                header: false
-            },
-            "AGENT_RT_FACTOR_MODAL": {
-                width: 650,
-                height: 600,
-                iframe: {
-                    url: "/jsp/jsp_create/realStat/agentRTStateModal.jsp"
-                },
-                header: false
-            },
-            "DASH_MAJOR_MODAL": {
-                width: 650,
-                height: 650,
-                iframe: {
-                    url: "/jsp/jsp_create/realStat/dashboardRTModal.jsp"
+                    url: "/jsp/jsp_create/bakeGR/historyStat/callTraceTab.jsp"
                 },
                 header: false
             },
@@ -245,22 +101,6 @@
                 height: 500,
                 iframe: {
                     url: "/jsp/jsp_create/systemManager/ctiMapCompModal.jsp"
-                },
-                header: false
-            },
-            "CHART_SETTING_MODAL": {
-                width: 650,
-                height: 600,
-                iframe: {
-                    url: "/jsp/jsp_create/test/chartStatModal.jsp"
-                },
-                header: false
-            },
-            "RECODING_MODAL": {
-                width: 580,
-                height: 380,
-                iframe: {
-                    url: "/jsp/jsp_create/test/recModal.jsp"
                 },
                 header: false
             },

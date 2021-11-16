@@ -80,6 +80,34 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		return;
     	}
     	
+    	var reqExp = /system/i;
+    	if(reqExp.test(userCd) == true)
+    	{
+    		alert("SYSTEM이란 계정은 사용할 수 없습니다.");
+    		return;
+    	}
+    	
+    	if(grpauth != "S0001")
+    	{
+    		// 홈쇼핑
+    		if(form.company_cd == "2")
+    		{
+    			if(grpauth != "S0002" || grpauth != "S0003" || grpauth != "S0004")
+    			{
+    				alert("소속과 권한을 다르게 설정할 수 없습니다.");
+    	    		return;
+    			}
+    		}
+    		else
+    		{
+    			if(grpauth != "G0002" || grpauth != "G0003" || grpauth != "G0004")
+    			{
+    				alert("소속과 권한을 다르게 설정할 수 없습니다.");
+    	    		return;
+    			}
+    		}
+    	}
+    	
     	axboot.ajax({
         	type: "GET",
     	    url: "/api/statLstMng/userAuthLstCd",
@@ -408,12 +436,18 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	$("[data-ax5select='comSelect']").ax5select("setValue", data.company_cd);
     },
     getData: function () {
-
+    	var comCd = "";
+    	if($("[data-ax5select='comSelectWhere']").ax5select("getValue")[0].value === undefined)
+    	{
+    		comCd = "";
+    	}
+    	
         return {
             pageNumber: this.pageNumber,
             pageSize: this.pageSize,
             filter: this.filter.val(),
-            comCd: $("[data-ax5select='comSelectWhere']").ax5select("getValue")[0].value,
+            //comCd: $("[data-ax5select='comSelectWhere']").ax5select("getValue")[0].value,
+            comCd: comCd,
             grpCd: $("[data-ax5select='gunhanSelectWhere']").ax5select("getValue")[0].value
         }
     }

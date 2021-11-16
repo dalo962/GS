@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bakeGR.historyStat.mapper.agProdtStatMapper">
+	<select id="agProdtSel" parameterType="hashmap" resultType="hashmap" fetchSize="1000">		
+		SELECT	${select}
+		FROM 	${from}
+		WHERE	1=1
+		<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
+		AND		row_date BETWEEN #{s_day} AND #{e_day}
+		</if>
+		<if test="s_time != '' and e_time != '' and s_time != null and e_time != null">
+		AND		starttime BETWEEN #{s_time} AND #{e_time} 
+		</if>
+		<if test="holday != '' and holday != null">
+		and 	row_date not in (${holday})
+		</if>
+		<if test="sat != '' and sat != null">
+		and 	TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') not in (#{sat})
+		</if>
+		<if test="hol != '' and hol != null">
+		and 	TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') not in (#{hol})
+		</if>
+		<if test="hdtday != '' and hdtday != null">
+		and 	row_date in (${hdtday})
+		</if>
+		<if test="hdt != '' and hdt != null">
+		and 	TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') in (#{hdt})
+		</if>
+		<if test="compId != '' and compId != null">
+		and		company_cd = #{compId}
+		</if> 
+		<if test="partId != '' and partId != null">
+		and		dept_cd = #{partId}
+		</if> 
+		<if test="teamId != '' and teamId != null">
+		and		team_cd = #{teamId}
+		</if>
+		<if test="agid != '' and agid != null">
+		and		AGENT_ID in (${agid})
+		</if>
+		<if test="agname != '' and agname != null">
+		and		AGENT_NAME in (${agname})
+		</if>	
+		<if test="agids != '' and agids != null">
+		and		AGENT_ID in (${agids})
+		</if>
+		<if test="groupby != '' and groupby != null">
+		GROUP BY ${groupby}
+		</if>
+		ORDER BY ${orderby}
+    </select>
+    
+    <select id="agProdtSelSum" parameterType="hashmap" resultType="hashmap" fetchSize="1000">		
+		SELECT	${sum}
+		FROM 	${from}
+		WHERE	1=1
+		<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
+		AND		row_date BETWEEN #{s_day} AND #{e_day}
+		</if>
+		<if test="s_time != '' and e_time != '' and s_time != null and e_time != null">
+		AND		starttime BETWEEN #{s_time} AND #{e_time} 
+		</if>
+		<if test="holday != '' and holday != null">
+		and 	row_date not in (${holday})
+		</if>
+		<if test="sat != '' and sat != null">
+		and 	TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') not in (#{sat})
+		</if>
+		<if test="hol != '' and hol != null">
+		and 	TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') not in (#{hol})
+		</if>
+		<if test="hdtday != '' and hdtday != null">
+		and 	row_date in (${hdtday})
+		</if>
+		<if test="hdt != '' and hdt != null">
+		and 	TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') in (#{hdt})
+		</if>
+		<if test="compId != '' and compId != null">
+		and		company_cd = #{compId}
+		</if> 
+		<if test="partId != '' and partId != null">
+		and		dept_cd = #{partId}
+		</if> 
+		<if test="teamId != '' and teamId != null">
+		and		team_cd = #{teamId}
+		</if>
+		<if test="agid != '' and agid != null">
+		and		AGENT_ID in (${agid})
+		</if>
+		<if test="agname != '' and agname != null">
+		and		AGENT_NAME in (${agname})
+		</if>	
+		<if test="agids != '' and agids != null">
+		and		AGENT_ID in (${agids})
+		</if>
+		order by 1
+    </select>
+</mapper>

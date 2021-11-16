@@ -14,38 +14,22 @@ public interface statListManagerMapper extends MyBatisMapper{
 
 	// 통계 구분 리스트 조회
 	List<statListManager> statTypeListSel();
-	// medn 항목 조회
-	List<statListManager> mednListSel(Map<String,Object> params);
 	// skill 항목 조회
 	List<statListManager> skillListSel(Map<String,Object> params);
 	// agent 항목 조회
 	List<statListManager> agentListSel(Map<String,Object> params);
-	// 실시간 항목 조회
-	List<statListManager> realListSel(Map<String,Object> params);
-	// medn 항목 추가
-	int mednListIst(Map<String,Object> params);
 	// skill 항목 추가
 	int skillListIst(Map<String,Object> params);
 	// agent 항목 추가
 	int agentListIst(Map<String,Object> params);
-	// 실시간 항목 추가
-	int realListIst(Map<String,Object> params);
-	// medn 항목 수정
-	int mednListUdt(Map<String,Object> params);
 	// skill 항목 수정
 	int skillListUdt(Map<String,Object> params);
 	// agent 항목 수정
 	int agentListUdt(Map<String,Object> params);
-	// 실시간 항목 수정
-	int realListUdt(Map<String,Object> params);
-	// medn 항목 삭제
-	int mednListDel(Map<String,Object> params);
 	// skill 항목 삭제
 	int skillListDel(Map<String,Object> params);
 	// agent 항목 삭제
 	int agentListDel(Map<String,Object> params);
-	// 실시간 항목 삭제
-	int realListDel(Map<String,Object> params);
 		
 	// 유저 리스트 조회
 	List<statListManager> userList();
@@ -60,21 +44,11 @@ public interface statListManagerMapper extends MyBatisMapper{
 	// 유저 항목관리 테이블 사용여부 항목 수정
 	int userFacUdt(Map<String,Object> params);
 
-		
-	// 리포트 항목관리 테이블 항목 추가
-	int rinitFacIst(Map<String,Object> params);
-	// 리포트 항목관리 테이블 항목 수정
-	int rinitFacUdt(Map<String,Object> params);
-	// 리포트 항목관리 테이블 항목 삭제
-	int rinitFacDel(Map<String,Object> params);
-	
 	
 	// modal창 조회
-	List<statListManager> mednListSelmodal(Map<String,Object> params);
 	List<statListManager> skillListSelmodal(Map<String,Object> params);
 	List<statListManager> agentListSelmodal(Map<String,Object> params);
 	// modal창 사용여부 수정
-	int mednListUdtmodal(Map<String,Object> params);
 	int skillListUdtmodal(Map<String,Object> params);
 	int agentListUdtmodal(Map<String,Object> params);
 	
@@ -85,6 +59,6 @@ public interface statListManagerMapper extends MyBatisMapper{
 	
 	List<statListManager> userAuthLst(Map<String,Object> params);
 	
-	List<statListManager> ivrMaxSize(Map<String,Object> params);
-	
+	// 처음 특정 사용자가 세팅한대로 세팅
+	int userFacIstSetting(Map<String,Object> params);
 }

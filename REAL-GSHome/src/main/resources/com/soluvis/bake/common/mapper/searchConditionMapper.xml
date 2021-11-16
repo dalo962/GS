@@ -200,7 +200,7 @@
     
     <select id="agent" parameterType="hashmap" resultType="searchCondition" fetchSize="1000">
 		SELECT	DISTINCT team_name, agent_id as agid, agent_dbid as ctiAgentId, agent_name as agname
-		FROM	AX_A_STRUCT
+		FROM	WDM.AX_A_STRUCT
 		WHERE 	1=1	
 		<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
 		AND		(to_char(delete_at,'yyyy-mm-dd') BETWEEN #{s_day} AND #{e_day} or delete_at is null)

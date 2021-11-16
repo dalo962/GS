@@ -14,11 +14,14 @@ import org.springframework.stereotype.Service;
 
 import com.chequer.axboot.core.parameter.RequestParams;
 import com.querydsl.core.BooleanBuilder;
+import com.soluvis.bake.common.service.menuManagerService;
 import com.soluvis.bake.system.domain.BaseService;
 import com.soluvis.bake.system.domain.user.auth.UserAuth;
 import com.soluvis.bake.system.domain.user.auth.UserAuthService;
 import com.soluvis.bake.system.domain.user.role.UserRole;
 import com.soluvis.bake.system.domain.user.role.UserRoleService;
+import com.soluvis.bake.systemManager.domain.statListManager;
+import com.soluvis.bake.systemManager.service.statListManagerService;
 
 
 
@@ -46,9 +49,15 @@ public class UserService extends BaseService<User, String> {
      * 2017.10.31 강대석
      */
     //String[] arrMedn = new String[]{"incalls"};	
-	//String[] arrSkill = new String[]{"depart", "work", "combine", "timeto"};	
-	//String[] arrAgent = new String[]{"workCall", "agentCall", "agentStatus"};
+    String[] arrSkill = new String[]{"skCall", "skWait"};	
+	String[] arrAgent = new String[]{"agCall", "agProdt", "agSkill"};
     
+  	@Inject
+    private statListManagerService statLstMngService; // UserFactor 생성시 Factor 참조
+  	
+  	@Inject
+    private menuManagerService mstService; // 메뉴 참조
+  	
     //------------------------------------------------------------------------------
     
     @Transactional
@@ -89,6 +98,61 @@ public class UserService extends BaseService<User, String> {
                 userAuthService.save(user.getAuthList());
                 userRoleService.save(user.getRoleList());
                 
+                // 유저 생성시 팩터를 추가해 준다
+	            Map<String, Object> map = new HashMap<String, Object>();
+	            Map<String, Object> seq = new HashMap<String, Object>();
+	                                
+	            map.put("user_id", user.getUserCd());
+	            map.put("stat_gubun","");
+	            map.put("dispname","");
+	            List<statListManager> userChk = statLstMngService.userFacSel(map);
+	            
+	            // 초기 데이터가 없음
+	            if(userChk.size() == 0)
+	            {
+	            	// setting이라는 계정만 타게금 아니면 세팅한대로
+	            	if("setting".equals(user.getUserCd()))
+	            	{
+			            seq.put("seq", "");
+			            seq.put("dispname", "");
+			            seq.put("useyn", "");
+			            List<statListManager> skillLst = statLstMngService.skillListSelmodal(seq);
+			            List<statListManager> agentLst = statLstMngService.agentListSelmodal(seq);
+			            
+			            int skillLstsize = skillLst.size();
+			            if(skillLstsize != 0)
+			            {                	
+			            	for(int i = 0; i < skillLstsize; i++)
+			            	{
+			            		map.put("user_cd", user.getUserCd());
+			            		map.put("stat_gubun", "SKILL");
+			            		map.put("stat_seq", skillLst.get(i).getSeq());
+			            		map.put("stat_yn", skillLst.get(i).getUse_yn());
+			            		map.put("dispname", skillLst.get(i).getDispname());
+			            		
+			            		statLstMngService.userFacIst(map);
+			            	}                	
+			            }
+			            int agentLstsize = agentLst.size();
+			            if(agentLstsize != 0)
+			            {                	
+			            	for(int i = 0; i < agentLstsize; i++)
+			            	{
+			            		map.put("user_cd", user.getUserCd());
+			            		map.put("stat_gubun", "AGENT");
+			            		map.put("stat_seq", agentLst.get(i).getSeq());
+			            		map.put("stat_yn", agentLst.get(i).getUse_yn());
+			            		map.put("dispname", agentLst.get(i).getDispname());
+			            		
+			            		statLstMngService.userFacIst(map);
+			            	}
+			            }
+	            	}
+	            	else
+	            	{
+	            		statLstMngService.userFacIstSetting(map);
+	            	}
+	            }     
             } 
         }
     }
@@ -105,6 +169,10 @@ public class UserService extends BaseService<User, String> {
                 delete(qUserRole).where(qUserRole.userCd.eq(user.getUserCd())).execute();
                 delete(qUserAuth).where(qUserAuth.userCd.eq(user.getUserCd())).execute();
                 delete(qUser).where(qUser.userCd.eq(user.getUserCd())).execute();
+                
+                //그냥 사용자 다 지운다
+                statLstMngService.userDel(user.getUserCd());
+                mstService.menuMngDel(user.getUserCd());       
             }
         }
     }

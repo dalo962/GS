@@ -61,10 +61,7 @@ public class statListManager extends BaseJpaModel<String>{
 	private String data2;
 	private String remark;
 	
-	private String disp_comcd;
-	private String disp_cencd;
-	private String disp_teamcd;
-	private String disp_remark;
+	private String interval;
 	
 	@Override
 	public String getId() {

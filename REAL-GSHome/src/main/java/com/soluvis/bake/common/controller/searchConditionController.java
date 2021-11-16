@@ -40,7 +40,8 @@ public class searchConditionController extends commController {
     public @ResponseBody Responses.ListResponse company(@Valid @RequestBody searchCondition reqParam, HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		
-		if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()))
+		//if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()))
+		if("S0001".equals(reqParam.getGrpcd()))
 		{
 			map.put("Id", "");
 		}
@@ -66,7 +67,8 @@ public class searchConditionController extends commController {
     public @ResponseBody Responses.ListResponse channel(@Valid @RequestBody searchCondition reqParam, HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		
-		if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()) || "S0003".equals(reqParam.getGrpcd()))
+		//if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()) || "S0003".equals(reqParam.getGrpcd()))
+		if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()) || "S0003".equals(reqParam.getGrpcd()) || "G0002".equals(reqParam.getGrpcd()) || "G0003".equals(reqParam.getGrpcd()))
 		{
 			map.put("Id", "");
 		}
@@ -227,7 +229,8 @@ public class searchConditionController extends commController {
     public @ResponseBody Responses.ListResponse part(@Valid @RequestBody searchCondition reqParam, HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		
-		if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()) || "S0003".equals(reqParam.getGrpcd()))				
+		//if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()) || "S0003".equals(reqParam.getGrpcd()))
+		if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()) || "S0003".equals(reqParam.getGrpcd()) || "G0002".equals(reqParam.getGrpcd()) || "G0003".equals(reqParam.getGrpcd()))	
 		{
 			map.put("Id", "");
 		}
@@ -245,7 +248,8 @@ public class searchConditionController extends commController {
     public @ResponseBody Responses.ListResponse team(@Valid @RequestBody searchCondition reqParam, HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		
-		if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()) || "S0003".equals(reqParam.getGrpcd()))					
+		//if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()) || "S0003".equals(reqParam.getGrpcd()))
+		if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()) || "S0003".equals(reqParam.getGrpcd()) || "G0002".equals(reqParam.getGrpcd()) || "G0003".equals(reqParam.getGrpcd()))
 		{
 			map.put("Id", "");
 		}
@@ -285,7 +289,8 @@ public class searchConditionController extends commController {
     public @ResponseBody Responses.ListResponse skpart(@Valid @RequestBody searchCondition reqParam, HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		
-		if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()))				
+		//if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()))
+		if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()) || "S0003".equals(reqParam.getGrpcd()))
 		{
 			map.put("Id", "");
 		}
@@ -303,7 +308,8 @@ public class searchConditionController extends commController {
     public @ResponseBody Responses.ListResponse skteam(@Valid @RequestBody searchCondition reqParam, HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		
-		if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()))					
+		//if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()))
+		if("S0001".equals(reqParam.getGrpcd()) || "S0002".equals(reqParam.getGrpcd()) || "S0003".equals(reqParam.getGrpcd()))
 		{
 			map.put("Id", "");
 		}

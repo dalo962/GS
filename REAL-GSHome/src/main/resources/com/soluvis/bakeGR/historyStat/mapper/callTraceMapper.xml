@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bakeGR.historyStat.mapper.callTraceMapper">
+	<select id="callTrSel" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		SELECT  TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((stimets + 32400) / 86400), 'YYYY-MM-DD') as row_date,
+                substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((stimets + 32400) / 86400), 'hh24miss'),0,2) || ':' || substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((stimets + 32400) / 86400), 'hh24miss'),3,2) || ':' || substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((stimets + 32400) / 86400), 'hh24miss'),5,2) starttime,
+                substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((ttimets + 32400) / 86400), 'hh24miss'),0,2) || ':' || substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((ttimets + 32400) / 86400), 'hh24miss'),3,2) || ':' || substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((ttimets + 32400) / 86400), 'hh24miss'),5,2) endtime,
+                b.company_name as com_name,
+                b.dept_name as dept_name,
+                b.team_name as team_name,
+                a.connidfst as connidfst,
+                a.connid as connid,
+                decode(a.calltype,1,'Internal',2,'Inbound',3,'Outbound',4,'Consult',null) as calltype,
+                a.dnis as dnis,
+                a.ani as ani,
+                A.lastdn as lastdn,
+                b.agent_id as agent_id,
+                b.agent_name as agent_name,
+                decode(a.rparty,1,'상담사',2,'고객',null) as rparty
+        from    WINK1.callinfo a, (select distinct company_cd, company_name, dept_cd, dept_name, team_cd, team_name, agent_dbid, agent_id, agent_name from WDM.ax_a_struct) b
+        WHERE   a.lastperson = b.agent_dbid(+)
+        <if test="center != '' and center != null">
+		AND		b.company_cd = #{center}		
+		</if>
+		<if test="dept_name != '' and dept_name != null">
+		AND		b.dept_cd = #{dept_name}	
+		</if>
+		<if test="team_name != '' and team_name != null">
+		AND		b.team_name = #{team_name}	
+		</if>
+		<if test="s_day != '' and e_day != '' and s_time != '' and e_time != ''">
+		AND		a.etimets between WINK1.K2U(#{s_day}) and WINK1.K2U(#{e_day})
+		</if>
+		<if test="ani != '' and ani != null">
+		AND		a.otherdn in (${ani}) 		
+		</if>
+		
+		<if test="agentid != '' and agentid != null">
+		AND		b.agent_id in (select	b.agent_id 
+							   from 	WINK1.callstat s, (select distinct company_cd, company_name, dept_cd, dept_name, team_cd, agent_dbid, agent_id, agent_name from WDM.ax_a_struct) b
+							   where 	s.person = b.agent_dbid
+							   AND 		b.agent_name in (${agentid})
+							   AND 		s.etimets between WINK1.K2U(#{s_day}) and WINK1.K2U(#{e_day}) 
+						      )	
+		</if>
+		<if test="connid != '' and connid != null">
+		AND		a.connid in (select	connid 
+							from 	WINK1.callinfo 
+							where 	connidfst in (select	connidfst 
+							 						from 	WINK1.callinfo 
+							 					   where 	connid = (${connid})
+													 and 	etimets between WINK1.K2U(#{s_day}) and	WINK1.K2U(#{e_day})
+												 ) 
+							and 	etimets between WINK1.K2U(#{s_day}) and	WINK1.K2U(#{e_day})
+						    )	
+		</if>
+		ORDER BY stimets desc, connidfst desc
+    </select>
+
+	<select id="connidfsts" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		select 	connid as connid 
+		from 	WINK1.callinfo 
+		where 	connidfst in (select connidfst 
+							 from 	 WINK1.callinfo 
+							 where connid = #{connidfst})
+		order by connid							 
+    </select>
+
+	<select id="callTrTbSel" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		SELECT	TO_CHAR(TO_DATE('1970-01-01','yyyy-mm-dd') + ((timets + 32400) / 86400),'YYYY-MM-DD') as row_date,
+				TO_CHAR(TO_DATE('1970-01-01','yyyy-mm-dd') + ((timets + 32400) / 86400),'hh24miss') starttime,
+        		TO_CHAR(TO_DATE('1970-01-01','yyyy-mm-dd') + ((timets + 32400) / 86400),'hh24miss') endtime,
+				connid as connid,
+				decode(calltype,1,'Internal',2,'Inbound',3,'Outbound',4,'Consult',null) as calltype,
+				(SELECT NAME FROM WINK1.codes WHERE ID = EVENT) as event,
+				(SELECT DES  FROM WINK1.codes WHERE ID = EVENT) as des,
+				thisdn as thisdn,
+				otherdn as otherdn,
+				thirddn as thirddn,
+				thisqueue as thisqueue,
+				c.group_name as group_name,
+				b.agent_id as agent_id,
+        		b.agent_name as agent_name,
+				decode(a.rparty,1,'상담사',2,'고객',null) as rparty
+		FROM	WINK1.calldetail a, (select distinct company_cd, company_name, dept_cd, dept_name, team_cd, agent_dbid, agent_id, agent_name from WDM.ax_a_struct) b, WINK1.ax_vdn_org_skill c
+		WHERE   a.person = b.agent_dbid(+)
+		and     a.thisdn = c.vdn_number(+)
+		AND		(connid in (${connid})) 	
+		ORDER BY seq
+    </select>
+    
+    
+    <select id="sessionidget" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		select 	session_id as sid, conn_id as cid 
+		from 	ivr_call_info 
+		where 	conn_id = #{conn_id}
+		order by session_id							 
+    </select>
+
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.systemManager.mapper.progManagerMapper">
+	<select id="progListSel" resultType="progMng" fetchSize="1000">
+		SELECT	DISTINCT STATGUBUN
+		FROM	WDM.AX_STAT_HIST
+		ORDER BY STATGUBUN		
+    </select>
+    
+    <select id="histSel" parameterType="hashmap" resultType="progMng" fetchSize="1000">
+		select	to_CHAR(starttime,'YYYY-MM-DD HH24:MI:SS') AS starttime, targettime AS targettime, statgubun as statgubun, targettable as targettable, substr(exp,0,8) AS exp, exp AS exp_msg, to_CHAR(endtime,'YYYY-MM-DD HH24:MI:SS') as endtime
+		from	WDM.AX_STAT_HIST		
+		where	1=1
+		<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
+		AND		starttime between to_date(#{s_day} || '00:00:00','yyyy-mm-dd hh24:mi:ss') and to_date(#{e_day} || '23:59:59','yyyy-mm-dd hh24:mi:ss')
+		</if>
+		<if test="statgubun != '' and statgubun != null">
+		AND		STATGUBUN = #{statgubun}
+		</if>
+		<if test="exp == 'ONGOING'">
+		AND		exp = 'ONGOING'
+		</if>
+		<if test="exp == 'SUCCESS'">
+		AND		exp = 'SUCCESS'
+		</if>
+		<if test="exp == 'FAIL'">
+		AND		exp != 'SUCCESS' AND exp != 'ONGOING'
+		</if>
+		order by starttime desc, targettable
+    </select>
+    
+    <select id="histTarget" parameterType="hashmap" resultType="progMng" fetchSize="1000">
+		SELECT	DISTINCT targettime, statgubun, CASE WHEN targettable LIKE '%_MIG%' THEN 'M' ELSE 'R' END targettable
+		FROM	WDM.AX_STAT_HIST
+		where	1=1
+		<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
+		AND		starttime between to_date(#{s_day} || '00:00:00','yyyy-mm-dd hh24:mi:ss') and to_date(#{e_day} || '23:59:59','yyyy-mm-dd hh24:mi:ss')
+		</if>	
+		<if test="targettable != '' and targettable != null">
+		AND		targettable = #{targettable}
+		</if>
+		<if test="statgubun != '' and statgubun != null">
+		AND		statgubun = #{statgubun}
+		</if>	
+		ORDER BY targettime
+    </select>
+    
+     <select id="penSel" parameterType="hashmap" resultType="progMng" fetchSize="1000">
+		SELECT 	agg_time as agg_time, agg_gubun as agg_gubun, agg_flag as agg_flag, created_at as created_at, created_by as created_by, updated_at as updated_at
+		FROM 	WDM.AX_PENDING_AGG
+		WHERE 1=1
+		<if test="agg_time != '' and agg_time != null">
+		AND agg_time = #{agg_time}
+		</if>
+		<if test="agg_gubun != '' and agg_gubun != null">
+		AND agg_gubun = #{agg_gubun}
+		</if>
+		<if test="agg_flag != '' and agg_flag != null">
+		AND agg_flag = #{agg_flag}
+		</if>
+		ORDER BY agg_gubun, agg_time
+    </select>
+    
+     <insert id="penIst" parameterType="hashmap">
+		INSERT 	INTO WDM.AX_PENDING_AGG (agg_time, agg_gubun, agg_flag, created_at, created_by, updated_at)
+		VALUES	(#{agg_time}, #{agg_gubun}, #{agg_flag}, sysdate, #{created_by}, null)
+	</insert>    
+	
+	
+	<update id="winkDataAgg" statementType="CALLABLE" parameterType="hashmap">
+		{
+			CALL DC_WINK1.SP_WINK2_WINK1_AGGJOB(#{targettime1}, #{targettime2}, #{s, mode=OUT, jdbcType=INTEGER}, #{o, mode=OUT, jdbcType=VARCHAR})
+		}
+    </update>
+        
+    <update id="axastruct" statementType="CALLABLE" parameterType="hashmap">
+		{
+			CALL WINK1.SP_DAY_AX_A_STRUCT(#{targettime1}, #{s, mode=OUT, jdbcType=INTEGER}, #{o, mode=OUT, jdbcType=VARCHAR})
+		}
+    </update>
+</mapper>

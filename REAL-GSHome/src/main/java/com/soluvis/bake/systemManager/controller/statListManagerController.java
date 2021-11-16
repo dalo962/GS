@@ -44,9 +44,9 @@ public class statListManagerController extends commController{
 	
 	MDCLoginUser loginUser;
 	
-	String[] arrMedn = new String[]{"incalls"};	
-	String[] arrSkill = new String[]{"depart", "work", "combine", "timeto"};	
-	String[] arrAgent = new String[]{"workCall", "agentCall", "agentStatus"};
+	//String[] arrMedn = new String[]{"incalls"};	
+	String[] arrSkill = new String[]{"skCall", "skWait"};	
+	String[] arrAgent = new String[]{"agCall", "agProdt", "agSkill"};
 
 	/** 
 	 * @desc 통계 구분항목을 조회하여 콤보박스를 세팅한다
@@ -73,24 +73,13 @@ public class statListManagerController extends commController{
 			if("STAT01".equals(stattype))
 			{
 				map.put("seq", "");
-				search = statLstMngService.mednListSel(map);
+				search = statLstMngService.skillListSel(map);
 			}
 			else if("STAT02".equals(stattype))
 			{
 				map.put("seq", "");
-				search = statLstMngService.skillListSel(map);
-			}
-			else if("STAT03".equals(stattype))
-			{
-				map.put("seq", "");
 				search = statLstMngService.agentListSel(map);
 			}
-			else
-			{
-				map.put("stat_type", stattype);
-				map.put("stat_id", "");
-				search = statLstMngService.realListSel(map);
-			}		
 		}
 		return search;
 	}
@@ -116,53 +105,6 @@ public class statListManagerController extends commController{
 					if("STAT01".equals(sl.getStat_type()))
 					{
 						map.put("seq", sl.getSeq());
-						search = statLstMngService.mednListSel(map);
-						if(search.size() != 0)
-						{
-							return ok("Fail");
-						}
-						map.put("colname", sl.getColname());					
-						map.put("hanname", sl.getHanname());
-						map.put("use_yn", "N");
-						map.put("gubun", sl.getGubun());
-						map.put("type", sl.getType());
-						map.put("stype", sl.getStype());
-						map.put("asname", sl.getAsname());
-						
-						for(int i = 0; i < arrMedn.length; i++)
-						{
-							map.put("dispname", arrMedn[i]);
-							//int result = statLstMngService.mednListIst(map);
-							statLstMngService.mednListIst(map);
-						}
-						Usearch = statLstMngService.userList();
-						if(Usearch.size() > 0)
-						{
-							map.clear();
-							int Usearchsize = Usearch.size();
-							for(int i = 0; i < Usearchsize; i++)
-							{
-								map.put("user_cd", Usearch.get(i).getUser_cd());
-								map.put("stat_gubun", "MEDN");
-								map.put("stat_seq", sl.getSeq());
-								map.put("stat_yn", "N");
-								for(int j = 0; j < arrMedn.length; j++)
-								{
-									map.put("dispname", arrMedn[j]);
-									//int Uresult = statLstMngService.userFacIst(map);	
-									statLstMngService.userFacIst(map);
-								}
-							}
-							//for(int k = 0; k < arrMedn.length; k++)
-							//{
-							//	map.put("dispname", arrMedn[k]);
-							//	int Rresult = statLstMngService.rinitFacIst(map);
-							//}
-						}					
-					}
-					else if("STAT02".equals(sl.getStat_type()))
-					{
-						map.put("seq", sl.getSeq());
 						search = statLstMngService.skillListSel(map);
 						if(search.size() != 0)
 						{
@@ -175,11 +117,11 @@ public class statListManagerController extends commController{
 						map.put("type", sl.getType());
 						map.put("stype", sl.getStype());
 						map.put("asname", sl.getAsname());
+						map.put("interval", sl.getInterval());
 						
 						for(int i = 0; i < arrSkill.length; i++)
 						{
 							map.put("dispname", arrSkill[i]);
-							//int result = statLstMngService.skillListIst(map);
 							statLstMngService.skillListIst(map);
 						}
 						Usearch = statLstMngService.userList();
@@ -196,19 +138,12 @@ public class statListManagerController extends commController{
 								for(int j = 0; j < arrSkill.length; j++)
 								{
 									map.put("dispname", arrSkill[j]);
-									//int Uresult = statLstMngService.userFacIst(map);	
 									statLstMngService.userFacIst(map);
 								}							
 							}
-							for(int k = 0; k < arrSkill.length; k++)
-							{
-								map.put("dispname", arrSkill[k]);
-								//int Rresult = statLstMngService.rinitFacIst(map);
-								statLstMngService.rinitFacIst(map);
-							}
 						}
 					}
-					else if("STAT03".equals(sl.getStat_type()))
+					else if("STAT02".equals(sl.getStat_type()))
 					{
 						map.put("seq", sl.getSeq());
 						search = statLstMngService.agentListSel(map);
@@ -223,11 +158,11 @@ public class statListManagerController extends commController{
 						map.put("type", sl.getType());
 						map.put("stype", sl.getStype());
 						map.put("asname", sl.getAsname());
+						map.put("interval", sl.getInterval());
 						
 						for(int i = 0; i < arrAgent.length; i++)
 						{
 							map.put("dispname", arrAgent[i]);
-							//int result = statLstMngService.agentListIst(map);
 							statLstMngService.agentListIst(map);
 						}		
 						Usearch = statLstMngService.userList();
@@ -244,52 +179,10 @@ public class statListManagerController extends commController{
 								for(int j = 0; j < arrAgent.length; j++)
 								{
 									map.put("dispname", arrAgent[j]);
-									//int Uresult = statLstMngService.userFacIst(map);	
 									statLstMngService.userFacIst(map);
 								}							
 							}
-							for(int k = 0; k < arrAgent.length; k++)
-							{
-								map.put("dispname", arrAgent[k]);
-								//int Rresult = statLstMngService.rinitFacIst(map);
-								statLstMngService.rinitFacIst(map);
-							}
 						}
-					}
-					else
-					{
-						map.put("stat_type", sl.getStat_type());
-						map.put("stat_id", sl.getStat_id());
-						map.put("stat_nm", sl.getStat_nm());
-						search = statLstMngService.realListSel(map);
-						if(search.size() != 0)
-						{
-							return ok("Fail");
-						}
-						map.put("stat_group", sl.getStat_group());
-						map.put("stat_nm", sl.getStat_nm());
-						map.put("stat_desc", sl.getStat_desc());
-						map.put("stat_unit", sl.getStat_unit());
-						if(sl.getStat_opt1() == null)
-						{
-							map.put("stat_opt1", "");
-						}
-						else
-						{
-							map.put("stat_opt1", sl.getStat_opt1());
-						}
-						map.put("stat_opt2", sl.getStat_opt2());
-						if(sl.getStat_opt3() == null)
-						{
-							map.put("stat_opt3", "");
-						}
-						else
-						{
-							map.put("stat_opt3", sl.getStat_opt3());
-						}
-						
-						//int result = statLstMngService.realListIst(map);
-						statLstMngService.realListIst(map);
 					}
 				}
 				else if(AXBootTypes.DataStatus.MODIFIED.equals(sl.getDataStatus()))
@@ -302,16 +195,14 @@ public class statListManagerController extends commController{
 						map.put("stype", sl.getStype());
 						map.put("seq", sl.getSeq());
 						map.put("asname", sl.getAsname());
-						map.put("colname", sl.getColname());		
+						map.put("colname", sl.getColname());
+						map.put("interval", sl.getInterval());
 						
-						for(int j = 0; j < arrMedn.length; j++)
+						for(int j = 0; j < arrSkill.length; j++)
 						{
-							map.put("dispname", arrMedn[j]);
-							//int result = statLstMngService.mednListUdt(map);
-							statLstMngService.mednListUdt(map);
+							map.put("dispname", arrSkill[j]);
+							statLstMngService.skillListUdt(map);
 						}
-						
-						//int result = statLstMngService.mednListUdt(map);
 					}
 					else if("STAT02".equals(sl.getStat_type()))
 					{
@@ -322,60 +213,13 @@ public class statListManagerController extends commController{
 						map.put("seq", sl.getSeq());
 						map.put("asname", sl.getAsname());
 						map.put("colname", sl.getColname());
-						
-						for(int j = 0; j < arrSkill.length; j++)
-						{
-							map.put("dispname", arrSkill[j]);
-							//int result = statLstMngService.skillListUdt(map);	
-							statLstMngService.skillListUdt(map);
-						}	
-						//int result = statLstMngService.skillListUdt(map);
-					}
-					else if("STAT03".equals(sl.getStat_type()))
-					{
-						map.put("hanname", sl.getHanname());
-						map.put("gubun", sl.getGubun());
-						map.put("type", sl.getType());
-						map.put("stype", sl.getStype());
-						map.put("seq", sl.getSeq());
-						map.put("asname", sl.getAsname());
-						map.put("colname", sl.getColname());
+						map.put("interval", sl.getInterval());
 						
 						for(int j = 0; j < arrAgent.length; j++)
 						{
 							map.put("dispname", arrAgent[j]);
-							//int result = statLstMngService.agentListUdt(map);	
 							statLstMngService.agentListUdt(map);
-						}	
-						//int result = statLstMngService.agentListUdt(map);
-					}
-					else
-					{
-						map.put("stat_group", sl.getStat_group());
-						map.put("stat_nm", sl.getStat_nm());
-						map.put("stat_desc", sl.getStat_desc());
-						map.put("stat_unit", sl.getStat_unit());					
-						map.put("stat_id", sl.getStat_id());
-						map.put("stat_type", sl.getStat_type());
-						if(sl.getStat_opt1() == null)
-						{
-							map.put("stat_opt1", "");
 						}
-						else
-						{
-							map.put("stat_opt1", sl.getStat_opt1());
-						}
-						map.put("stat_opt2", sl.getStat_opt2());
-						if(sl.getStat_opt3() == null)
-						{
-							map.put("stat_opt3", "");
-						}
-						else
-						{
-							map.put("stat_opt3", sl.getStat_opt3());
-						}
-						//int result = statLstMngService.realListUdt(map);
-						statLstMngService.realListUdt(map);
 					}
 				}
 				else if(AXBootTypes.DataStatus.DELETED.equals(sl.getDataStatus()))
@@ -385,56 +229,24 @@ public class statListManagerController extends commController{
 						map.put("seq", sl.getSeq());
 						map.put("colname", sl.getColname());
 						
-						//int result = statLstMngService.mednListDel(map);
-						statLstMngService.mednListDel(map);
+						statLstMngService.skillListDel(map);
 						
-						map.put("stat_gubun", "MEDN");
+						map.put("stat_gubun", "SKILL");
 						map.put("stat_seq", sl.getSeq());
 													
-						//int Uresult = statLstMngService.userFacDel(map);
 						statLstMngService.userFacDel(map);
-						//int Rresult = statLstMngService.rinitFacDel(map);
 					}
 					else if("STAT02".equals(sl.getStat_type()))
 					{
 						map.put("seq", sl.getSeq());
 						map.put("colname", sl.getColname());
 						
-						//int result = statLstMngService.skillListDel(map);
-						statLstMngService.skillListDel(map);
-						
-						map.put("stat_gubun", "SKILL");
-						map.put("stat_seq", sl.getSeq());
-													
-						//int Uresult = statLstMngService.userFacDel(map);
-						statLstMngService.userFacDel(map);
-						//int Rresult = statLstMngService.rinitFacDel(map);
-						statLstMngService.rinitFacDel(map);
-					}
-					else if("STAT03".equals(sl.getStat_type()))
-					{
-						map.put("seq", sl.getSeq());
-						map.put("colname", sl.getColname());
-						
-						//int result = statLstMngService.agentListDel(map);
 						statLstMngService.agentListDel(map);
 						
 						map.put("stat_gubun", "AGENT");
 						map.put("stat_seq", sl.getSeq());
 													
-						//int Uresult = statLstMngService.userFacDel(map);
 						statLstMngService.userFacDel(map);
-						//int Rresult = statLstMngService.rinitFacDel(map);
-						statLstMngService.rinitFacDel(map);
-					}
-					else
-					{					
-						map.put("stat_id", sl.getStat_id());
-						map.put("stat_type", sl.getStat_type());
-						map.put("stat_nm", sl.getStat_nm());
-						
-						//int result = statLstMngService.realListDel(map);
-						statLstMngService.realListDel(map);
 					}
 				}
 			}
@@ -452,14 +264,6 @@ public class statListManagerController extends commController{
 		List<statListManager> search = null;
 		String tp = "";
 		
-		for(int i = 0; i < arrMedn.length; i++)
-		{
-			if(arrMedn[i].toString().equals(disp))
-			{
-				tp = "MEDN";
-				break;
-			}
-		}
 		for(int i = 0; i < arrSkill.length; i++)
 		{
 			if(arrSkill[i].toString().equals(disp))
@@ -479,9 +283,7 @@ public class statListManagerController extends commController{
 		map.put("seq", "");
 		map.put("dispname", disp);
 		map.put("useyn", "");
-		if("MEDN".equals(tp)) 
-		{ search = statLstMngService.mednListSelmodal(map); }
-		else if("SKILL".equals(tp)) 
+		if("SKILL".equals(tp)) 
 		{ search = statLstMngService.skillListSelmodal(map); }
 		else if("AGENT".equals(tp)) 
 		{ search = statLstMngService.agentListSelmodal(map); }
@@ -495,25 +297,13 @@ public class statListManagerController extends commController{
 	@RequestMapping(value="/statLstMngMenuSave", method = RequestMethod.POST, produces = APPLICATION_JSON)
     public ApiResponse statLstMngMenuSave(@Valid @RequestBody List<statListManager> statList, HttpServletRequest request) throws Exception {	
 		Map<String, Object> map = new HashMap<String, Object>(); 
-		
-		//int result = 0;
-		//int Uresult = 0;
-		//int Rresult = 0;
+
 		String tp = "";
-		//List<statListManager> search = null;	
 
 		for (statListManager sl : statList)
 		{	
 			if(AXBootTypes.DataStatus.MODIFIED.equals(sl.getDataStatus()))
-			{
-				for(int i = 0; i < arrMedn.length; i++)
-				{
-					if(arrMedn[i].toString().equals(sl.getDispname()))
-					{
-						tp = "MEDN";
-						break;
-					}
-				}
+			{				
 				for(int i = 0; i < arrSkill.length; i++)
 				{
 					if(arrSkill[i].toString().equals(sl.getDispname()))
@@ -550,36 +340,14 @@ public class statListManagerController extends commController{
 				map.put("colname", sl.getColname());
 				map.put("dispname", sl.getDispname());
 				
-				if("MEDN".equals(tp)) 
-				{ statLstMngService.mednListUdtmodal(map); }
-				else if("SKILL".equals(tp)) 
+				if("SKILL".equals(tp)) 
 				{ statLstMngService.skillListUdtmodal(map); }
 				else if("AGENT".equals(tp)) 
 				{ statLstMngService.agentListUdtmodal(map); }				
-				
-				/*
-				if(tp.equals("MEDN")) { result = statLstMngService.mednListUdtmodal(map); }
-				else if(tp.equals("SKILL")) { result = statLstMngService.skillListUdtmodal(map); }
-				else if(tp.equals("AGENT")) { result = statLstMngService.agentListUdtmodal(map); }
 					
-				map.put("stat_gubun",tp);
-				search = statLstMngService.userList();
-				
-				for(int i = 0; i < search.size(); i++)
-				{
-					map.put("user_id", search.get(i).getUser_cd());
-					map.put("stat_nseq", sl.getSeq());
-					map.put("stat_yn", sl.getUse_yn());
-					map.put("stat_oseq", sl.getSeq());
-					map.put("stat_seq", sl.getSeq());
-						
-					Uresult = statLstMngService.userFacUdt(map);				
-				}*/			
 				map.put("stat_yn", sl.getUse_yn());
 				map.put("stat_gubun",tp);
 				map.put("stat_seq", sl.getSeq());
-				//Rresult = statLstMngService.rinitFacUdt(map);
-				statLstMngService.rinitFacUdt(map);
 			}
 		}		
 		return ok();
@@ -602,51 +370,50 @@ public class statListManagerController extends commController{
 		map.put("dispname", dispname);
 		
 		List<statListManager> search = statLstMngService.userFacSel(map);
+		int searchsize = search.size();
 		
-		if(search.size() > 0)
+		map.put("seq", "");			
+		map.put("useyn", "Y");
+		
+		List<statListManager> List = null;
+		
+		if("SKILL".equals(stat_gubun)) 
+		{ List = statLstMngService.skillListSelmodal(map); }
+		else if("AGENT".equals(stat_gubun)) 
+		{ List = statLstMngService.agentListSelmodal(map); }
+		
+		if(searchsize > 0)
 		{
-			int searchsize = search.size();
 			for(int i = 0; i < searchsize; i++)
 			{
 				if("Y".equals(search.get(i).getStat_yn()))
 				{
-					Map<String, Object> Mmap = new HashMap<String, Object>(); 
-						
-					map.put("seq", search.get(i).getStat_seq());	
-					map.put("dispname", search.get(i).getDispname());
-					List<statListManager> List = null;
-					map.put("useyn", "Y");
-					if("MEDN".equals(stat_gubun)) 
-					{ List = statLstMngService.mednListSelmodal(map); }
-					else if("SKILL".equals(stat_gubun)) 
-					{ List = statLstMngService.skillListSelmodal(map); }
-					else if("AGENT".equals(stat_gubun)) 
-					{ List = statLstMngService.agentListSelmodal(map); }
-						
 					if(List.size() > 0)
 					{
-						Mmap.put("key", List.get(0).getAsname());
-						Mmap.put("label", List.get(0).getHanname());
-						Mmap.put("sgroup", List.get(0).getSgroup());
+						Map<String, Object> Mmap = new HashMap<String, Object>();
+						Mmap.put("key", List.get(i).getAsname());
+						Mmap.put("label", List.get(i).getHanname());
+						Mmap.put("sgroup", List.get(i).getSgroup());
 						Mmap.put("width", 120);
 						Mmap.put("align", "center");
 						Mmap.put("sortable", true);		
-						Mmap.put("stype", List.get(0).getStype());
-						Mmap.put("colname", List.get(0).getColname());
+						Mmap.put("stype", List.get(i).getStype());
+						Mmap.put("colname", List.get(i).getColname());
+						Mmap.put("interval", List.get(i).getInterval());
 						
-						if("M".equals(List.get(0).getGubun())) 
+						if("M".equals(List.get(i).getGubun())) 
 						{Mmap.put("formatter", "major");}
-						else if("T".equals(List.get(0).getGubun())) 
+						else if("T".equals(List.get(i).getGubun())) 
 						{Mmap.put("formatter", "hour");}
-						else if("N".equals(List.get(0).getGubun())) 
+						else if("N".equals(List.get(i).getGubun())) 
 						{Mmap.put("formatter", "cnt");}
-						else if("P".equals(List.get(0).getGubun())) 
+						else if("P".equals(List.get(i).getGubun())) 
 						{Mmap.put("formatter", "ptg");}
-						else if("PS".equals(List.get(0).getGubun())) 
+						else if("PS".equals(List.get(i).getGubun())) 
 						{Mmap.put("formatter", "person");}
-						else if("PSG".equals(List.get(0).getGubun())) 
-						{Mmap.put("formatter", "perptg");}
-						else if("TX".equals(List.get(0).getGubun())) 
+						//else if("PSG".equals(List.get(0).getGubun())) 
+						//{Mmap.put("formatter", "perptg");}
+						else if("TX".equals(List.get(i).getGubun())) 
 						{Mmap.put("formatter", "texter");}
 						
 						list.add(Mmap);
@@ -654,7 +421,6 @@ public class statListManagerController extends commController{
 				}		
 			}
 		}	
-		
 		return list;
 	}
 	
@@ -677,43 +443,41 @@ public class statListManagerController extends commController{
 		map.put("dispname", dispname);
 			
 		ulist = statLstMngService.userFacSel(map);
+		int ulistsize = ulist.size();
 		
-		if(ulist.size() > 0)
+		Map<String, Object> Mmap = new HashMap<String, Object>(); 
+		
+		Mmap.put("seq", "");
+		Mmap.put("useyn", "Y");
+		if("SKILL".equals(stat_gubun)) 
+		{ search = statLstMngService.skillListSelmodal(Mmap); }
+		else if("AGENT".equals(stat_gubun)) 
+		{ search = statLstMngService.agentListSelmodal(Mmap); }
+		
+		if(ulistsize > 0)
 		{
-			int ulistsize = ulist.size();
 			for(int i = 0; i < ulistsize; i++)
 			{
-				Map<String, Object> Mmap = new HashMap<String, Object>(); 
-				
-				Mmap.put("seq", ulist.get(i).getStat_seq());
-				Mmap.put("dispname", ulist.get(i).getDispname());
-				Mmap.put("useyn", "Y");
-				if("MEDN".equals(stat_gubun)) 
-				{ search = statLstMngService.mednListSelmodal(Mmap); }
-				else if("SKILL".equals(stat_gubun)) 
-				{ search = statLstMngService.skillListSelmodal(Mmap); }
-				else if("AGENT".equals(stat_gubun)) 
-				{ search = statLstMngService.agentListSelmodal(Mmap); }
-					
 				if(search.size() > 0)
 				{
-					Mmap.put("colname", search.get(0).getAsname());
-					Mmap.put("hanname", search.get(0).getHanname());
-					Mmap.put("sgroup", search.get(0).getSgroup());
-					//search.get(0).setSeq(ulist.get(i).getSort());
-					Mmap.put("seq", ulist.get(i).getRm()) ; //search.get(0).getSeq());		
-					Mmap.put("statseq", ulist.get(i).getStat_seq());
+					Mmap = new HashMap<String, Object>();
 					
-					search.get(0).setUse_yn(ulist.get(i).getStat_yn());
-					Mmap.put("use_yn", search.get(0).getUse_yn());
+					Mmap.put("colname", search.get(i).getAsname());
+					Mmap.put("hanname", search.get(i).getHanname());
+					Mmap.put("sgroup", search.get(i).getSgroup());
+					Mmap.put("seq", ulist.get(i).getRm()) ; 	
+					Mmap.put("statseq", ulist.get(i).getStat_seq());
+					Mmap.put("interval", search.get(i).getInterval());
+					
+					search.get(i).setUse_yn(ulist.get(i).getStat_yn());
+					Mmap.put("use_yn", search.get(i).getUse_yn());
 						
-					Mmap.put("gubun", search.get(0).getGubun());								
+					Mmap.put("gubun", search.get(i).getGubun());								
 						
 					list.add(Mmap);
 				}
 			}		
 		}
-		
 		return list;
 	}
 	
@@ -722,16 +486,11 @@ public class statListManagerController extends commController{
 	 */ 
 	@RequestMapping(value="/StatModalSave", method = RequestMethod.POST, produces = APPLICATION_JSON)
 	public @ResponseBody int StatModalSave(@Valid @RequestBody Map<String,Object> modalSave, HttpServletRequest request) throws Exception {
-
 		Map<String,Object> reqTmp = (Map<String, Object>) modalSave.get("0");
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		String stat_gubun = (String) reqTmp.get("stat_gubun");
 		String dispname = (String) reqTmp.get("dispname");
 		Object[]  user_factor = ((List<statListManager>) reqTmp.get("user_factor")).toArray();
-		
-		//System.out.println("modalSave.get(0) : " + modalSave.get("0"));
-		//System.out.println("modalSave.stat_gubun : " + stat_gubun);
-		//System.out.println("modalSave.dispname : " + dispname);
 		
 		int result = 0;
 		List<statListManager> list = null;
@@ -742,36 +501,25 @@ public class statListManagerController extends commController{
 		map.put("user_id", cid);
 		map.put("stat_gubun", stat_gubun);
 		map.put("dispname", dispname);
-//		map.put("stat_gubun", request.getParameter("stat_gubun"));
-//		map.put("dispname", request.getParameter("dispname"));
-		
+
 		map.put("seq", "");	
 		map.put("useyn", "Y");
-		if("MEDN".equals(stat_gubun)) 
-		{ list = statLstMngService.mednListSelmodal(map); }
-		else if("SKILL".equals(stat_gubun))
+		if("SKILL".equals(stat_gubun))
 		{ list = statLstMngService.skillListSelmodal(map); }
 		else if("AGENT".equals(stat_gubun))
 		{ list = statLstMngService.agentListSelmodal(map); }
 		
-		//list = statLstMngService.userFacSel(map);
 		int listsize = list.size(); 
 		for(int i = 0; i < listsize; i++)
 		{
 			Map<String, String> ufact = (Map<String, String>) user_factor[i];
-			//System.out.println("temp.stat_yn() : " + ufact.get("yn"));
-			//System.out.println("temp.stat_seq() : " + ufact.get("stat_seq"));
-			map.put("stat_nseq", i+1) ; //params.get("user_factor[" + i + "][num]"));
+
+			map.put("stat_nseq", i+1) ;
 			map.put("stat_yn", ufact.get("yn"));
-			map.put("stat_oseq", ufact.get("stat_seq")); //list.get(i).getStat_seq());
+			map.put("stat_oseq", ufact.get("stat_seq")); 
 			
-//			map.put("stat_nseq", i+1) ; //params.get("user_factor[" + i + "][num]"));
-//			map.put("stat_yn", params.get("user_factor[" + i + "][yn]"));
-//			map.put("stat_oseq", params.get("user_factor[" + i + "][stat_seq]")); //list.get(i).getStat_seq());
-				
 			result = statLstMngService.userFacUdt(map);
 		}
-		
 		return result;
 	}
 	
@@ -802,8 +550,6 @@ public class statListManagerController extends commController{
 	public @ResponseBody List<statListManager> userAuthLstCd(@Valid HttpServletRequest request, String user_cd) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		//System.out.println(request.getParameter("user_cd"));
-		//System.out.println(user_cd);
 		map.put("user_cd", request.getParameter("user_cd"));		
 		List<statListManager> search = statLstMngService.userAuthSel(map);
 		
@@ -837,21 +583,6 @@ public class statListManagerController extends commController{
 		}
 		
 		search = statLstMngService.selectHistoryTime(map);
-		
-		return search;
-	}
-    
-    
-    
-    /** 
-	 * @desc ivr에서 최대건수를 가져온다
-	 */ 
-	@RequestMapping(value="/ivrMaxSizeGet", method = RequestMethod.GET, produces = APPLICATION_JSON)
-	public @ResponseBody List<statListManager> ivrMaxSizeGet(@Valid HttpServletRequest request, String groupcd) throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("group_cd", "IVRMAXCNT");		
-		List<statListManager> search = statLstMngService.ivrMaxSize(map);
 		
 		return search;
 	}
