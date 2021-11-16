@@ -27,12 +27,13 @@ import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.commController;
-import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
-import com.soluvis.bake.ivrManagement.domain.ivrUrlList;
-import com.soluvis.bake.ivrManagement.service.ivrBlackListService;
-import com.soluvis.bake.ivrManagement.service.ivrUrlListService;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
 import com.soluvis.bake.system.utils.SessionUtils;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRBlackList;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRUrlList;
+import com.soluvis.bakeGR.ivrManagement.service.ivrGRBlackListService;
+import com.soluvis.bakeGR.ivrManagement.service.ivrGRUrlListService;
+import com.soluvis.bakeGR.ivrManagement.utils.globalVariables;
 
 /** 
  * @author gihyunpark
@@ -43,10 +44,10 @@ import com.soluvis.bake.system.utils.SessionUtils;
 public class ivrGRBlackListController extends commController{
 	
 	@Inject
-	private ivrBlackListService ivrBlackListService;	
+	private ivrGRBlackListService ivrGRBlackListService;	
 	
 	@Inject
-	private ivrUrlListService ivrUrlListService;
+	private ivrGRUrlListService ivrGRUrlListService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
 	
@@ -58,16 +59,16 @@ public class ivrGRBlackListController extends commController{
 	 * @desc 블랙컨슈머 목록을 조회한다
 	 */
 	@RequestMapping(value="/BlackListSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
-	public @ResponseBody List<ivrBlackList> BlackListSearch(HttpServletRequest request) throws Exception {
+	public @ResponseBody List<ivrGRBlackList> BlackListSearch(HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
-		List<ivrBlackList> search = null;
+		List<ivrGRBlackList> search = null;
 		
 		try
 		{	
 			map.put("ani", "");
 			
 			logger.info("ivrBlackListService.BlackListGet Query Start...");			
-			search = ivrBlackListService.BlackListGet(map);
+			search = ivrGRBlackListService.BlackListGet(map);
 		}
 		catch(Exception e)
 		{
@@ -81,12 +82,12 @@ public class ivrGRBlackListController extends commController{
 	 * @desc 블랙컨슈머 목록을 수정한다
 	 */
 	@RequestMapping(value = "/BlackListSave", method = RequestMethod.POST, produces = APPLICATION_JSON)
-    public ApiResponse BlackListSave(@Valid @RequestBody List<ivrBlackList> blackLst, HttpServletRequest request) throws Exception {	
+    public ApiResponse BlackListSave(@Valid @RequestBody List<ivrGRBlackList> blackLst, HttpServletRequest request) throws Exception {	
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> code = new HashMap<String, Object>();
-		List<ivrBlackList> search = null;
-		List<ivrUrlList> Urlsearch = null;
-		List<ivrUrlList> UrlCodesearch = null;
+		List<ivrGRBlackList> search = null;
+		List<ivrGRUrlList> Urlsearch = null;
+		List<ivrGRUrlList> UrlCodesearch = null;
 		
 		BufferedReader in = null;
 		
@@ -102,24 +103,28 @@ public class ivrGRBlackListController extends commController{
 		
 		try
 		{
-			for (ivrBlackList bl : blackLst)
+			for (ivrGRBlackList bl : blackLst)
 			{
 				map.put("ani", bl.getAni());
 								
 				if(AXBootTypes.DataStatus.CREATED.equals(bl.getDataStatus()))
-				{		
-					search = ivrBlackListService.BlackListGet(map);
-					int searchSize = search.size();
+				{
+					map.put("connid", bl.getConnid());
+					map.put("description", bl.getDescription());
+					map.put("crt_dt", sdf.format(new Date()));
+					map.put("crt_by", cid);
 					
-					if(searchSize == 0)
-					{
-						map.put("flag", bl.getFlag());
-						map.put("crt_dt", sdf.format(new Date()));
-						map.put("crt_by", cid);
-						
-						logger.info("ivrBlackListService.BlackListIst Query Start...");
-						sqlrst = ivrBlackListService.BlackListIst(map);
-					}
+					logger.info("ivrGRBlackListService.BlackListIst Query Start...");
+					sqlrst = ivrGRBlackListService.BlackListIst(map);
+					
+					//같은 ANI로 여러개 쌓일수 있기때문에 무조건 쌓는다
+//					search = ivrGRBlackListService.BlackListGet(map);
+//					int searchSize = search.size();
+//					
+//					if(searchSize == 0)
+//					{
+//						
+//					}
 					
 					if(sqlrst == 0)
 					{
@@ -128,12 +133,14 @@ public class ivrGRBlackListController extends commController{
 				}
 				else if(AXBootTypes.DataStatus.MODIFIED.equals(bl.getDataStatus()))
 				{
-					map.put("flag", bl.getFlag());
+					map.put("seq", bl.getSeq());
+					map.put("connid", bl.getConnid());
+					map.put("description", bl.getDescription());
 					map.put("upt_dt", sdf.format(new Date()));
 					map.put("upt_by", cid);
 						
-					logger.info("ivrBlackListService.BlackListUdt Query Start...");
-					sqlrst = ivrBlackListService.BlackListUdt(map);
+					logger.info("ivrGRBlackListService.BlackListUdt Query Start...");
+					sqlrst = ivrGRBlackListService.BlackListUdt(map);
 					
 					if(sqlrst == 0)
 					{
@@ -142,8 +149,9 @@ public class ivrGRBlackListController extends commController{
 				}
 				else if(AXBootTypes.DataStatus.DELETED.equals(bl.getDataStatus()))
 				{
-					logger.info("ivrBlackListService.BlackListDel Query Start...");
-					sqlrst = ivrBlackListService.BlackListDel(map);
+					map.put("seq", bl.getSeq());
+					logger.info("ivrGRBlackListService.BlackListDel Query Start...");
+					sqlrst = ivrGRBlackListService.BlackListDel(map);
 					
 					if(sqlrst == 0)
 					{
@@ -151,14 +159,16 @@ public class ivrGRBlackListController extends commController{
 					}
 				}			
 			}
+			if(globalVariables.url_sync_flag == false)
+				return ok(msg);	
 		
-			logger.info("ivrUrlListService.UrlListGet Query Start...");
-			Urlsearch = ivrUrlListService.UrlListGet(map);
+			logger.info("ivrGRUrlListService.UrlListGet Query Start...");
+			Urlsearch = ivrGRUrlListService.UrlListGet(map);
 			int UrlSize = Urlsearch.size();
 
 			code.put("code", "BLACK_SYNC");
-			logger.info("ivrUrlListService.IvrUrlGet Query Start...");
-			UrlCodesearch = ivrUrlListService.IvrUrlGet(code);
+			logger.info("ivrGRUrlListService.IvrUrlGet Query Start...");
+			UrlCodesearch = ivrGRUrlListService.IvrUrlGet(code);
 			
 			int UrlCodeSize = UrlCodesearch.size();
 			String htpcode = "";
@@ -172,7 +182,7 @@ public class ivrGRBlackListController extends commController{
 			else
 			{
 				htpcode = "http://";
-				urlcode = ":18080/infomartConnector/blackConsumerUpdate";
+				urlcode = ":18080/GRConnector/blackConsumerUpdate";
 			}
 			
 			if(result == 0)
@@ -182,8 +192,8 @@ public class ivrGRBlackListController extends commController{
 			       try
 			       {
 			    	   URL obj = new URL(htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
-			    	   System.out.println("블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
-		    		   logger.info("블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
+			    	   System.out.println("GR 블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
+		    		   logger.info("GR 블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
 		    		   
 			    	   HttpURLConnection con = (HttpURLConnection)obj.openConnection(); 
 
@@ -204,8 +214,8 @@ public class ivrGRBlackListController extends commController{
 				    	   
 				    	   while((line = in.readLine()) != null)
 				    	   {
-				    		   System.out.println("블랙컨슈머관리-->" + line + "===>result-" + rcode); 
-				    		   logger.info("블랙컨슈머관리-->" + line + "===>result-" + rcode);
+				    		   System.out.println("GR 블랙컨슈머관리-->" + line + "===>result-" + rcode); 
+				    		   logger.info("GR 블랙컨슈머관리-->" + line + "===>result-" + rcode);
 				    		   
 				    		   rlt = line;
 				    		   
@@ -215,11 +225,11 @@ public class ivrGRBlackListController extends commController{
 				    	   
 				    	   rlt = jsonObject.getString("result");
 				    	   
-				    	   System.out.println("블랙컨슈머관리rlt-->" + rlt); 
-			    		   logger.info("블랙컨슈머관리rlt-->" + rlt);
+				    	   System.out.println("GR 블랙컨슈머관리rlt-->" + rlt); 
+			    		   logger.info("GR 블랙컨슈머관리rlt-->" + rlt);
 			    		   
-				    	   System.out.println("블랙컨슈머관리err-->" + err.toString()); 
-			    		   logger.info("블랙컨슈머관리err-->" + err.toString()) ;
+				    	   System.out.println("GR 블랙컨슈머관리err-->" + err.toString()); 
+			    		   logger.info("GR 블랙컨슈머관리err-->" + err.toString()) ;
 				    	   
 				    	   if(rcode == 200)
 				    	   {

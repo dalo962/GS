@@ -268,7 +268,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             showLineNumber:true,
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
-            	{key: "ani", label: "휴일", width: 200, align: "center", sortable: true, editor: {
+            	{key: "holiday", label: "휴일", width: 200, align: "center", sortable: true, editor: {
             		type: "text", disabled:function(){
             				var dis = "";
             				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
@@ -281,8 +281,16 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             				}
             				return dis;
             			}
-            	}},
-                {key: "flag", label: "사용유무", width: 120, align: "center", sortable: true, editor: {
+            	},	formatter: function() {
+	            		var crdt = "";
+	            		if(this.item.crt_dt != null)
+	            		{
+	            			crdt = this.item.crt_dt.substr(0,4) + "-" + this.item.crt_dt.substr(4,2) + "-" + this.item.crt_dt.substr(6,2);
+	            		}
+	            		return crdt;
+            		}
+            	},
+                {key: "hl_useyn", label: "사용유무", width: 120, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
                 			optionValue: "value", optionText: "text"
@@ -293,7 +301,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     	]
                 	}
                 }, formatter: function() {
-                	switch(this.item.flag) {
+                	switch(this.item.hl_useyn) {
                 		case "1":
             				return "사용";
             				break; 	

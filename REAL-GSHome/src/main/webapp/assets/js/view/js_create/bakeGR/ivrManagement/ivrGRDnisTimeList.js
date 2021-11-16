@@ -31,6 +31,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var wkuseyn = 0;
     	var wklcuseyn = 0;
     	var wkhluseyn = 0;
+    	var wkovuseyn = 0;
     	var wknumber = 0;    	
     	var wknumber2 = 0;
     	saveList.forEach(function (n){
@@ -49,6 +50,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		if(n.hl_useyn == null || n.hl_useyn == "")
     		{
     			wkhluseyn = wkhluseyn + 1;
+    		}
+    		if(n.ov_useyn == null || n.ov_useyn == "")
+    		{
+    			wkovuseyn = wkovuseyn + 1;
     		}
     		/*
     		if(reqExp.test(n.dnis) == false 
@@ -97,6 +102,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(wkhluseyn > 0) 
     	{ 
     		alert("휴일 사용유무를 선택하시기 바랍니다."); 
+    		return;
+    	}
+    	if(wkovuseyn > 0) 
+    	{ 
+    		alert("초과근무 사용유무를 선택하시기 바랍니다."); 
     		return;
     	}
 
@@ -239,6 +249,43 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 }},
                 {key: "wr_stime", label: "평일근무 시작시간", width: 140, align: "center", sortable: true, editor:"text"},
                 {key: "wr_etime", label: "평일근무 종료시간", width: 140, align: "center", sortable: true, editor:"text"}, 
+                {key: "ov_useyn", label: "초과근무 사용유무", width: 140, align: "center", sortable: true, editor: {
+                	type: "select", config: {
+                		columnKeys: {
+                			optionValue: "value", optionText: "text"
+                		},
+                		options: [
+                			{value: "0", text: "미사용"},
+                			{value: "1", text: "월-금"},
+                			{value: "2", text: "월-토"},
+                			{value: "3", text: "월-일"},
+                			{value: "4", text: "월-일(휴일포함)"}           			
+                    	]
+                	}
+                }, formatter: function() {
+                	switch(this.item.ov_useyn) {
+            		case "0":
+            			return "미사용";
+            			break; 	
+            		case "1":
+        				return "월-금";
+        				break; 	
+            		case "2":
+            			return "월-토";
+            			break;       
+            		case "3":
+            			return "월-일";
+            			break;   
+            		case "4":
+            			return "월-일(휴일포함)";
+            			break;                 		
+            		default :
+            			return "선택";
+            			break;
+            	}
+                }},
+                {key: "ov_stime", label: "초과근무 시작시간", width: 150, align: "center", sortable: true, editor:"text"},
+                {key: "ov_etime", label: "초과근무 종료시간", width: 150, align: "center", sortable: true, editor:"text"},  
                 {key: "lc_useyn", label: "점심시간 사용유무", width: 140, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
@@ -291,7 +338,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     	]
                 	}
                 }, formatter: function() {
-                	switch(this.item.lc_useyn) {
+                	switch(this.item.hl_useyn) {
                 		case "0":
                 			return "미사용";
                 			break; 	
@@ -304,7 +351,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 	}
                 }},
                 {key: "hl_stime", label: "휴일근무 시작시간", width: 150, align: "center", sortable: true, editor:"text"},
-                {key: "hl_etime", label: "휴일근무 종료시간", width: 150, align: "center", sortable: true, editor:"text"},                                
+                {key: "hl_etime", label: "휴일근무 종료시간", width: 150, align: "center", sortable: true, editor:"text"},
                 {key: "crt_dt", label: "작성일자", width: 180, align: "center", sortable: true,
                 	formatter: function() {
                 		var crdt = "";

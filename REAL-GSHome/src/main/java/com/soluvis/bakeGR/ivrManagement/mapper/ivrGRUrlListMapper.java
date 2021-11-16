@@ -6,17 +6,22 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.chequer.axboot.core.mybatis.MyBatisMapper;
-import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRUrlList;
 
 @Repository
 public interface ivrGRUrlListMapper extends MyBatisMapper{	
 
 	// 조회
-	List<ivrBlackList> BlackListGet(Map<String,Object> params);
+	List<ivrGRUrlList> UrlListGet(Map<String,Object> params);
 	// 추가
-	int BlackListIst(Map<String,Object> params);
+	int UrlListIst(Map<String,Object> params);
 	// 수정
-	int BlackListUdt(Map<String,Object> params);
+	int UrlListUdt(Map<String,Object> params);
 	// 삭제
-	int BlackListDel(Map<String,Object> params);
+	int UrlListDel(Map<String,Object> params);
+	// 파일 업로드 여부
+	int UrlFileUdt(Map<String,Object> params);
+	
+	// 동기화 코드값 조회
+	List<ivrGRUrlList> IvrUrlGet(Map<String,Object> params);
 }

@@ -28,11 +28,14 @@ import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.commController;
 import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
-import com.soluvis.bake.ivrManagement.domain.ivrUrlList;
-import com.soluvis.bake.ivrManagement.service.ivrBlackListService;
 import com.soluvis.bake.ivrManagement.service.ivrUrlListService;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
 import com.soluvis.bake.system.utils.SessionUtils;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRHoliday;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRUrlList;
+import com.soluvis.bakeGR.ivrManagement.service.ivrGRHolidayService;
+import com.soluvis.bakeGR.ivrManagement.service.ivrGRUrlListService;
+import com.soluvis.bakeGR.ivrManagement.utils.globalVariables;
 
 /** 
  * @author gihyunpark
@@ -43,10 +46,10 @@ import com.soluvis.bake.system.utils.SessionUtils;
 public class ivrGRHolidayController extends commController{
 	
 	@Inject
-	private ivrBlackListService ivrBlackListService;	
+	private ivrGRHolidayService ivrGRHolidayService;	
 	
 	@Inject
-	private ivrUrlListService ivrUrlListService;
+	private ivrGRUrlListService ivrGRUrlListService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
 	
@@ -57,17 +60,17 @@ public class ivrGRHolidayController extends commController{
 	/** 
 	 * @desc 블랙컨슈머 목록을 조회한다
 	 */
-	@RequestMapping(value="/BlackListSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
-	public @ResponseBody List<ivrBlackList> BlackListSearch(HttpServletRequest request) throws Exception {
+	@RequestMapping(value="/HolidaySearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
+	public @ResponseBody List<ivrGRHoliday> HolidaySearch(HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
-		List<ivrBlackList> search = null;
+		List<ivrGRHoliday> search = null;
 		
 		try
-		{	
-			map.put("ani", "");
+		{
+			map.put("holiday", "");
 			
-			logger.info("ivrBlackListService.BlackListGet Query Start...");			
-			search = ivrBlackListService.BlackListGet(map);
+			logger.info("ivrGRHolidayService.HolidayGet Query Start...");			
+			search = ivrGRHolidayService.HolidayGet(map);
 		}
 		catch(Exception e)
 		{
@@ -80,13 +83,13 @@ public class ivrGRHolidayController extends commController{
 	/** 
 	 * @desc 블랙컨슈머 목록을 수정한다
 	 */
-	@RequestMapping(value = "/BlackListSave", method = RequestMethod.POST, produces = APPLICATION_JSON)
-    public ApiResponse BlackListSave(@Valid @RequestBody List<ivrBlackList> blackLst, HttpServletRequest request) throws Exception {	
+	@RequestMapping(value = "/HolidaySave", method = RequestMethod.POST, produces = APPLICATION_JSON)
+    public ApiResponse HolidaySave(@Valid @RequestBody List<ivrGRHoliday> hlLst, HttpServletRequest request) throws Exception {	
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> code = new HashMap<String, Object>();
-		List<ivrBlackList> search = null;
-		List<ivrUrlList> Urlsearch = null;
-		List<ivrUrlList> UrlCodesearch = null;
+		List<ivrGRHoliday> search = null;
+		List<ivrGRUrlList> Urlsearch = null;
+		List<ivrGRUrlList> UrlCodesearch = null;
 		
 		BufferedReader in = null;
 		
@@ -102,23 +105,24 @@ public class ivrGRHolidayController extends commController{
 		
 		try
 		{
-			for (ivrBlackList bl : blackLst)
+			for (ivrGRHoliday hl : hlLst)
 			{
-				map.put("ani", bl.getAni());
+				map.put("holiday", hl.getHoliday());
 								
-				if(AXBootTypes.DataStatus.CREATED.equals(bl.getDataStatus()))
+				if(AXBootTypes.DataStatus.CREATED.equals(hl.getDataStatus()))
 				{		
-					search = ivrBlackListService.BlackListGet(map);
+					search = ivrGRHolidayService.HolidayGet(map);
 					int searchSize = search.size();
 					
 					if(searchSize == 0)
 					{
-						map.put("flag", bl.getFlag());
+						map.put("hl_useyn", hl.getHl_useyn());
+						map.put("description", hl.getDescription());
 						map.put("crt_dt", sdf.format(new Date()));
 						map.put("crt_by", cid);
 						
-						logger.info("ivrBlackListService.BlackListIst Query Start...");
-						sqlrst = ivrBlackListService.BlackListIst(map);
+						logger.info("ivrGRHolidayService.HolidayIst Query Start...");
+						sqlrst = ivrGRHolidayService.HolidayIst(map);
 					}
 					
 					if(sqlrst == 0)
@@ -126,24 +130,25 @@ public class ivrGRHolidayController extends commController{
 						result++;
 					}
 				}
-				else if(AXBootTypes.DataStatus.MODIFIED.equals(bl.getDataStatus()))
+				else if(AXBootTypes.DataStatus.MODIFIED.equals(hl.getDataStatus()))
 				{
-					map.put("flag", bl.getFlag());
+					map.put("hl_useyn", hl.getHl_useyn());
+					map.put("description", hl.getDescription());
 					map.put("upt_dt", sdf.format(new Date()));
 					map.put("upt_by", cid);
 						
-					logger.info("ivrBlackListService.BlackListUdt Query Start...");
-					sqlrst = ivrBlackListService.BlackListUdt(map);
+					logger.info("ivrGRHolidayService.HolidayUdt Query Start...");
+					sqlrst = ivrGRHolidayService.HolidayUdt(map);
 					
 					if(sqlrst == 0)
 					{
 						result++;
 					}
 				}
-				else if(AXBootTypes.DataStatus.DELETED.equals(bl.getDataStatus()))
+				else if(AXBootTypes.DataStatus.DELETED.equals(hl.getDataStatus()))
 				{
-					logger.info("ivrBlackListService.BlackListDel Query Start...");
-					sqlrst = ivrBlackListService.BlackListDel(map);
+					logger.info("ivrGRHolidayService.HolidayDel Query Start...");
+					sqlrst = ivrGRHolidayService.HolidayDel(map);
 					
 					if(sqlrst == 0)
 					{
@@ -151,14 +156,17 @@ public class ivrGRHolidayController extends commController{
 					}
 				}			
 			}
+			
+			if(globalVariables.url_sync_flag == false)
+				return ok(msg);	
 		
-			logger.info("ivrUrlListService.UrlListGet Query Start...");
-			Urlsearch = ivrUrlListService.UrlListGet(map);
+			logger.info("ivrGRUrlListService.UrlListGet Query Start...");
+			Urlsearch = ivrGRUrlListService.UrlListGet(map);
 			int UrlSize = Urlsearch.size();
 
-			code.put("code", "BLACK_SYNC");
-			logger.info("ivrUrlListService.IvrUrlGet Query Start...");
-			UrlCodesearch = ivrUrlListService.IvrUrlGet(code);
+			code.put("code", "HOLIDAY_SYNC");
+			logger.info("ivrGRUrlListService.IvrUrlGet Query Start...");
+			UrlCodesearch = ivrGRUrlListService.IvrUrlGet(code);
 			
 			int UrlCodeSize = UrlCodesearch.size();
 			String htpcode = "";
@@ -172,7 +180,7 @@ public class ivrGRHolidayController extends commController{
 			else
 			{
 				htpcode = "http://";
-				urlcode = ":18080/infomartConnector/blackConsumerUpdate";
+				urlcode = ":18080/GRConnector/holidayUpdate";
 			}
 			
 			if(result == 0)
@@ -182,8 +190,8 @@ public class ivrGRHolidayController extends commController{
 			       try
 			       {
 			    	   URL obj = new URL(htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
-			    	   System.out.println("블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
-		    		   logger.info("블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
+			    	   System.out.println("GR 휴일관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
+		    		   logger.info("GR 휴일관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
 		    		   
 			    	   HttpURLConnection con = (HttpURLConnection)obj.openConnection(); 
 
@@ -204,8 +212,8 @@ public class ivrGRHolidayController extends commController{
 				    	   
 				    	   while((line = in.readLine()) != null)
 				    	   {
-				    		   System.out.println("블랙컨슈머관리-->" + line + "===>result-" + rcode); 
-				    		   logger.info("블랙컨슈머관리-->" + line + "===>result-" + rcode);
+				    		   System.out.println("GR 휴일관리-->" + line + "===>result-" + rcode); 
+				    		   logger.info("GR 휴일관리-->" + line + "===>result-" + rcode);
 				    		   
 				    		   rlt = line;
 				    		   
@@ -215,11 +223,11 @@ public class ivrGRHolidayController extends commController{
 				    	   
 				    	   rlt = jsonObject.getString("result");
 				    	   
-				    	   System.out.println("블랙컨슈머관리rlt-->" + rlt); 
-			    		   logger.info("블랙컨슈머관리rlt-->" + rlt);
+				    	   System.out.println("GR 휴일관리rlt-->" + rlt); 
+			    		   logger.info("GR 휴일관리rlt-->" + rlt);
 			    		   
-				    	   System.out.println("블랙컨슈머관리err-->" + err.toString()); 
-			    		   logger.info("블랙컨슈머관리err-->" + err.toString()) ;
+				    	   System.out.println("GR 휴일관리err-->" + err.toString()); 
+			    		   logger.info("GR 휴일관리err-->" + err.toString()) ;
 				    	   
 				    	   if(rcode == 200)
 				    	   {

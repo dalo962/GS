@@ -5,42 +5,38 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
-import com.soluvis.bake.ivrManagement.mapper.ivrBlackListMapper;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRHoliday;
+import com.soluvis.bakeGR.ivrManagement.mapper.ivrGRHolidayMapper;
 
 @Service
-public class ivrGRHolidayServiceImpl implements ivrGRBlackListService{
+public class ivrGRHolidayServiceImpl implements ivrGRHolidayService{
 	
 	@Autowired
-	private ivrBlackListMapper ivrBlackListMapper;
-	
+	private ivrGRHolidayMapper ivrGRHolidayMapper;
+
 	@Override
-	public List<ivrBlackList> BlackListGet(Map<String,Object> params)
-	{		
-		return ivrBlackListMapper.BlackListGet(params);
-	}
-		
-	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int BlackListIst(Map<String,Object> params)
-	{		
-		return ivrBlackListMapper.BlackListIst(params);
+	public List<ivrGRHoliday> HolidayGet(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return ivrGRHolidayMapper.HolidayGet(params);
 	}
 
 	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int BlackListUdt(Map<String,Object> params)
-	{		
-		return ivrBlackListMapper.BlackListUdt(params);
+	public int HolidayIst(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return ivrGRHolidayMapper.HolidayIst(params);
 	}
-	
+
 	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int BlackListDel(Map<String,Object> params)
-	{		
-		return ivrBlackListMapper.BlackListDel(params);
+	public int HolidayUdt(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return ivrGRHolidayMapper.HolidayUdt(params);
+	}
+
+	@Override
+	public int HolidayDel(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return ivrGRHolidayMapper.HolidayDel(params);
 	}
 }
 

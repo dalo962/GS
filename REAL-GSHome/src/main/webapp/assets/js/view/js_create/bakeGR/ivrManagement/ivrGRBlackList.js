@@ -28,16 +28,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	
     	var reqExp = /^[0-9]*$/;
     	var blani = 0;
-    	var blflag = 0;
     	var blnumber = 0;
     	saveList.forEach(function (n){
     		if(n.ani == null || n.ani == "")
     		{
     			blani = blani + 1;
-    		}
-    		if(n.flag == null || n.ani == "")
-    		{
-    			blflag = blflag + 1;
     		}
     		if(n.ani != null || n.ani != "")
     		{
@@ -51,12 +46,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	{ 
     		alert("이슈고객 번호를 입력하시기 바랍니다."); 
     		return;
-    	}
-    	if(blflag > 0) 
-    	{ 
-    		alert("이슈고객 사용유무를 선택하시기 바랍니다."); 
-    		return;
-    	}
+    	}    	
     	if(blnumber > 0) 
     	{ 
     		alert("이슈고객 번호는 숫자만 입력하시기 바랍니다."); 

@@ -7,40 +7,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
-import com.soluvis.bake.ivrManagement.mapper.ivrBlackListMapper;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRDnisTimeList;
+import com.soluvis.bakeGR.ivrManagement.mapper.ivrGRDnisTimeListMapper;
 
 @Service
-public class ivrGRDnisTimeListServiceImpl implements ivrGRBlackListService{
+public class ivrGRDnisTimeListServiceImpl implements ivrGRDnisTimeListService{
 	
 	@Autowired
-	private ivrBlackListMapper ivrBlackListMapper;
+	private ivrGRDnisTimeListMapper ivrGRDnisListMapper;
 	
 	@Override
-	public List<ivrBlackList> BlackListGet(Map<String,Object> params)
+	public List<ivrGRDnisTimeList> DnisListGet(Map<String,Object> params)
 	{		
-		return ivrBlackListMapper.BlackListGet(params);
+		return ivrGRDnisListMapper.DnisListGet(params);
 	}
 		
 	@Override
 	@Transactional(rollbackFor=Exception.class)
-	public int BlackListIst(Map<String,Object> params)
+	public int DnisListIst(Map<String,Object> params)
 	{		
-		return ivrBlackListMapper.BlackListIst(params);
+		return ivrGRDnisListMapper.DnisListIst(params);
 	}
 
 	@Override
 	@Transactional(rollbackFor=Exception.class)
-	public int BlackListUdt(Map<String,Object> params)
+	public int DnisListUdt(Map<String,Object> params)
 	{		
-		return ivrBlackListMapper.BlackListUdt(params);
+		return ivrGRDnisListMapper.DnisListUdt(params);
 	}
 	
 	@Override
 	@Transactional(rollbackFor=Exception.class)
-	public int BlackListDel(Map<String,Object> params)
+	public int DnisListDel(Map<String,Object> params)
 	{		
-		return ivrBlackListMapper.BlackListDel(params);
+		return ivrGRDnisListMapper.DnisListDel(params);
+	}
+	
+	@Override
+	@Transactional(rollbackFor=Exception.class)
+	public int DnisListDelUdt(Map<String,Object> params)
+	{		
+		return ivrGRDnisListMapper.DnisListDelUdt(params);
 	}
 }
 

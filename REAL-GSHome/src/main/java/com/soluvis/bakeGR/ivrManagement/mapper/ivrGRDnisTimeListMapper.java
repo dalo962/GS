@@ -6,17 +6,19 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.chequer.axboot.core.mybatis.MyBatisMapper;
-import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRDnisTimeList;
 
 @Repository
 public interface ivrGRDnisTimeListMapper extends MyBatisMapper{	
 
 	// 조회
-	List<ivrBlackList> BlackListGet(Map<String,Object> params);
+	List<ivrGRDnisTimeList> DnisListGet(Map<String,Object> params);
 	// 추가
-	int BlackListIst(Map<String,Object> params);
+	int DnisListIst(Map<String,Object> params);
 	// 수정
-	int BlackListUdt(Map<String,Object> params);
+	int DnisListUdt(Map<String,Object> params);
 	// 삭제
-	int BlackListDel(Map<String,Object> params);
+	int DnisListDel(Map<String,Object> params);
+	
+	int DnisListDelUdt(Map<String,Object> params);
 }

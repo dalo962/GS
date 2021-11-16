@@ -27,26 +27,28 @@ import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.commController;
-import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
-import com.soluvis.bake.ivrManagement.domain.ivrUrlList;
-import com.soluvis.bake.ivrManagement.service.ivrBlackListService;
-import com.soluvis.bake.ivrManagement.service.ivrUrlListService;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
 import com.soluvis.bake.system.utils.SessionUtils;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRDnisTimeList;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRUrlList;
+import com.soluvis.bakeGR.ivrManagement.service.ivrGRDnisTimeListService;
+import com.soluvis.bakeGR.ivrManagement.service.ivrGRUrlListService;
+import com.soluvis.bakeGR.ivrManagement.utils.globalVariables;
+
 
 /** 
  * @author gihyunpark
- * @desc   ivr 블랙컨슈머 리스트를 조회한다.
+ * @desc   ivr 근무시간 리스트를 조회한다.
  */
 @Controller
 @RequestMapping(value = "/gr/api/ivr/ivrDnisTimeList")
 public class ivrGRDnisTimeListController extends commController{
 	
 	@Inject
-	private ivrBlackListService ivrBlackListService;	
-	
+	private ivrGRDnisTimeListService ivrGRDnisListService;
+
 	@Inject
-	private ivrUrlListService ivrUrlListService;
+	private ivrGRUrlListService ivrGRUrlListService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
 	
@@ -55,19 +57,20 @@ public class ivrGRDnisTimeListController extends commController{
 	MDCLoginUser loginUser;
 		
 	/** 
-	 * @desc 블랙컨슈머 목록을 조회한다
+	 * @desc DNIS 근무시간 목록을 조회한다
 	 */
-	@RequestMapping(value="/BlackListSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
-	public @ResponseBody List<ivrBlackList> BlackListSearch(HttpServletRequest request) throws Exception {
+	@RequestMapping(value="/DnisListSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
+	public @ResponseBody List<ivrGRDnisTimeList> DnisListSearch(HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
-		List<ivrBlackList> search = null;
+		List<ivrGRDnisTimeList> search = null;
 		
 		try
 		{	
-			map.put("ani", "");
+			map.put("dnis", "");
+			map.put("delchk", "1");
 			
-			logger.info("ivrBlackListService.BlackListGet Query Start...");			
-			search = ivrBlackListService.BlackListGet(map);
+			logger.info("ivrGRDnisListService.DnisListGet Query Start...");	
+			search = ivrGRDnisListService.DnisListGet(map);
 		}
 		catch(Exception e)
 		{
@@ -78,15 +81,15 @@ public class ivrGRDnisTimeListController extends commController{
 	}
 	
 	/** 
-	 * @desc 블랙컨슈머 목록을 수정한다
+	 * @desc DNIS 근무시간 목록을 수정한다
 	 */
-	@RequestMapping(value = "/BlackListSave", method = RequestMethod.POST, produces = APPLICATION_JSON)
-    public ApiResponse BlackListSave(@Valid @RequestBody List<ivrBlackList> blackLst, HttpServletRequest request) throws Exception {	
+	@RequestMapping(value = "/DnisListSave", method = RequestMethod.POST, produces = APPLICATION_JSON)
+    public ApiResponse DnisListSave(@Valid @RequestBody List<ivrGRDnisTimeList> dtLst, HttpServletRequest request) throws Exception {	
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> code = new HashMap<String, Object>();
-		List<ivrBlackList> search = null;
-		List<ivrUrlList> Urlsearch = null;
-		List<ivrUrlList> UrlCodesearch = null;
+		List<ivrGRDnisTimeList> search = null;
+		List<ivrGRUrlList> Urlsearch = null;
+		List<ivrGRUrlList> UrlCodesearch = null;
 		
 		BufferedReader in = null;
 		
@@ -101,49 +104,176 @@ public class ivrGRDnisTimeListController extends commController{
 		msgbf.append("*동기화 결과\n");
 		
 		try
-		{
-			for (ivrBlackList bl : blackLst)
+		{							
+			for (ivrGRDnisTimeList dtl : dtLst)
 			{
-				map.put("ani", bl.getAni());
+				map.put("dnis", dtl.getDnis());
 								
-				if(AXBootTypes.DataStatus.CREATED.equals(bl.getDataStatus()))
+				// 평일근무시작시간
+				if("".equals(dtl.getWr_stime()) || dtl.getWr_stime() == null)
+				{
+					map.put("wr_stime", "000000");
+				}
+				else
+				{
+					map.put("wr_stime", dtl.getWr_stime().replace(":", ""));
+				}
+				// 평일근무종료시간
+				if("".equals(dtl.getWr_etime()) || dtl.getWr_etime() == null)
+				{
+					map.put("wr_etime", "000000");
+				}
+				else
+				{
+					map.put("wr_etime", dtl.getWr_etime().replace(":", ""));
+				}
+				
+				// 점심시작시간
+				if("".equals(dtl.getLc_stime()) || dtl.getLc_stime() == null)
+				{
+					map.put("lc_stime", "000000");
+				}
+				else
+				{
+					map.put("lc_stime", dtl.getLc_stime().replace(":", ""));
+				}
+				// 점심종료시간
+				if("".equals(dtl.getLc_etime()) || dtl.getLc_etime() == null)
+				{
+					map.put("lc_etime", "000000");
+				}
+				else
+				{
+					map.put("lc_etime", dtl.getLc_etime().replace(":", ""));
+				}
+				
+				// 토요일근무시작시간
+				if("".equals(dtl.getSat_stime()) || dtl.getSat_stime() == null)
+				{
+					map.put("sat_stime", "000000");
+				}
+				else
+				{
+					map.put("sat_stime", dtl.getSat_stime().replace(":", ""));
+				}
+				// 토요일근무종료시간
+				if("".equals(dtl.getSat_etime()) || dtl.getSat_etime() == null)
+				{
+					map.put("sat_etime", "000000");
+				}
+				else
+				{
+					map.put("sat_etime", dtl.getSat_etime().replace(":", ""));
+				}
+				
+				// 일요일근무시작시간
+				if("".equals(dtl.getSun_stime()) || dtl.getSun_stime() == null)
+				{
+					map.put("sun_stime", "000000");
+				}
+				else
+				{
+					map.put("sun_stime", dtl.getSun_stime().replace(":", ""));
+				}
+				// 일요일근무종료시간
+				if("".equals(dtl.getSun_etime()) || dtl.getSun_etime() == null)
+				{
+					map.put("sun_etime", "000000");
+				}
+				else
+				{
+					map.put("sun_etime", dtl.getSun_etime().replace(":", ""));
+				}
+				
+				// 휴일근무시작시간
+				if("".equals(dtl.getHl_stime()) || dtl.getHl_stime() == null)
+				{
+					map.put("hl_stime", "000000");
+				}
+				else
+				{
+					map.put("hl_stime", dtl.getHl_stime().replace(":", ""));
+				}				
+				// 휴일근무종료시간
+				if("".equals(dtl.getHl_etime()) || dtl.getHl_etime() == null)
+				{
+					map.put("hl_etime", "000000");
+				}
+				else
+				{
+					map.put("hl_etime", dtl.getHl_etime().replace(":", ""));
+				}
+				
+				// 초과근무종료시간
+				if("".equals(dtl.getOv_stime()) || dtl.getOv_stime() == null)
+				{
+					map.put("ov_stime", "000000");
+				}
+				else
+				{
+					map.put("ov_stime", dtl.getOv_stime().replace(":", ""));
+				}
+				// 초과근무종료시간
+				if("".equals(dtl.getOv_etime()) || dtl.getOv_etime() == null)
+				{
+					map.put("ov_etime", "000000");
+				}
+				else
+				{
+					map.put("ov_etime", dtl.getOv_etime().replace(":", ""));
+				}
+				
+				if(AXBootTypes.DataStatus.CREATED.equals(dtl.getDataStatus()))
 				{		
-					search = ivrBlackListService.BlackListGet(map);
+					map.put("delchk", "0");
+					search = ivrGRDnisListService.DnisListGet(map);
 					int searchSize = search.size();
 					
 					if(searchSize == 0)
 					{
-						map.put("flag", bl.getFlag());
+						map.put("useyn", dtl.getUseyn());
+						map.put("lc_useyn", dtl.getLc_useyn());
+						map.put("hl_useyn", dtl.getHl_useyn());
+						map.put("ov_useyn", dtl.getOv_useyn());		
 						map.put("crt_dt", sdf.format(new Date()));
 						map.put("crt_by", cid);
 						
-						logger.info("ivrBlackListService.BlackListIst Query Start...");
-						sqlrst = ivrBlackListService.BlackListIst(map);
+						logger.info("ivrGRDnisListService.DnisListIst Query Start...");
+						sqlrst = ivrGRDnisListService.DnisListIst(map);
 					}
+					else
+					{
+						logger.info("ivrGRDnisListService.DnisListDelUdt Query Start...");
+						sqlrst = ivrGRDnisListService.DnisListDelUdt(map);
+					}					
 					
 					if(sqlrst == 0)
 					{
 						result++;
 					}
+					
 				}
-				else if(AXBootTypes.DataStatus.MODIFIED.equals(bl.getDataStatus()))
+				else if(AXBootTypes.DataStatus.MODIFIED.equals(dtl.getDataStatus()))
 				{
-					map.put("flag", bl.getFlag());
+					map.put("useyn", dtl.getUseyn());
+					map.put("lc_useyn", dtl.getLc_useyn());
+					map.put("hl_useyn", dtl.getHl_useyn());
+					map.put("ov_useyn", dtl.getOv_useyn());
 					map.put("upt_dt", sdf.format(new Date()));
 					map.put("upt_by", cid);
 						
-					logger.info("ivrBlackListService.BlackListUdt Query Start...");
-					sqlrst = ivrBlackListService.BlackListUdt(map);
+					logger.info("ivrGRDnisListService.DnisListUdt Query Start...");
+					sqlrst = ivrGRDnisListService.DnisListUdt(map);		
 					
 					if(sqlrst == 0)
 					{
 						result++;
 					}
 				}
-				else if(AXBootTypes.DataStatus.DELETED.equals(bl.getDataStatus()))
+				else if(AXBootTypes.DataStatus.DELETED.equals(dtl.getDataStatus()))
 				{
-					logger.info("ivrBlackListService.BlackListDel Query Start...");
-					sqlrst = ivrBlackListService.BlackListDel(map);
+					logger.info("ivrGRDnisListService.DnisListDel Query Start...");
+					sqlrst = ivrGRDnisListService.DnisListDel(map);
 					
 					if(sqlrst == 0)
 					{
@@ -151,14 +281,17 @@ public class ivrGRDnisTimeListController extends commController{
 					}
 				}			
 			}
-		
-			logger.info("ivrUrlListService.UrlListGet Query Start...");
-			Urlsearch = ivrUrlListService.UrlListGet(map);
+			
+			if(globalVariables.url_sync_flag == false)
+				return ok(msg);	
+						
+			logger.info("ivrGRUrlListService.UrlListGet Query Start...");
+			Urlsearch = ivrGRUrlListService.UrlListGet(map);
 			int UrlSize = Urlsearch.size();
 
-			code.put("code", "BLACK_SYNC");
-			logger.info("ivrUrlListService.IvrUrlGet Query Start...");
-			UrlCodesearch = ivrUrlListService.IvrUrlGet(code);
+			code.put("code", "WORK_SYNC");
+			logger.info("ivrGRUrlListService.IvrUrlGet Query Start...");
+			UrlCodesearch = ivrGRUrlListService.IvrUrlGet(code);
 			
 			int UrlCodeSize = UrlCodesearch.size();
 			String htpcode = "";
@@ -172,7 +305,7 @@ public class ivrGRDnisTimeListController extends commController{
 			else
 			{
 				htpcode = "http://";
-				urlcode = ":18080/infomartConnector/blackConsumerUpdate";
+				urlcode = ":18080/GRConnector/workTimeUpdate";
 			}
 			
 			if(result == 0)
@@ -182,8 +315,8 @@ public class ivrGRDnisTimeListController extends commController{
 			       try
 			       {
 			    	   URL obj = new URL(htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
-			    	   System.out.println("블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
-		    		   logger.info("블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
+			    	   System.out.println("GR 근무시간관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
+		    		   logger.info("GR 근무시간관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
 		    		   
 			    	   HttpURLConnection con = (HttpURLConnection)obj.openConnection(); 
 
@@ -204,8 +337,8 @@ public class ivrGRDnisTimeListController extends commController{
 				    	   
 				    	   while((line = in.readLine()) != null)
 				    	   {
-				    		   System.out.println("블랙컨슈머관리-->" + line + "===>result-" + rcode); 
-				    		   logger.info("블랙컨슈머관리-->" + line + "===>result-" + rcode);
+				    		   System.out.println("GR 근무시간관리-->" + line + "===>result-" + rcode); 
+				    		   logger.info("GR 근무시간관리-->" + line + "===>result-" + rcode);
 				    		   
 				    		   rlt = line;
 				    		   
@@ -215,34 +348,53 @@ public class ivrGRDnisTimeListController extends commController{
 				    	   
 				    	   rlt = jsonObject.getString("result");
 				    	   
-				    	   System.out.println("블랙컨슈머관리rlt-->" + rlt); 
-			    		   logger.info("블랙컨슈머관리rlt-->" + rlt);
+				    	   System.out.println("GR 근무시간관리rlt-->" + rlt); 
+			    		   logger.info("GR 근무시간관리rlt-->" + rlt);
 			    		   
-				    	   System.out.println("블랙컨슈머관리err-->" + err.toString()); 
-			    		   logger.info("블랙컨슈머관리err-->" + err.toString()) ;
+				    	   System.out.println("GR 근무시간관리err-->" + err.toString()); 
+			    		   logger.info("GR 근무시간관리err-->" + err.toString()) ;
 				    	   
 				    	   if(rcode == 200)
 				    	   {
 				    		   if(rlt.length() > 0)
 				    		   {
-				    			   //if("success".equals(rlt) || "SUCCESS".equals(rlt))
-				    			   if("00".equals(rlt))
+				    			   if("success".equals(rlt) || "SUCCESS".equals(rlt))
 				    			   {
-				    				   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 정상\n");
+				    				   map.put("file_rst", "정상");
+						    		   map.put("url_nm", Urlsearch.get(i).getUrl_nm());
+						    		   map.put("svr_ip", Urlsearch.get(i).getSvr_ip());				    		  
+						    		   ivrGRUrlListService.UrlFileUdt(map);
+						    		   
+						    		   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 정상\n");
 				    			   }
 				    			   else
 				    			   {
-				    				   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 실패 (" + err.substring(0, 30) + ")\n");
+				    				   map.put("file_rst", err.substring(0, 30));
+						    		   map.put("url_nm", Urlsearch.get(i).getUrl_nm());
+						    		   map.put("svr_ip", Urlsearch.get(i).getSvr_ip());
+						    		   ivrGRUrlListService.UrlFileUdt(map);			    	
+						    		   
+						    		   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 실패\n");
 				    			   }				    			   
 				    		   }
 				    		   else
 				    		   {
-				    			   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 실패 (in.readLine() is null)\n");
+				    			   map.put("file_rst", "in.readLine() is null");
+					    		   map.put("url_nm", Urlsearch.get(i).getUrl_nm());
+					    		   map.put("svr_ip", Urlsearch.get(i).getSvr_ip());
+					    		   ivrGRUrlListService.UrlFileUdt(map);			    	
+					    		   
+					    		   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 실패\n");
 				    		   }				    		   
 				    	   }
 				    	   else
 				    	   {
-				    		   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 실패 (" + err.substring(0, 30) + ")\n");
+				    		   map.put("file_rst", err.substring(0, 30));
+				    		   map.put("url_nm", Urlsearch.get(i).getUrl_nm());
+				    		   map.put("svr_ip", Urlsearch.get(i).getSvr_ip());
+				    		   ivrGRUrlListService.UrlFileUdt(map);			    	
+				    		   
+				    		   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 실패\n");
 				    	   }			
 			    	   }
 			    	   if(in != null) try { in.close(); } catch(Exception e) { e.printStackTrace(); }
@@ -253,10 +405,15 @@ public class ivrGRDnisTimeListController extends commController{
 			    	   //e.printStackTrace();
 			    	   logger.error(e.toString());
 			    	   
-			    	   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 실패 (" + e.toString().substring(0, 30) + ")\n");
+			    	   map.put("file_rst", e.toString().substring(0, 30));
+		    		   map.put("url_nm", Urlsearch.get(i).getUrl_nm());
+		    		   map.put("svr_ip", Urlsearch.get(i).getSvr_ip());
+		    		   ivrGRUrlListService.UrlFileUdt(map);
+		    		   
+		    		   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 실패\n");
 			       }
 				}
-				msgbf.append("*실패 된 사항은 확인해주시기 바랍니다.");
+				msgbf.append("*실패 된 사항은 URL관리 화면에서 확인해주시기 바랍니다.");
 				msg = msgbf.toString();
 			}
 			else
@@ -269,7 +426,8 @@ public class ivrGRDnisTimeListController extends commController{
 			System.out.println(e.getStackTrace());
 			logger.error(e.toString());
 		}
-		return ok(msg);		
-	}	
+		
+		return ok(msg);
+	}				
 }
 

@@ -7,40 +7,55 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
-import com.soluvis.bake.ivrManagement.mapper.ivrBlackListMapper;
+import com.soluvis.bake.ivrManagement.mapper.ivrUrlListMapper;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRUrlList;
+import com.soluvis.bakeGR.ivrManagement.mapper.ivrGRUrlListMapper;
 
 @Service
-public class ivrGRUrlListServiceImpl implements ivrGRBlackListService{
+public class ivrGRUrlListServiceImpl implements ivrGRUrlListService{
 	
 	@Autowired
-	private ivrBlackListMapper ivrBlackListMapper;
+	private ivrGRUrlListMapper ivrGRUrlListMapper;
 	
 	@Override
-	public List<ivrBlackList> BlackListGet(Map<String,Object> params)
+	public List<ivrGRUrlList> UrlListGet(Map<String,Object> params)
 	{		
-		return ivrBlackListMapper.BlackListGet(params);
+		return ivrGRUrlListMapper.UrlListGet(params);
 	}
 		
 	@Override
 	@Transactional(rollbackFor=Exception.class)
-	public int BlackListIst(Map<String,Object> params)
+	public int UrlListIst(Map<String,Object> params)
 	{		
-		return ivrBlackListMapper.BlackListIst(params);
+		return ivrGRUrlListMapper.UrlListIst(params);
 	}
 
 	@Override
 	@Transactional(rollbackFor=Exception.class)
-	public int BlackListUdt(Map<String,Object> params)
+	public int UrlListUdt(Map<String,Object> params)
 	{		
-		return ivrBlackListMapper.BlackListUdt(params);
+		return ivrGRUrlListMapper.UrlListUdt(params);
 	}
 	
 	@Override
 	@Transactional(rollbackFor=Exception.class)
-	public int BlackListDel(Map<String,Object> params)
+	public int UrlListDel(Map<String,Object> params)
 	{		
-		return ivrBlackListMapper.BlackListDel(params);
+		return ivrGRUrlListMapper.UrlListDel(params);
+	}
+	
+	@Override
+	@Transactional(rollbackFor=Exception.class)
+	public int UrlFileUdt(Map<String,Object> params)
+	{		
+		return ivrGRUrlListMapper.UrlFileUdt(params);
+	}
+	
+	
+	@Override
+	public List<ivrGRUrlList> IvrUrlGet(Map<String,Object> params)
+	{		
+		return ivrGRUrlListMapper.IvrUrlGet(params);
 	}
 }
 

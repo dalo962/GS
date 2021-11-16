@@ -28,25 +28,28 @@ import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.commController;
 import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
-import com.soluvis.bake.ivrManagement.domain.ivrUrlList;
-import com.soluvis.bake.ivrManagement.service.ivrBlackListService;
 import com.soluvis.bake.ivrManagement.service.ivrUrlListService;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
 import com.soluvis.bake.system.utils.SessionUtils;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGREmerMent;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRUrlList;
+import com.soluvis.bakeGR.ivrManagement.service.ivrGREmerMentService;
+import com.soluvis.bakeGR.ivrManagement.service.ivrGRUrlListService;
+import com.soluvis.bakeGR.ivrManagement.utils.globalVariables;
 
 /** 
  * @author gihyunpark
  * @desc   ivr 블랙컨슈머 리스트를 조회한다.
  */
 @Controller
-@RequestMapping(value = "/gr/api/ivr/ivrEmerment")
+@RequestMapping(value = "/gr/api/ivr/ivrEmerMent")
 public class ivrGREmerMentController extends commController{
 	
 	@Inject
-	private ivrBlackListService ivrBlackListService;	
+	private ivrGREmerMentService ivrGREmerMentService;	
 	
 	@Inject
-	private ivrUrlListService ivrUrlListService;
+	private ivrGRUrlListService ivrGRUrlListService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
 	
@@ -57,17 +60,15 @@ public class ivrGREmerMentController extends commController{
 	/** 
 	 * @desc 블랙컨슈머 목록을 조회한다
 	 */
-	@RequestMapping(value="/BlackListSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
-	public @ResponseBody List<ivrBlackList> BlackListSearch(HttpServletRequest request) throws Exception {
+	@RequestMapping(value="/EmerMentSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
+	public @ResponseBody List<ivrGREmerMent> EmerMentSearch(HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
-		List<ivrBlackList> search = null;
+		List<ivrGREmerMent> search = null;
 		
 		try
 		{	
-			map.put("ani", "");
-			
-			logger.info("ivrBlackListService.BlackListGet Query Start...");			
-			search = ivrBlackListService.BlackListGet(map);
+			logger.info("ivrGREmerMentService.EmerMentGet Query Start...");			
+			search = ivrGREmerMentService.EmerMentGet(map);
 		}
 		catch(Exception e)
 		{
@@ -80,13 +81,13 @@ public class ivrGREmerMentController extends commController{
 	/** 
 	 * @desc 블랙컨슈머 목록을 수정한다
 	 */
-	@RequestMapping(value = "/BlackListSave", method = RequestMethod.POST, produces = APPLICATION_JSON)
-    public ApiResponse BlackListSave(@Valid @RequestBody List<ivrBlackList> blackLst, HttpServletRequest request) throws Exception {	
+	@RequestMapping(value = "/EmerMentSave", method = RequestMethod.POST, produces = APPLICATION_JSON)
+    public ApiResponse EmerMentSave(@Valid @RequestBody List<ivrGREmerMent> emerment, HttpServletRequest request) throws Exception {	
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> code = new HashMap<String, Object>();
-		List<ivrBlackList> search = null;
-		List<ivrUrlList> Urlsearch = null;
-		List<ivrUrlList> UrlCodesearch = null;
+		List<ivrGREmerMent> search = null;
+		List<ivrGRUrlList> Urlsearch = null;
+		List<ivrGRUrlList> UrlCodesearch = null;
 		
 		BufferedReader in = null;
 		
@@ -102,23 +103,32 @@ public class ivrGREmerMentController extends commController{
 		
 		try
 		{
-			for (ivrBlackList bl : blackLst)
+			for (ivrGREmerMent em : emerment)
 			{
-				map.put("ani", bl.getAni());
+				map.put("dnis", em.getDnis());
+				map.put("sdate", em.getSdate());
+				map.put("stime", em.getStime());
+				map.put("edate", em.getEdate());
+				map.put("etime", em.getEtime());
 								
-				if(AXBootTypes.DataStatus.CREATED.equals(bl.getDataStatus()))
+				if(AXBootTypes.DataStatus.CREATED.equals(em.getDataStatus()))
 				{		
-					search = ivrBlackListService.BlackListGet(map);
+					logger.info("ivrGREmerMentService.EmerMentExist Query Start...");
+					search = ivrGREmerMentService.EmerMentExist(map);
 					int searchSize = search.size();
 					
 					if(searchSize == 0)
-					{
-						map.put("flag", bl.getFlag());
+					{						
+						map.put("va_yn", em.getVa_yn());
+						map.put("ment", em.getMent());
 						map.put("crt_dt", sdf.format(new Date()));
 						map.put("crt_by", cid);
 						
-						logger.info("ivrBlackListService.BlackListIst Query Start...");
-						sqlrst = ivrBlackListService.BlackListIst(map);
+						logger.info("ivrGREmerMentService.EmerMentIst Query Start...");
+						sqlrst = ivrGREmerMentService.EmerMentIst(map);
+					}else{
+						msg = "중복되는 기간이 있습니다. 기간을 확인해주세요.";
+						return ok(msg);
 					}
 					
 					if(sqlrst == 0)
@@ -126,39 +136,61 @@ public class ivrGREmerMentController extends commController{
 						result++;
 					}
 				}
-				else if(AXBootTypes.DataStatus.MODIFIED.equals(bl.getDataStatus()))
+				else if(AXBootTypes.DataStatus.MODIFIED.equals(em.getDataStatus()))
 				{
-					map.put("flag", bl.getFlag());
+					map.put("seq", em.getSeq());
+					map.put("dnis", em.getDnis());
+					map.put("sdate", em.getSdate());
+					map.put("stime", em.getStime());
+					map.put("edate", em.getEdate());
+					map.put("etime", em.getEtime());
+					map.put("va_yn", em.getVa_yn());
+					map.put("ment", em.getMent());
 					map.put("upt_dt", sdf.format(new Date()));
 					map.put("upt_by", cid);
+					
+					logger.info("ivrGREmerMentService.EmerMentExist Query Start...");
+					search = ivrGREmerMentService.EmerMentExist(map);
+					
+					int searchSize = search.size();
+					
+					if(searchSize == 0){
+						logger.info("ivrGREmerMentService.EmerMentUdt Query Start...");
+						sqlrst = ivrGREmerMentService.EmerMentUdt(map);
 						
-					logger.info("ivrBlackListService.BlackListUdt Query Start...");
-					sqlrst = ivrBlackListService.BlackListUdt(map);
+						if(sqlrst == 0)
+						{
+							result++;
+						}
+					}else{
+						msg = "중복되는 기간이 있습니다. 기간을 확인해주세요.";
+						return ok(msg);
+					}					
+				}
+				else if(AXBootTypes.DataStatus.DELETED.equals(em.getDataStatus()))
+				{
+					map.put("seq", em.getSeq());
+					
+					logger.info("ivrGREmerMentService.EmerMentDel Query Start...");
+					sqlrst = ivrGREmerMentService.EmerMentDel(map);
 					
 					if(sqlrst == 0)
 					{
 						result++;
 					}
 				}
-				else if(AXBootTypes.DataStatus.DELETED.equals(bl.getDataStatus()))
-				{
-					logger.info("ivrBlackListService.BlackListDel Query Start...");
-					sqlrst = ivrBlackListService.BlackListDel(map);
-					
-					if(sqlrst == 0)
-					{
-						result++;
-					}
-				}			
 			}
+			
+			if(globalVariables.url_sync_flag == false)
+				return ok(msg);	
 		
-			logger.info("ivrUrlListService.UrlListGet Query Start...");
-			Urlsearch = ivrUrlListService.UrlListGet(map);
+			logger.info("ivrGRUrlListService.UrlListGet Query Start...");
+			Urlsearch = ivrGRUrlListService.UrlListGet(map);
 			int UrlSize = Urlsearch.size();
 
-			code.put("code", "BLACK_SYNC");
-			logger.info("ivrUrlListService.IvrUrlGet Query Start...");
-			UrlCodesearch = ivrUrlListService.IvrUrlGet(code);
+			code.put("code", "EMERMENT_SYNC");
+			logger.info("ivrGRUrlListService.IvrUrlGet Query Start...");
+			UrlCodesearch = ivrGRUrlListService.IvrUrlGet(code);
 			
 			int UrlCodeSize = UrlCodesearch.size();
 			String htpcode = "";
@@ -172,7 +204,7 @@ public class ivrGREmerMentController extends commController{
 			else
 			{
 				htpcode = "http://";
-				urlcode = ":18080/infomartConnector/blackConsumerUpdate";
+				urlcode = ":18080/GRConnector/emerMentUpdate";
 			}
 			
 			if(result == 0)
@@ -182,8 +214,8 @@ public class ivrGREmerMentController extends commController{
 			       try
 			       {
 			    	   URL obj = new URL(htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
-			    	   System.out.println("블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
-		    		   logger.info("블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
+			    	   System.out.println("GR 비상멘트관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
+		    		   logger.info("GR 비상멘트관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
 		    		   
 			    	   HttpURLConnection con = (HttpURLConnection)obj.openConnection(); 
 
@@ -204,8 +236,8 @@ public class ivrGREmerMentController extends commController{
 				    	   
 				    	   while((line = in.readLine()) != null)
 				    	   {
-				    		   System.out.println("블랙컨슈머관리-->" + line + "===>result-" + rcode); 
-				    		   logger.info("블랙컨슈머관리-->" + line + "===>result-" + rcode);
+				    		   System.out.println("GR 비상멘트관리-->" + line + "===>result-" + rcode); 
+				    		   logger.info("GR 비상멘트관리-->" + line + "===>result-" + rcode);
 				    		   
 				    		   rlt = line;
 				    		   
@@ -215,11 +247,11 @@ public class ivrGREmerMentController extends commController{
 				    	   
 				    	   rlt = jsonObject.getString("result");
 				    	   
-				    	   System.out.println("블랙컨슈머관리rlt-->" + rlt); 
-			    		   logger.info("블랙컨슈머관리rlt-->" + rlt);
+				    	   System.out.println("GR 비상멘트관리rlt-->" + rlt); 
+			    		   logger.info("GR 비상멘트관리rlt-->" + rlt);
 			    		   
-				    	   System.out.println("블랙컨슈머관리err-->" + err.toString()); 
-			    		   logger.info("블랙컨슈머관리err-->" + err.toString()) ;
+				    	   System.out.println("GR 비상멘트관리err-->" + err.toString()); 
+			    		   logger.info("GR 비상멘트관리err-->" + err.toString()) ;
 				    	   
 				    	   if(rcode == 200)
 				    	   {

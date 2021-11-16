@@ -2,10 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.soluvis.bakeGR.ivrManagement.mapper.ivrGREmerMentMapper">
-   <select id="EmerMentListGet" parameterType="hashmap" resultType="ivrGREmerMent" fetchSize="1000">
+   <select id="EmerMentGet" parameterType="hashmap" resultType="ivrGREmerMent" fetchSize="1000">
 		SELECT  seq            	as seq,
 		        dnis           	as dnis,
+		        sdate           as sdate,
 		        stime           as stime,
+		        edate           as edate,
 		        etime           as etime,
 		        va_yn           as va_yn,
 		        ment            as ment,
@@ -15,29 +17,66 @@
 		        upt_by          as upt_by        
 		FROM    givr.ax_ivr_emerment_gr
 		WHERE   1=1
+		<if test="dnis != '' and dnis != null">
+		AND	dnis 	= #{dnis}
+		</if>
+		<if test="sdate != '' and sdate != null">
+		AND	sdate 	= #{sdate}
+		</if>
+		<if test="stime != '' and stime != null">
+		AND	stime 	= #{stime}
+		</if>
 		ORDER BY stime asc, dnis asc
     </select>
     
-    <insert id="EmerMentListIst" parameterType="hashmap">
-		INSERT 	INTO givr.ax_ivr_emerment_gr (seq, dnis, stime, etime, va_yn, ment, crt_dt, crt_by)	
-		VALUES	(#{seq}, #{dnis}, #{stime}, #{etime}, #{va_yn}, #{ment}, #{crt_dt}, #{crt_by})
+    <select id="EmerMentExist" parameterType="hashmap" resultType="ivrGREmerMent" fetchSize="1000">
+    	SELECT	seq				as seq
+    	FROM
+			(SELECT  seq      	as seq      
+			FROM    givr.ax_ivr_emerment_gr
+			WHERE   sdate||stime > #{sdate}||#{stime}
+			AND		#{edate}||#{etime} BETWEEN sdate||stime AND edate||etime
+			AND		dnis = #{dnis}
+			UNION ALL
+			SELECT  seq      	as seq      
+			FROM    givr.ax_ivr_emerment_gr
+			WHERE   #{sdate}||#{stime} BETWEEN sdate||stime AND edate||etime
+			AND		#{edate}||#{etime} BETWEEN sdate||stime AND edate||etime
+			AND		dnis = #{dnis}
+			UNION ALL
+			SELECT  seq      	as seq      
+			FROM    givr.ax_ivr_emerment_gr
+			WHERE   #{sdate}||#{stime} BETWEEN sdate||stime AND edate||etime
+			AND		#{edate}||#{etime} > edate||etime
+			AND		dnis = #{dnis})					
+		WHERE	1=1
+		<if test="seq != '' and seq != null">
+		AND	seq 	!= #{seq}
+		</if>
+    </select>
+    
+    <insert id="EmerMentIst" parameterType="hashmap">
+		INSERT 	INTO givr.ax_ivr_emerment_gr (seq, dnis, sdate, stime, edate, etime, va_yn, ment, crt_dt, crt_by)	
+		VALUES	(givr.ax_ivr_emerment_gr_seq.nextval, #{dnis}, #{sdate}, #{stime}, #{edate}, #{etime}, #{va_yn}, #{ment, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by})
 	</insert>
 	
-    <update id="EmerMentListUdt" parameterType="hashmap">
+    <update id="EmerMentUdt" parameterType="hashmap">
 		UPDATE	givr.ax_ivr_emerment_gr
 		SET		dnis = #{dnis},
+				sdate = #{sdate},
 				stime = #{stime},
+				edate = #{edate},
 				etime = #{etime},
 				va_yn = #{va_yn},
-				ment = #{ment},
+				ment = #{ment, jdbcType=VARCHAR},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
 		WHERE	seq = #{seq}
 	</update>
 	
-    <delete id="EmerMentListDel" parameterType="hashmap">
+    <delete id="EmerMentDel" parameterType="hashmap">
 		DELETE	
 		FROM	givr.ax_ivr_emerment_gr
-		WHERE	seq = #{seq}	
+		WHERE	seq = #{seq}
 	</delete>    
 </mapper>

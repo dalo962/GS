@@ -7,6 +7,7 @@
 				useyn 		as 	useyn, 
 				lc_useyn	as 	lc_useyn,
 				hl_useyn	as 	hl_useyn,
+				ov_useyn	as 	ov_useyn,
 				substr(wr_stime,0,2)  || ':' || substr(wr_stime,3,2)  || ':' || substr(wr_stime,5,2)	as 	wr_stime,
 				substr(wr_etime,0,2)  || ':' || substr(wr_etime,3,2)  || ':' || substr(wr_etime,5,2)	as 	wr_etime,
 				substr(lcstime,0,2)   || ':' || substr(lcstime,3,2)   || ':' || substr(lcstime,5,2)		as 	lc_stime,
@@ -17,6 +18,8 @@
 				substr(sun_etime,0,2) || ':' || substr(sun_etime,3,2) || ':' || substr(sun_etime,5,2) 	as 	sun_etime,
 				substr(hl_stime,0,2)  || ':' || substr(hl_stime,3,2)  || ':' || substr(hl_stime,5,2)	as 	hl_stime,
 				substr(hl_etime,0,2)  || ':' || substr(hl_etime,3,2)  || ':' || substr(hl_etime,5,2)	as	hl_etime,
+				substr(ov_stime,0,2)  || ':' || substr(ov_stime,3,2)  || ':' || substr(ov_stime,5,2)	as 	ov_stime,
+				substr(ov_etime,0,2)  || ':' || substr(ov_etime,3,2)  || ':' || substr(ov_etime,5,2)	as	ov_etime,
 				crt_dt 		as 	crt_dt, 
 				crt_by 		as 	crt_by, 
 				upt_dt 		as 	upt_dt, 
@@ -33,8 +36,8 @@
     </select>
     
     <insert id="DnisListIst" parameterType="hashmap">
-		INSERT 	INTO givr.ax_ivr_worktime_gr (dnis, useyn, lc_useyn, hl_useyn, wr_stime, wr_etime, lcstime, lcetime, sat_stime, sat_etime, sun_stime, sun_etime, hl_stime, hl_etime, crt_dt, crt_by, delyn)	
-		VALUES	(#{dnis}, #{useyn}, #{lc_useyn}, #{hl_useyn}, #{wr_stime}, #{wr_etime}, #{lc_stime}, #{lc_etime}, #{sat_stime}, #{sat_etime}, #{sun_stime}, #{sun_etime}, #{hl_stime}, #{hl_etime}, #{crt_dt}, #{crt_by}, 'N')
+		INSERT 	INTO givr.ax_ivr_worktime_gr (dnis, useyn, lc_useyn, hl_useyn, ov_useyn, wr_stime, wr_etime, lcstime, lcetime, sat_stime, sat_etime, sun_stime, sun_etime, hl_stime, hl_etime, ov_stime, ov_etime, crt_dt, crt_by, delyn)	
+		VALUES	(#{dnis}, #{useyn}, #{lc_useyn}, #{hl_useyn}, #{ov_useyn}, #{wr_stime}, #{wr_etime}, #{lc_stime}, #{lc_etime}, #{sat_stime}, #{sat_etime}, #{sun_stime}, #{sun_etime}, #{hl_stime}, #{hl_etime}, #{ov_stime}, #{ov_etime}, #{crt_dt}, #{crt_by}, 'N')
 	</insert>
 	
     <update id="DnisListUdt" parameterType="hashmap">
@@ -42,6 +45,7 @@
 		SET		useyn = #{useyn},
 				lc_useyn = #{lc_useyn},
 				hl_useyn = #{hl_useyn},
+				ov_useyn = #{ov_useyn},
 				wr_stime = #{wr_stime},
 				wr_etime = #{wr_etime},
 				lcstime = #{lc_stime},
@@ -52,6 +56,8 @@
 				sun_etime = #{sun_etime},
 				hl_stime = #{hl_stime},
 				hl_etime = #{hl_etime},
+				ov_stime = #{ov_stime},
+				ov_etime = #{ov_etime},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
 		WHERE	dnis = #{dnis}

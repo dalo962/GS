@@ -44,7 +44,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		{
     			bletime = bletime + 1;
     		}
-    		if(n.vayn == null || n.vayn == "")
+    		if(n.va_yn == null || n.va_yn == "")
     		{
     			blvayn = blvayn + 1;
     		}    		
@@ -81,7 +81,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		            url: "/gr/api/ivr/ivrEmerMent/EmerMentSave",
 		            data: JSON.stringify(saveList),
 		            callback: function (res) {
-		            	alert(res.message);
+		            	alert(res.message);		            	
 		            	axToast.push("저장 되었습니다.");
 		            	ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
 		            },
@@ -289,9 +289,43 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
             	{key: "seq", label: "seq", width: 0, align: "center"},
-            	{key: "dnis", label: "대표번호", width: 200, align: "center", sortable: true},
-            	{key: "stime", label: "시작시간", width: 140, align: "center", sortable: true, editor:"text"},
-            	{key: "etime", label: "종료시간", width: 140, align: "center", sortable: true, editor:"text"},
+            	{key: "dnis", label: "대표번호", width: 200, align: "center", sortable: true, editor:"text"},
+            	{key: "sdate", label: "시작날짜", width: 140, align: "center", sortable: true, editor:"text",
+                	formatter: function() {
+                		var sdate = "";
+                		if(this.item.sdate != null)
+                		{
+                			sdate = this.item.sdate.substr(0,4) + "-" + this.item.sdate.substr(4,2) + "-" + this.item.sdate.substr(6,2);
+                		}
+                		return sdate;
+                }},
+            	{key: "stime", label: "시작시각", width: 140, align: "center", sortable: true, editor:"text",
+                	formatter: function() {
+                		var stime = "";
+                		if(this.item.stime != null)
+                		{
+                			stime = this.item.stime.substr(0,2) + ":" + this.item.stime.substr(2,2) + ":" + this.item.stime.substr(4,2);
+                		}
+                		return stime;
+                }},
+            	{key: "edate", label: "종료날짜", width: 140, align: "center", sortable: true, editor:"text",
+                	formatter: function() {
+                		var edate = "";
+                		if(this.item.edate != null)
+                		{
+                			edate = this.item.edate.substr(0,4) + "-" + this.item.edate.substr(4,2) + "-" + this.item.edate.substr(6,2);
+                		}
+                		return edate;
+                }},
+            	{key: "etime", label: "종료시각", width: 140, align: "center", sortable: true, editor:"text",
+                	formatter: function() {
+                		var etime = "";
+                		if(this.item.etime != null)
+                		{
+                			etime = this.item.etime.substr(0,2) + ":" + this.item.etime.substr(2,2) + ":" + this.item.etime.substr(4,2);
+                		}
+                		return etime;
+                }},
                 {key: "va_yn", label: "성우여부", width: 120, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
@@ -303,7 +337,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     	]
                 	}
                 }, formatter: function() {
-                	switch(this.item.flag) {
+                	switch(this.item.va_yn) {
                 		case "1":
             				return "사용";
             				break; 	

@@ -5,42 +5,44 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
-import com.soluvis.bake.ivrManagement.mapper.ivrBlackListMapper;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGREmerMent;
+import com.soluvis.bakeGR.ivrManagement.mapper.ivrGREmerMentMapper;
 
 @Service
-public class ivrGREmerMentServiceImpl implements ivrGRBlackListService{
+public class ivrGREmerMentServiceImpl implements ivrGREmerMentService{
 	
 	@Autowired
-	private ivrBlackListMapper ivrBlackListMapper;
-	
+	private ivrGREmerMentMapper ivrGREmerMentMapper;
+
 	@Override
-	public List<ivrBlackList> BlackListGet(Map<String,Object> params)
-	{		
-		return ivrBlackListMapper.BlackListGet(params);
-	}
-		
-	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int BlackListIst(Map<String,Object> params)
-	{		
-		return ivrBlackListMapper.BlackListIst(params);
+	public List<ivrGREmerMent> EmerMentGet(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return ivrGREmerMentMapper.EmerMentGet(params);
 	}
 
 	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int BlackListUdt(Map<String,Object> params)
-	{		
-		return ivrBlackListMapper.BlackListUdt(params);
+	public List<ivrGREmerMent> EmerMentExist(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return ivrGREmerMentMapper.EmerMentExist(params);
 	}
-	
+
 	@Override
-	@Transactional(rollbackFor=Exception.class)
-	public int BlackListDel(Map<String,Object> params)
-	{		
-		return ivrBlackListMapper.BlackListDel(params);
+	public int EmerMentIst(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return ivrGREmerMentMapper.EmerMentIst(params);
+	}
+
+	@Override
+	public int EmerMentUdt(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return ivrGREmerMentMapper.EmerMentUdt(params);
+	}
+
+	@Override
+	public int EmerMentDel(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return ivrGREmerMentMapper.EmerMentDel(params);
 	}
 }
 

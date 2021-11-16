@@ -3,7 +3,8 @@
 
 <mapper namespace="com.soluvis.bakeGR.ivrManagement.mapper.ivrGRBlackListMapper">
    <select id="BlackListGet" parameterType="hashmap" resultType="ivrGRBlack" fetchSize="1000">
-		SELECT  ani             as ani,
+		SELECT  seq             as seq,
+				ani             as ani,
 		        description     as description,
 		        crt_dt          as crt_dt,
 		        crt_by          as crt_by,
@@ -19,23 +20,22 @@
     </select>
     
     <insert id="BlackListIst" parameterType="hashmap">
-		INSERT 	INTO givr.ax_ivr_blackconsumer_gr (ani, description, connid, crt_dt, crt_by)	
-		VALUES	(#{ani}, #{description}, #{connid}, #{crt_dt}, #{crt_by})
+		INSERT 	INTO givr.ax_ivr_blackconsumer_gr (seq, ani, description, connid, crt_dt, crt_by)	
+		VALUES	(givr.ax_ivr_blackconsumer_gr_seq.nextval, #{ani}, #{description, jdbcType=VARCHAR}, #{connid}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="BlackListUdt" parameterType="hashmap">
 		UPDATE	givr.ax_ivr_blackconsumer_gr
-		SET		description = #{description},
-				connid = #{connid},
+		SET		description = #{description, jdbcType=VARCHAR},
+				connid = #{connid, jdbcType=VARCHAR},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
-		WHERE	ani = #{ani}
+		WHERE	seq = #{seq}
 	</update>
 	
     <delete id="BlackListDel" parameterType="hashmap">
 		DELETE	
 		FROM	givr.ax_ivr_blackconsumer_gr
-		WHERE	ani = #{ani}	
-		AND		crt_dt = #{crt_dt}
+		WHERE	seq = #{seq}
 	</delete>    
 </mapper>

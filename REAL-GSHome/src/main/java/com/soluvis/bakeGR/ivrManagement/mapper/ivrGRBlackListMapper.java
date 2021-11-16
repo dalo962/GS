@@ -6,13 +6,13 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.chequer.axboot.core.mybatis.MyBatisMapper;
-import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
+import com.soluvis.bakeGR.ivrManagement.domain.ivrGRBlackList;
 
 @Repository
 public interface ivrGRBlackListMapper extends MyBatisMapper{	
 
 	// 조회
-	List<ivrBlackList> BlackListGet(Map<String,Object> params);
+	List<ivrGRBlackList> BlackListGet(Map<String,Object> params);
 	// 추가
 	int BlackListIst(Map<String,Object> params);
 	// 수정
