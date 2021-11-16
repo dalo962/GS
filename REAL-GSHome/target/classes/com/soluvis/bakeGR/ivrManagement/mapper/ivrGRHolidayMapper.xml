@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bakeGR.ivrManagement.mapper.ivrGRHolidayMapper">
+   <select id="HolidayGet" parameterType="hashmap" resultType="ivrGRHoliday" fetchSize="1000">
+		SELECT	holiday 	as holiday, 
+				hl_useyn 	as hl_useyn,
+				description	as  description,
+				crt_dt 		as crt_dt, 
+				crt_by 		as crt_by, 
+				upt_dt 		as upt_dt, 
+				upt_by  	as upt_by
+		FROM 	givr.ax_ivr_holiday_gr
+		WHERE	1=1
+		<if test="holiday != '' and holiday != null">
+		AND		hl_useyn = #{holiday}
+		</if>
+		ORDER BY holiday asc
+    </select>
+    
+    <insert id="HolidayIst" parameterType="hashmap">
+		INSERT 	INTO givr.ax_ivr_holiday_gr (holiday, hl_useyn, description, crt_dt, crt_by)	
+		VALUES	(#{holiday}, #{hl_useyn}, #{description, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by})
+	</insert>
+	
+    <update id="HolidayUdt" parameterType="hashmap">
+		UPDATE	givr.ax_ivr_holiday_gr
+		SET		hl_useyn = #{hl_useyn},
+				description = #{description, jdbcType=VARCHAR},
+				upt_dt = #{upt_dt},
+				upt_by = #{upt_by}
+		WHERE	holiday = #{holiday}
+	</update>
+	
+    <delete id="HolidayDel" parameterType="hashmap">
+		DELETE	
+		FROM	givr.ax_ivr_holiday_gr
+		WHERE	holiday = #{holiday}	
+	</delete>    
+</mapper>
