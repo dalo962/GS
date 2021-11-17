@@ -26,6 +26,9 @@ public class ivrGREmerMent extends BaseJpaModel<String>{
 	private String upt_dt;	// 수정일
 	private String upt_by;	// 수정자
 	private String cnt;		// 멘트 존재여부 카운트
+	
+	private String code;	// common_code code
+	private String name;	// common_code name
 
 	@Override
 	public String getId() {

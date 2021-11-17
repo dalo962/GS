@@ -11,7 +11,7 @@
 		        upt_dt          as upt_dt,
 		        upt_by          as upt_by,
 		        connid          as connid
-		FROM    givr.ax_ivr_blackconsumer_gr
+		FROM    givr.gr_ax_ivr_blackconsumer
 		WHERE   1=1
 		<if test="ani != '' and ani != null">
 		AND		ani = #{ani}
@@ -20,12 +20,12 @@
     </select>
     
     <insert id="BlackListIst" parameterType="hashmap">
-		INSERT 	INTO givr.ax_ivr_blackconsumer_gr (seq, ani, description, connid, crt_dt, crt_by)	
-		VALUES	(givr.ax_ivr_blackconsumer_gr_seq.nextval, #{ani}, #{description, jdbcType=VARCHAR}, #{connid}, #{crt_dt}, #{crt_by})
+		INSERT 	INTO givr.gr_ax_ivr_blackconsumer (seq, ani, description, connid, crt_dt, crt_by)	
+		VALUES	(givr.gr_ax_ivr_blackconsumer_seq.nextval, #{ani}, #{description, jdbcType=VARCHAR}, #{connid}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="BlackListUdt" parameterType="hashmap">
-		UPDATE	givr.ax_ivr_blackconsumer_gr
+		UPDATE	givr.gr_ax_ivr_blackconsumer
 		SET		description = #{description, jdbcType=VARCHAR},
 				connid = #{connid, jdbcType=VARCHAR},
 				upt_dt = #{upt_dt},
@@ -35,7 +35,7 @@
 	
     <delete id="BlackListDel" parameterType="hashmap">
 		DELETE	
-		FROM	givr.ax_ivr_blackconsumer_gr
+		FROM	givr.gr_ax_ivr_blackconsumer
 		WHERE	seq = #{seq}
 	</delete>    
 </mapper>

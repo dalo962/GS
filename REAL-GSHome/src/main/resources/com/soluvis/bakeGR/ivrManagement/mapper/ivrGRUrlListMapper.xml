@@ -10,7 +10,7 @@
 				upt_dt as upt_dt, 
 				upt_by as upt_by,
 				file_rst as file_rst
-		FROM 	givr.ax_ivr_url_gr
+		FROM 	givr.gr_ax_ivr_url
 		<if test="url_nm != '' and url_nm != null">
 		WHERE	url_nm = #{url_nm}
 		</if>
@@ -18,12 +18,12 @@
     </select>
     
     <insert id="UrlListIst" parameterType="hashmap">
-		INSERT 	INTO givr.ax_ivr_url_gr (url_nm, svr_ip, crt_dt, crt_by, file_rst)	
+		INSERT 	INTO givr.gr_ax_ivr_url (url_nm, svr_ip, crt_dt, crt_by, file_rst)	
 		VALUES	(#{url_nm}, #{svr_ip}, #{crt_dt}, #{crt_by}, null)
 	</insert>
 	
     <update id="UrlListUdt" parameterType="hashmap">
-		UPDATE	givr.ax_ivr_url_gr
+		UPDATE	givr.gr_ax_ivr_url
 		SET		svr_ip = #{svr_ip},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
@@ -32,13 +32,13 @@
 	
     <delete id="UrlListDel" parameterType="hashmap">
 		DELETE	
-		FROM	givr.ax_ivr_url_gr
+		FROM	givr.gr_ax_ivr_url
 		WHERE	url_nm = #{url_nm}	
 	</delete>
 	
 	
 	<update id="UrlFileUdt" parameterType="hashmap">
-		UPDATE	givr.ax_ivr_url_gr
+		UPDATE	givr.gr_ax_ivr_url
 		SET		file_rst = #{file_rst}
 		WHERE	url_nm = #{url_nm}
 		AND		svr_ip = #{svr_ip}

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.soluvis.bake.ivrManagement.mapper.ivrUrlListMapper;
 import com.soluvis.bakeGR.ivrManagement.domain.ivrGRUrlList;
 import com.soluvis.bakeGR.ivrManagement.mapper.ivrGRUrlListMapper;
 

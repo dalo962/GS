@@ -24,7 +24,7 @@
 				crt_by 		as 	crt_by, 
 				upt_dt 		as 	upt_dt, 
 				upt_by 		as 	upt_by
-		FROM 	givr.ax_ivr_worktime_gr
+		FROM 	givr.gr_ax_ivr_worktime
 		WHERE	1=1
 		<if test="dnis != '' and dnis != null">
 		AND		dnis = #{dnis}
@@ -36,12 +36,12 @@
     </select>
     
     <insert id="DnisListIst" parameterType="hashmap">
-		INSERT 	INTO givr.ax_ivr_worktime_gr (dnis, useyn, lc_useyn, hl_useyn, ov_useyn, wr_stime, wr_etime, lcstime, lcetime, sat_stime, sat_etime, sun_stime, sun_etime, hl_stime, hl_etime, ov_stime, ov_etime, crt_dt, crt_by, delyn)	
+		INSERT 	INTO givr.gr_ax_ivr_worktime (dnis, useyn, lc_useyn, hl_useyn, ov_useyn, wr_stime, wr_etime, lcstime, lcetime, sat_stime, sat_etime, sun_stime, sun_etime, hl_stime, hl_etime, ov_stime, ov_etime, crt_dt, crt_by, delyn)	
 		VALUES	(#{dnis}, #{useyn}, #{lc_useyn}, #{hl_useyn}, #{ov_useyn}, #{wr_stime}, #{wr_etime}, #{lc_stime}, #{lc_etime}, #{sat_stime}, #{sat_etime}, #{sun_stime}, #{sun_etime}, #{hl_stime}, #{hl_etime}, #{ov_stime}, #{ov_etime}, #{crt_dt}, #{crt_by}, 'N')
 	</insert>
 	
     <update id="DnisListUdt" parameterType="hashmap">
-		UPDATE	givr.ax_ivr_worktime_gr
+		UPDATE	givr.gr_ax_ivr_worktime
 		SET		useyn = #{useyn},
 				lc_useyn = #{lc_useyn},
 				hl_useyn = #{hl_useyn},
@@ -64,13 +64,13 @@
 	</update>
 	
     <update id="DnisListDel" parameterType="hashmap">
-		UPDATE	givr.ax_ivr_worktime_gr
+		UPDATE	givr.gr_ax_ivr_worktime
 		SET		delyn = 'Y'
 		WHERE	dnis = #{dnis}	
 	</update>
 	
 	<update id="DnisListDelUdt" parameterType="hashmap">
-		UPDATE	givr.ax_ivr_worktime_gr
+		UPDATE	givr.gr_ax_ivr_worktime
 		SET		delyn = 'N'
 		WHERE	dnis = #{dnis}	
 	</update>

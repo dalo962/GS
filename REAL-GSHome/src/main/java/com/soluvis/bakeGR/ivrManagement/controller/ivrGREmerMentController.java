@@ -27,8 +27,6 @@ import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.commController;
-import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
-import com.soluvis.bake.ivrManagement.service.ivrUrlListService;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
 import com.soluvis.bake.system.utils.SessionUtils;
 import com.soluvis.bakeGR.ivrManagement.domain.ivrGREmerMent;
@@ -36,6 +34,7 @@ import com.soluvis.bakeGR.ivrManagement.domain.ivrGRUrlList;
 import com.soluvis.bakeGR.ivrManagement.service.ivrGREmerMentService;
 import com.soluvis.bakeGR.ivrManagement.service.ivrGRUrlListService;
 import com.soluvis.bakeGR.ivrManagement.utils.globalVariables;
+import com.soluvis.connTTS.makeSound;
 
 /** 
  * @author gihyunpark
@@ -302,6 +301,54 @@ public class ivrGREmerMentController extends commController{
 			logger.error(e.toString());
 		}
 		return ok(msg);		
-	}	
+	}
+	
+	/** 
+	 * @desc 블랙컨슈머 목록을 수정한다
+	 */
+	@RequestMapping(value = "/EmerMentTTS", method = RequestMethod.POST, produces = APPLICATION_JSON)
+    public ApiResponse EmerMentTTS(@Valid @RequestBody List<ivrGREmerMent> emerment, HttpServletRequest request) throws Exception {	
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, String> ttsMap = new HashMap<String, String>();
+		List<ivrGREmerMent> search = null;
+		System.out.println("들어왔다.");
+		String ment = "";
+		try {
+			if(emerment.size() > 0){
+				ivrGREmerMent em = emerment.get(0);
+				ment = em.getMent();
+				
+				logger.info("ivrGREmerMentService.EmerMentTTS Query Start...");
+				search = ivrGREmerMentService.EmerMentTTS(map);
+				
+				if(search.size() > 0){
+					for (ivrGREmerMent forEm : search){
+						ttsMap.put(forEm.getCode(), forEm.getName());
+					}				
+				}
+				makeSound ms = new makeSound(ttsMap.get("TTS_HOSTP"), Integer.parseInt(ttsMap.get("TTS_PORTP")), "yumi");
+				int tts_result = ms.makeV(ment);
+				
+				if(tts_result == 1){
+					return ok("ok P");
+				}else{
+					ms = new makeSound(ttsMap.get("TTS_HOSTB"), Integer.parseInt(ttsMap.get("TTS_PORTB")), "yumi");
+					tts_result = ms.makeV(ment);
+					if(tts_result == 1){
+						return ok("ok B");
+					}else{
+						return ok("Fail PB");
+					}
+				}
+			}else{
+				return ok("ok");
+			}
+		} catch (Exception e) {
+			System.out.println(e.getStackTrace());
+			logger.error(e.toString());
+		}
+		
+		return ok("ok");
+	}
 }
 

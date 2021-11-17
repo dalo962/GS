@@ -21,4 +21,6 @@ public interface ivrGREmerMentMapper extends MyBatisMapper{
 	int EmerMentUdt(Map<String,Object> params);
 	// 삭제
 	int EmerMentDel(Map<String,Object> params);
+	// TTS 정보 조회
+	List<ivrGREmerMent> EmerMentTTS(Map<String,Object> params);
 }

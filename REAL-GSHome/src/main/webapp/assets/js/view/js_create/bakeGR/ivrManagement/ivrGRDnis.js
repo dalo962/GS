@@ -1,25 +1,14 @@
 var fnObj = {};
-var dnis_options = [];
-var fisrt_search_flag = true;
- 
 var ACTIONS = axboot.actionExtend(fnObj, {
     PAGE_SEARCH: function (caller, act, data) {        
     	axboot.ajax({
             type: "GET",
             cache: false,
-            url: "/gr/api/ivr/ivrEmerMent/EmerMentSearch",
+            url: "/gr/api/ivr/ivrDnis/DnisSearch",
             data: "",
             callback: function (res) {
-            	if(fisrt_search_flag == true){
-            		setTimeout(function(){
-                		caller.gridView01.setData(res);
-                        fnObj.excelgrid.initView();
-                        fisrt_search_flag = false;
-                	}, 200);
-            	}else{
-            		caller.gridView01.setData(res);
-                    fnObj.excelgrid.initView();
-            	}
+                caller.gridView01.setData(res);
+                fnObj.excelgrid.initView();
             },
             options: {
                 onError: function (err) {
@@ -35,51 +24,29 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     },   
     PAGE_SAVE: function (caller, act, data) {
     	var saveList = [].concat(caller.gridView01.getData());
-    	
     	saveList = saveList.concat(caller.gridView01.getData("deleted"));
     	
-    	
     	var reqExp = /^[0-9]*$/;
-    	var bldnis = 0;
-    	var blstime = 0;
-    	var bletime = 0;
-    	var blvayn = 0;
+    	var dndnis = 0;
+    	var dnuseyn = 0;
     	saveList.forEach(function (n){
     		if(n.dnis == null || n.dnis == "")
     		{
-    			bldnis = bldnis + 1;
+    			dndnis = dndnis + 1;
     		}
-    		if(n.stime == null || n.stime == "")
+    		if(n.dnis_useyn == null || n.dnis_useyn == "")
     		{
-    			blstime = blstime + 1;
+    			dnuseyn = dnuseyn + 1;
     		}
-    		if(n.etime == null || n.etime == "")
-    		{
-    			bletime = bletime + 1;
-    		}
-    		if(n.va_yn == null || n.va_yn == "")
-    		{
-    			blvayn = blvayn + 1;
-    		}    		
     	});
-    	if(bldnis > 0) 
+    	if(dndnis > 0) 
     	{ 
     		alert("대표번호를 입력하시기 바랍니다."); 
     		return;
     	}
-    	if(blstime > 0) 
+    	if(dnuseyn > 0) 
     	{ 
-    		alert("시작시간을 입력하시기 바랍니다."); 
-    		return;
-    	}
-    	if(bletime > 0) 
-    	{ 
-    		alert("종료시간을 입력하시기 바랍니다."); 
-    		return;
-    	}
-    	if(blvayn > 0) 
-    	{ 
-    		alert("성우여부를 선택하시기 바랍니다."); 
+    		alert("대표번호 사용유무를 선택하시기 바랍니다."); 
     		return;
     	}
 
@@ -91,10 +58,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		    	axboot.ajax({
 		            type: "POST",
 		            cache: false,
-		            url: "/gr/api/ivr/ivrEmerMent/EmerMentSave",
+		            url: "/gr/api/ivr/ivrDnis/DnisSave",
 		            data: JSON.stringify(saveList),
 		            callback: function (res) {
-		            	alert(res.message);		            	
+		            	alert(res.message);
 		            	axToast.push("저장 되었습니다.");
 		            	ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
 		            },
@@ -210,48 +177,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		        }
 		    }
 		}
-    },
-    SET_DNIS: function (caller, act, data) {
-    	axboot.ajax({
-            type: "GET",
-            cache: false,
-            url: "/gr/api/ivr/ivrDnis/DnisSearchY",
-            data: "",
-            callback: function (res) {
-            	dnis_options.push({value:"전체", text:"전체"});
-                res.forEach(function (n) {
-                	dnis_options.push({
-                		value:n.dnis, text: n.dnis
-                    });
-                });
-                fnObj.gridView01.initView();
-            },
-            options: {
-                onError: function (err) {
-                    console.log(err);
-                }
-            }
-        });
-    },
-    GET_TTS: function (caller, act, data) {
-    	var ttsList = [].concat(fnObj.gridView01.getData("selected"));
-    	console.log(ttsList);
-    	console.log(JSON.stringify(ttsList));
-    	
-    	axboot.ajax({
-            type: "POST",
-    		cache: false,
-            url: "/gr/api/ivr/ivrEmerMent/EmerMentTTS",
-            data: JSON.stringify(ttsList),
-            callback: function (res) {
-            	console.log(res);
-            },
-            options: {
-                onError: function (err) {
-                    console.log(err);
-                }
-            }
-        });
     }
 });
 
@@ -293,13 +218,11 @@ nullChk = function(strValue){
 fnObj.pageStart = function () {
     var _this = this;
 
-   	_this.pageButtonView.initView(); 
+   	_this.pageButtonView.initView();
     _this.searchView.initView();
-//    _this.gridView01.initView();	// SET_DNIS로 위치변경
+    _this.gridView01.initView();
 
-    ACTIONS.dispatch(ACTIONS.SET_DNIS);
     ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-    
 };
 
 
@@ -311,9 +234,6 @@ fnObj.pageButtonView = axboot.viewExtend({
             },
             "excel": function () {
                 ACTIONS.dispatch(ACTIONS.EXCEL_EXPORT);
-            },
-            "tts": function () {
-                ACTIONS.dispatch(ACTIONS.GET_TTS);
             },
         });
     }
@@ -340,7 +260,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
     initView: function () {
         var _this = this;
-        
+
         this.target = axboot.gridBuilder({
         	showRowSelector: true,
             frozenColumnIndex: 0,
@@ -348,52 +268,22 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             showLineNumber:true,
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
-            	{key: "seq", label: "seq", width: 0, align: "center"},
-            	{key: "dnis", label: "대표번호", width: 100, align: "center", sortable: true,  editor: {
-                	type: "select", config: {
-                		columnKeys: {
-                			optionValue: "value", optionText: "text"
-                		},
-                		options: dnis_options
-                	}
-                }},//
-            	{key: "sdate", label: "시작날짜", width: 100, align: "center", sortable: true, editor:"text",
-                	formatter: function() {
-                		var sdate = "";
-                		if(this.item.sdate != null)
-                		{
-                			sdate = this.item.sdate.substr(0,4) + "-" + this.item.sdate.substr(4,2) + "-" + this.item.sdate.substr(6,2);
-                		}
-                		return sdate;
-                }},
-            	{key: "stime", label: "시작시각", width: 100, align: "center", sortable: true, editor:"text",
-                	formatter: function() {
-                		var stime = "";
-                		if(this.item.stime != null)
-                		{
-                			stime = this.item.stime.substr(0,2) + ":" + this.item.stime.substr(2,2) + ":" + this.item.stime.substr(4,2);
-                		}
-                		return stime;
-                }},
-            	{key: "edate", label: "종료날짜", width: 100, align: "center", sortable: true, editor:"text",
-                	formatter: function() {
-                		var edate = "";
-                		if(this.item.edate != null)
-                		{
-                			edate = this.item.edate.substr(0,4) + "-" + this.item.edate.substr(4,2) + "-" + this.item.edate.substr(6,2);
-                		}
-                		return edate;
-                }},
-            	{key: "etime", label: "종료시각", width: 100, align: "center", sortable: true, editor:"text",
-                	formatter: function() {
-                		var etime = "";
-                		if(this.item.etime != null)
-                		{
-                			etime = this.item.etime.substr(0,2) + ":" + this.item.etime.substr(2,2) + ":" + this.item.etime.substr(4,2);
-                		}
-                		return etime;
-                }},
-                {key: "va_yn", label: "성우여부", width: 120, align: "center", sortable: true, editor: {
+            	{key: "dnis", label: "대표번호", width: 200, align: "center", sortable: true, editor: {
+            		type: "text", disabled:function(){
+        				var dis = "";
+        				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
+        				{
+        					dis = true
+        				}
+        				else
+        				{
+        					dis = false;
+        				}
+        				return dis;
+        			}
+            	}},
+            	{key: "dnis_name", label: "명칭", width: 140, align: "center", editor:"text"},
+                {key: "dnis_useyn", label: "사용유무", width: 120, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
                 			optionValue: "value", optionText: "text"
@@ -404,7 +294,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     	]
                 	}
                 }, formatter: function() {
-                	switch(this.item.va_yn) {
+                	switch(this.item.dnis_useyn) {
                 		case "1":
             				return "사용";
             				break; 	
@@ -415,23 +305,8 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			return "선택";
                 			break;
                 	}
-                }},    
-                {key: "ment", label: "멘트", width: 400, align: "center", sortable: true, editor:"text"},
-                {key: "ttsBtn", label: "듣기", width: 50, align: "center", 
-                	formatter: function() {                
-	                	switch(this.item.va_yn) {
-		            		case "1":
-		        				return '';
-		        				break; 	
-		            		case "0":		            			
-		            			return '<a href="#" data-grid-view-01-btn="add"><img src="/assets/images/speaker.png" width="20 height="18" border="0"><a>';
-		            			break;                    		
-		            		default :
-		            			return '';
-		            			break;
-	                	}
-                	}
-                },
+                }},      
+                
                 {key: "crt_dt", label: "작성일자", width: 200, align: "center", sortable: true,
                 	formatter: function() {
                 		var crdt = "";
@@ -458,19 +333,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             body: {
                 onClick: function () {
                     this.self.select(this.dindex, {selectedClear: true});
-                    if (this.column.key == "ttsBtn" && this.item.va_yn == '0') 
-                    {                    
-                    	var data = this.list[this.dindex];
-                    	if(data.__depth__ != '0')
-                    	{
-                    		ACTIONS.dispatch(ACTIONS.GET_TTS);
-                    	}
-                    }  
-                },
-                onDBLClick: function () {
-                	console.log(this);
-                    this.self.select(this.dindex, {selectedClear: true});
-                                      
                 }
             }
         });
@@ -700,3 +562,9 @@ function handleFile(e) {
 }
  
 var input_dom_element;
+$(function() {
+    input_dom_element = document.getElementById('excel');
+    if(input_dom_element.addEventListener) {
+        input_dom_element.addEventListener('change', handleFile, false);
+    }
+});

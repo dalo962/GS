@@ -44,5 +44,11 @@ public class ivrGREmerMentServiceImpl implements ivrGREmerMentService{
 		// TODO Auto-generated method stub
 		return ivrGREmerMentMapper.EmerMentDel(params);
 	}
+	
+	@Override
+	public List<ivrGREmerMent> EmerMentTTS(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return ivrGREmerMentMapper.EmerMentTTS(params);
+	}
 }
 

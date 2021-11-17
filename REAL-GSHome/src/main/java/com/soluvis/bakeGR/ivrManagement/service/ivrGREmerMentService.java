@@ -16,4 +16,6 @@ public interface ivrGREmerMentService {
 	public int EmerMentUdt(Map<String,Object> params);
 	
 	public int EmerMentDel(Map<String,Object> params);
+	
+	public List<ivrGREmerMent> EmerMentTTS(Map<String,Object> params);
 }

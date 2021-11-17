@@ -10,21 +10,17 @@
 				crt_by 		as crt_by, 
 				upt_dt 		as upt_dt, 
 				upt_by  	as upt_by
-		FROM 	givr.ax_ivr_holiday_gr
-		WHERE	1=1
-		<if test="holiday != '' and holiday != null">
-		AND		hl_useyn = #{holiday}
-		</if>
+		FROM 	givr.gr_ax_ivr_holiday
 		ORDER BY holiday asc
     </select>
     
     <insert id="HolidayIst" parameterType="hashmap">
-		INSERT 	INTO givr.ax_ivr_holiday_gr (holiday, hl_useyn, description, crt_dt, crt_by)	
+		INSERT 	INTO givr.gr_ax_ivr_holiday (holiday, hl_useyn, description, crt_dt, crt_by)	
 		VALUES	(#{holiday}, #{hl_useyn}, #{description, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="HolidayUdt" parameterType="hashmap">
-		UPDATE	givr.ax_ivr_holiday_gr
+		UPDATE	givr.gr_ax_ivr_holiday
 		SET		hl_useyn = #{hl_useyn},
 				description = #{description, jdbcType=VARCHAR},
 				upt_dt = #{upt_dt},
@@ -34,7 +30,7 @@
 	
     <delete id="HolidayDel" parameterType="hashmap">
 		DELETE	
-		FROM	givr.ax_ivr_holiday_gr
+		FROM	givr.gr_ax_ivr_holiday
 		WHERE	holiday = #{holiday}	
 	</delete>    
 </mapper>

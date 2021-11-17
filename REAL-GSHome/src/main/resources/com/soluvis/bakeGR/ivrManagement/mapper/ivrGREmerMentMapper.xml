@@ -15,7 +15,7 @@
 		        crt_by          as crt_by,
 		        upt_dt          as upt_dt,
 		        upt_by          as upt_by        
-		FROM    givr.ax_ivr_emerment_gr
+		FROM    givr.gr_ax_ivr_emerment
 		WHERE   1=1
 		<if test="dnis != '' and dnis != null">
 		AND	dnis 	= #{dnis}
@@ -33,19 +33,19 @@
     	SELECT	seq				as seq
     	FROM
 			(SELECT  seq      	as seq      
-			FROM    givr.ax_ivr_emerment_gr
+			FROM    givr.gr_ax_ivr_emerment
 			WHERE   sdate||stime > #{sdate}||#{stime}
 			AND		#{edate}||#{etime} BETWEEN sdate||stime AND edate||etime
 			AND		dnis = #{dnis}
 			UNION ALL
 			SELECT  seq      	as seq      
-			FROM    givr.ax_ivr_emerment_gr
+			FROM    givr.gr_ax_ivr_emerment
 			WHERE   #{sdate}||#{stime} BETWEEN sdate||stime AND edate||etime
 			AND		#{edate}||#{etime} BETWEEN sdate||stime AND edate||etime
 			AND		dnis = #{dnis}
 			UNION ALL
 			SELECT  seq      	as seq      
-			FROM    givr.ax_ivr_emerment_gr
+			FROM    givr.gr_ax_ivr_emerment
 			WHERE   #{sdate}||#{stime} BETWEEN sdate||stime AND edate||etime
 			AND		#{edate}||#{etime} > edate||etime
 			AND		dnis = #{dnis})					
@@ -56,12 +56,12 @@
     </select>
     
     <insert id="EmerMentIst" parameterType="hashmap">
-		INSERT 	INTO givr.ax_ivr_emerment_gr (seq, dnis, sdate, stime, edate, etime, va_yn, ment, crt_dt, crt_by)	
-		VALUES	(givr.ax_ivr_emerment_gr_seq.nextval, #{dnis}, #{sdate}, #{stime}, #{edate}, #{etime}, #{va_yn}, #{ment, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by})
+		INSERT 	INTO givr.gr_ax_ivr_emerment (seq, dnis, sdate, stime, edate, etime, va_yn, ment, crt_dt, crt_by)	
+		VALUES	(givr.gr_ax_ivr_emerment_seq.nextval, #{dnis}, #{sdate}, #{stime}, #{edate}, #{etime}, #{va_yn}, #{ment, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="EmerMentUdt" parameterType="hashmap">
-		UPDATE	givr.ax_ivr_emerment_gr
+		UPDATE	givr.gr_ax_ivr_emerment
 		SET		dnis = #{dnis},
 				sdate = #{sdate},
 				stime = #{stime},
@@ -76,7 +76,15 @@
 	
     <delete id="EmerMentDel" parameterType="hashmap">
 		DELETE	
-		FROM	givr.ax_ivr_emerment_gr
+		FROM	givr.gr_ax_ivr_emerment
 		WHERE	seq = #{seq}
 	</delete>    
+	
+	<select id="EmerMentTTS" parameterType="hashmap" resultType="ivrGREmerMent" fetchSize="1000">
+    	SELECT	code	as code,
+    			name	as name
+    	FROM	ax_common_code_m    	
+    	WHERE 	group_cd = 'TTSSOCKET'
+    	ORDER BY sort
+    </select>
 </mapper>
