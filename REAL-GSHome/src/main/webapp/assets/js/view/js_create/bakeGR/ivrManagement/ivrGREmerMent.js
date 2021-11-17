@@ -218,7 +218,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
             url: "/gr/api/ivr/ivrDnis/DnisSearchY",
             data: "",
             callback: function (res) {
-            	dnis_options.push({value:"전체", text:"전체"});
+            	dnis_options.push({value:"ALL", text:"전체"});
                 res.forEach(function (n) {
                 	dnis_options.push({
                 		value:n.dnis, text: n.dnis
@@ -356,11 +356,18 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		},
                 		options: dnis_options
                 	}
-                }},//
+                }, formatter: function() {
+	                	if(this.item.dnis == 'ALL'){
+	                		return "전체";
+	                	}else{
+	                		return this.item.dnis;
+	                	}
+                	}
+                },//
             	{key: "sdate", label: "시작날짜", width: 100, align: "center", sortable: true, editor:"text",
                 	formatter: function() {
                 		var sdate = "";
-                		if(this.item.sdate != null)
+                		if(this.item.sdate != null && this.item.sdate != '')
                 		{
                 			sdate = this.item.sdate.substr(0,4) + "-" + this.item.sdate.substr(4,2) + "-" + this.item.sdate.substr(6,2);
                 		}
@@ -369,7 +376,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "stime", label: "시작시각", width: 100, align: "center", sortable: true, editor:"text",
                 	formatter: function() {
                 		var stime = "";
-                		if(this.item.stime != null)
+                		if(this.item.stime != null && this.item.stime != '')
                 		{
                 			stime = this.item.stime.substr(0,2) + ":" + this.item.stime.substr(2,2) + ":" + this.item.stime.substr(4,2);
                 		}
@@ -378,7 +385,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "edate", label: "종료날짜", width: 100, align: "center", sortable: true, editor:"text",
                 	formatter: function() {
                 		var edate = "";
-                		if(this.item.edate != null)
+                		if(this.item.edate != null && this.item.edate != '')
                 		{
                 			edate = this.item.edate.substr(0,4) + "-" + this.item.edate.substr(4,2) + "-" + this.item.edate.substr(6,2);
                 		}
@@ -387,7 +394,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "etime", label: "종료시각", width: 100, align: "center", sortable: true, editor:"text",
                 	formatter: function() {
                 		var etime = "";
-                		if(this.item.etime != null)
+                		if(this.item.etime != null && this.item.etime != '')
                 		{
                 			etime = this.item.etime.substr(0,2) + ":" + this.item.etime.substr(2,2) + ":" + this.item.etime.substr(4,2);
                 		}

@@ -104,7 +104,9 @@ public class ivrGREmerMentController extends commController{
 		{
 			for (ivrGREmerMent em : emerment)
 			{
-				map.put("dnis", em.getDnis());
+				if(!em.getDnis().equals("ALL")){
+					map.put("dnis", em.getDnis());
+				}				
 				map.put("sdate", em.getSdate());
 				map.put("stime", em.getStime());
 				map.put("edate", em.getEdate());
@@ -117,7 +119,10 @@ public class ivrGREmerMentController extends commController{
 					int searchSize = search.size();
 					
 					if(searchSize == 0)
-					{						
+					{		
+						if(em.getDnis().equals("ALL")){
+							map.put("dnis", em.getDnis());
+						}
 						map.put("va_yn", em.getVa_yn());
 						map.put("ment", em.getMent());
 						map.put("crt_dt", sdf.format(new Date()));
@@ -311,7 +316,6 @@ public class ivrGREmerMentController extends commController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, String> ttsMap = new HashMap<String, String>();
 		List<ivrGREmerMent> search = null;
-		System.out.println("들어왔다.");
 		String ment = "";
 		try {
 			if(emerment.size() > 0){
