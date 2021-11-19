@@ -105,7 +105,7 @@ public class ivrGRHolidayController extends commController{
 		{
 			for (ivrGRHoliday hl : hlLst)
 			{
-				map.put("holiday", hl.getHoliday());
+				map.put("holiday", hl.getHoliday().replaceAll("-", ""));
 								
 				if(AXBootTypes.DataStatus.CREATED.equals(hl.getDataStatus()))
 				{		

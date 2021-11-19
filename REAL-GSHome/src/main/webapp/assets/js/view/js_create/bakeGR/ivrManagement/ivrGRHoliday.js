@@ -283,9 +283,9 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             			}
             	},	formatter: function() {
 	            		var crdt = "";
-	            		if(this.item.crt_dt != null)
+	            		if(this.item.holiday != null && this.item.holiday != '')
 	            		{
-	            			crdt = this.item.crt_dt.substr(0,4) + "-" + this.item.crt_dt.substr(4,2) + "-" + this.item.crt_dt.substr(6,2);
+	            			crdt = this.item.holiday.substr(0,4) + "-" + this.item.holiday.substr(4,2) + "-" + this.item.holiday.substr(6,2);
 	            		}
 	            		return crdt;
             		}

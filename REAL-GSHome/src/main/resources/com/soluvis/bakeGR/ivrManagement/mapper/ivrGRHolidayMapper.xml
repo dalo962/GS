@@ -11,6 +11,10 @@
 				upt_dt 		as upt_dt, 
 				upt_by  	as upt_by
 		FROM 	givr.gr_ax_ivr_holiday
+		WHERE	1=1
+		<if test="holiday != '' and holiday != null">
+		AND		holiday = ${holiday}
+		</if>
 		ORDER BY holiday asc
     </select>
     
