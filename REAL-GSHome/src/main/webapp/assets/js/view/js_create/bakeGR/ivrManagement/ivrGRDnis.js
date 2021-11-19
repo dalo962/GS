@@ -354,7 +354,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 
         if (_type == "modified" || _type == "deleted") {
             list = ax5.util.filter(_list, function () {
-                return this.ani;
+                return this.dnis;
             });
         } else {
             list = _list;
