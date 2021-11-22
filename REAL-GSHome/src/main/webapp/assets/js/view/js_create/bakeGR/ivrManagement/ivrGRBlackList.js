@@ -197,6 +197,29 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		        }
 		    }
 		}
+    },
+    GET_REC: function (caller, act, data) {
+    	var recList = [].concat(fnObj.gridView01.getData("selected"));
+    	console.log(recList);
+    	console.log(JSON.stringify(recList));
+    	
+//    	inter = $("[data-ax5select='interval']").ax5select("getValue")[0].value;
+    	
+    	axboot.modal.open({
+           width: 800,
+           height: 200,
+           header: false,
+           iframe: {
+               url: "http://localhost:8080/manager?connid=1a2a3a4a5a6a7a8a",
+               param: {connid : '1a2a3a4a5a6a7a8a'}
+           },
+           sendData: function(){
+     
+           },
+           callback: function(){
+               axboot.modal.close();
+           }
+       });
     }
 });
 
@@ -362,6 +385,15 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "description", label: "사유", width: 240, align: "center", editor:"text"},
             	{key: "agentid", label: "상담사", width: 80, align: "center", editor:"text"},
             	{key: "connid", label: "ConnID", width: 130, align: "center", editor:"text"},
+            	{key: "recBtn", label: "듣기", width: 50, align: "center", 
+                	formatter: function() {     
+                		if(this.item.connid != null && this.item.connid != ''){
+                			return '<a href="#"><img src="/assets/images/speaker.png" width="20 height="18" border="0"><a>';
+                		}else{
+                			return '';
+                		}
+                	}
+                },
                 {key: "crt_dt", label: "작성일자", width: 200, align: "center", sortable: true,
                 	formatter: function() {
                 		var crdt = "";
@@ -388,6 +420,15 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             body: {
                 onClick: function () {
                     this.self.select(this.dindex, {selectedClear: true});
+                    if (this.column.key == "recBtn" && (this.item.connid != null && this.item.connid != '')) 
+                    {    
+                    	console.log("select recBtn");
+                    	var data = this.list[this.dindex];
+                    	if(data.__depth__ != '0')
+                    	{
+                    		ACTIONS.dispatch(ACTIONS.GET_REC);
+                    	}
+                    }  
                 }
             }
         });
