@@ -64,9 +64,9 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		}
     		if(n.ment == null || n.ment == "")
 			{
-    			if(!n.__deleted__)
+    			if(!n.__deleted__ && n.va_yn == 0)
     			{
-        			// 삭제되지 않은 경우
+        			// 삭제되지 않고, 유형이 "직접입력" 인 경우
     				blment = blment + 1;
     			}
 			}
