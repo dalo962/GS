@@ -44,6 +44,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var blstime = 0;
     	var bletime = 0;
     	var blvayn = 0;
+    	var blment = 0;
     	saveList.forEach(function (n){
     		if(n.dnis == null || n.dnis == "")
     		{
@@ -60,7 +61,15 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		if(n.va_yn == null || n.va_yn == "")
     		{
     			blvayn = blvayn + 1;
-    		}    		
+    		}
+    		if(n.ment == null || n.ment == "")
+			{
+    			if(!n.__deleted__)
+    			{
+        			// 삭제되지 않은 경우
+    				blment = blment + 1;
+    			}
+			}
     	});
     	if(bldnis > 0) 
     	{ 
@@ -79,7 +88,12 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	}
     	if(blvayn > 0) 
     	{ 
-    		alert("성우여부를 선택하시기 바랍니다."); 
+    		alert("유형을 선택하시기 바랍니다."); 
+    		return;
+    	}
+    	if(blment > 0)
+    	{
+    		alert("적용하려는 멘트내용이 없습니다.");
     		return;
     	}
 
@@ -340,6 +354,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
     initView: function () {
         var _this = this;
+        var _ment = {};		// 멘트를 임시로 저장하는 변수 ( _ment.index )
         
         this.target = axboot.gridBuilder({
         	showRowSelector: true,
@@ -400,30 +415,67 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		}
                 		return etime;
                 }},
-                {key: "va_yn", label: "성우여부", width: 120, align: "center", sortable: true, editor: {
+                {key: "va_yn", label: "유형", width: 200, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
                 			optionValue: "value", optionText: "text"
                 		},
                 		options: [
-                			{value: "1", text: "사용"},
-                			{value: "0", text: "미사용"}
+                			{value: "0", text: "TTS"},
+                			{value: "1", text: "01.비상멘트_POS장애"},
+                			{value: "2", text: "02.비상멘트_GOT"},
+                			{value: "3", text: "03.비상멘트_통합SC"},
+                			{value: "4", text: "04. 비상멘트_통신장애"},
+                			{value: "5", text: "05. 비상멘트_전산장애"},
+                			{value: "6", text: "06.비상멘트_신용카드"},
+                			{value: "7", text: "07.비상멘트_점포경영시스템장애"},
                     	]
                 	}
                 }, formatter: function() {
                 	switch(this.item.va_yn) {
-                		case "1":
-            				return "사용";
-            				break; 	
                 		case "0":
-                			return "미사용";
-                			break;                    		
+            				return "TTS";
+            				break; 	
+                		case "1":
+                			return "01.비상멘트_POS장애";
+                			break; 	
+                		case "2":
+                			return "02.비상멘트_GOT";
+                			break;       	
+                		case "3":
+                			return "03.비상멘트_통합SC";
+                			break;       	
+                		case "4":
+                			return "04. 비상멘트_통신장애";
+                			break;       	
+                		case "5":
+                			return "05. 비상멘트_전산장애";
+                			break;       	
+                		case "6":
+                			return "06.비상멘트_신용카드";
+                			break;       	
+                		case "7":
+                			return "07.비상멘트_점포경영시스템장애";
+                			break;                       		
                 		default :
                 			return "선택";
                 			break;
                 	}
                 }},    
-                {key: "ment", label: "멘트", width: 400, align: "center", sortable: true, editor:"text"},
+                {key: "ment", label: "멘트", width: 400, align: "center", sortable: true, 
+                	formatter: function () {
+                		if(this.item.va_yn == 0) {
+                			return this.item.ment;
+                		} else {
+                			return "";
+                		}
+                	},
+                	editor: {
+	                	type: "text", disabled: function () {
+	                		return this.item.va_yn != 0;
+	                	}
+	                }
+                },
                 {key: "ttsBtn", label: "듣기", width: 50, align: "center", 
                 	formatter: function() {                
 	                	switch(this.item.va_yn) {
@@ -477,7 +529,26 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 onDBLClick: function () {
                 	console.log(this);
                     this.self.select(this.dindex, {selectedClear: true});
-                                      
+                },
+                onDataChanged: function () {
+                	// 변경된 것이 va_yn 일 때
+                	if(this.key == "va_yn") {
+                		var type = this.item.va_yn;		// va_yn의 value
+	                    var index = this.item.__index;	// 변경될 index
+	                    var ment = "";	// 변경될 ment 값 ( default = "" )
+	                    
+	                    // va_yn 가 TTS 로 설정되었고, 저장된 멘트가 있을 때
+	                    if(type == 0 && _ment.index != null) {
+	                    	ment = _ment.index;
+	                    	_ment.index = null;
+	                    }
+	                    // 저장된 멘트가 없을 때
+	                    else if(_ment.index == null) {
+	                    	_ment.index = this.item.ment;
+	                    }
+	                    
+	                    this.self.setValue(index, "ment", ment);
+                	} // va_yn 종료
                 }
             }
         });
