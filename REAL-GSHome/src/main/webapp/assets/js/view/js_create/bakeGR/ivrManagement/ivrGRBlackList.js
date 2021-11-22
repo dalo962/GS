@@ -1,14 +1,15 @@
 var fnObj = {};
 var ACTIONS = axboot.actionExtend(fnObj, {
-    PAGE_SEARCH: function (caller, act, data) {        
+    PAGE_SEARCH: function (caller, act, data) {    
+    	console.log(this.searchView.getData());
+    	console.log($.extend({}, this.searchView.getData()));
     	axboot.ajax({
             type: "GET",
-            cache: false,
             url: "/gr/api/ivr/ivrBlackList/BlackListSearch",
-            data: "",
+            cache : false,
+            data: $.extend({}, this.searchView.getData()),
             callback: function (res) {
-                caller.gridView01.setData(res);
-                fnObj.excelgrid.initView();
+            	caller.gridView01.setData(res);
             },
             options: {
                 onError: function (err) {
@@ -16,6 +17,22 @@ var ACTIONS = axboot.actionExtend(fnObj, {
                 }
             }
         });
+    	
+//    	axboot.ajax({
+//            type: "GET",
+//            cache: false,
+//            url: "/gr/api/ivr/ivrBlackList/BlackListSearch",
+//            data: "",
+//            callback: function (res) {
+//                caller.gridView01.setData(res);
+//                fnObj.excelgrid.initView();
+//            },
+//            options: {
+//                onError: function (err) {
+//                    console.log(err);
+//                }
+//            }
+//        });
 
         return false;
     },    
@@ -249,9 +266,9 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         this.target.attr("onsubmit", "return ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);");
         this.filter = $("#filter"); 
     },
-    getData: function () {
-        return {
-        	
+    getData: function () {    	
+        return {        	
+        	ani: $("#selText").val()
         }
     }
 });
@@ -272,7 +289,17 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
             	{key: "seq", label: "seq", width: 0, align: "center"},
-            	{key: "ani", label: "이슈고객 번호", width: 200, align: "center", sortable: true, editor: {
+            	{key: "new", label: "", width: 35, align: "center",
+                	formatter: function() {   
+                		if(this.item.description == null || this.item.description == ''){
+                			return '<img src="/assets/images/warning_1.png" width="20 height="18" border="0">';
+                		}
+                		else{
+                			return '';
+                		}
+                	}
+                },
+            	{key: "ani", label: "이슈고객 번호", width: 150, align: "center", sortable: true, editor: {
             		type: "text", disabled:function(){
             				var dis = "";
             				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
@@ -286,21 +313,55 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             				return dis;
             			}
             	}},
-            	{key: "description", label: "사유", width: 140, align: "center", editor:"text"},
-            	{key: "connid", label: "ConnID", width: 140, align: "center", editor:"text"},
-            	{key: "recording", label: "녹취", width: 140, align: "center", 
-            		formatter: function() {
-            			var dis = "";
-        				if(typeof this.item["connid"] != null && this.item["connid"] != "" && this.item["connid"] != undefined)
-        				{
-        					dis = "Y";
-        				}
-        				else
-        				{
-        					dis = "N";
-        				}
-        				return dis;
-                }},
+            	{key: "bl_useyn", label: "사용유무", width: 80, align: "center", sortable: true, editor: {
+                	type: "select", config: {
+                		columnKeys: {
+                			optionValue: "value", optionText: "text"
+                		},
+                		options: [
+                			{value: "1", text: "사용"},
+                			{value: "0", text: "미사용"}
+                    	]
+                	}
+                }, formatter: function() {
+                	switch(this.item.bl_useyn) {
+                		case "1":
+            				return "사용";
+            				break; 	
+                		case "0":
+                			return "미사용";
+                			break;                    		
+                		default :
+                			return "선택";
+                			break;
+                	}
+                }}, 
+            	{key: "degree", label: "차수", width: 50, align: "center", sortable: true, editor: {
+                	type: "select", config: {
+                		columnKeys: {
+                			optionValue: "value", optionText: "text"
+                		},
+                		options: [
+                			{value: "1", text: "1"},
+                			{value: "2", text: "2"}
+                    	]
+                	}
+                }, formatter: function() {
+                	switch(this.item.degree) {
+                		case "1":
+            				return "1";
+            				break; 	
+                		case "2":
+                			return "2";
+                			break;                    		
+                		default :
+                			return "선택";
+                			break;
+                	}
+                }}, 
+            	{key: "description", label: "사유", width: 240, align: "center", editor:"text"},
+            	{key: "agentid", label: "상담사", width: 80, align: "center", editor:"text"},
+            	{key: "connid", label: "ConnID", width: 130, align: "center", editor:"text"},
                 {key: "crt_dt", label: "작성일자", width: 200, align: "center", sortable: true,
                 	formatter: function() {
                 		var crdt = "";
@@ -554,11 +615,3 @@ function handleFile(e) {
  
     }//end. for
 }
- 
-var input_dom_element;
-$(function() {
-    input_dom_element = document.getElementById('excel');
-    if(input_dom_element.addEventListener) {
-        input_dom_element.addEventListener('change', handleFile, false);
-    }
-});

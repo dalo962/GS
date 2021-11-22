@@ -6,28 +6,34 @@
 		SELECT  seq             as seq,
 				ani             as ani,
 		        description     as description,
+		        connid          as connid,
+		        bl_useyn		as bl_useyn,
+		        agentid			as agentid,
+		        degree			as degree,
 		        crt_dt          as crt_dt,
 		        crt_by          as crt_by,
 		        upt_dt          as upt_dt,
-		        upt_by          as upt_by,
-		        connid          as connid
+		        upt_by          as upt_by
 		FROM    givr.gr_ax_ivr_blackconsumer
 		WHERE   1=1
 		<if test="ani != '' and ani != null">
-		AND		ani = #{ani}
+		AND		ani LIKE '%' || #{ani} || '%'
 		</if>
-		ORDER BY ani asc, crt_dt asc
+		ORDER BY seq desc
     </select>
     
     <insert id="BlackListIst" parameterType="hashmap">
-		INSERT 	INTO givr.gr_ax_ivr_blackconsumer (seq, ani, description, connid, crt_dt, crt_by)	
-		VALUES	(givr.gr_ax_ivr_blackconsumer_seq.nextval, #{ani}, #{description, jdbcType=VARCHAR}, #{connid}, #{crt_dt}, #{crt_by})
+		INSERT 	INTO givr.gr_ax_ivr_blackconsumer (seq, ani, description, connid, bl_useyn, agentid, degree, crt_dt, crt_by)	
+		VALUES	(givr.gr_ax_ivr_blackconsumer_seq.nextval, #{ani}, #{description, jdbcType=VARCHAR}, #{connid, jdbcType=VARCHAR}, #{bl_useyn}, #{agentid, jdbcType=VARCHAR}, #{degree}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="BlackListUdt" parameterType="hashmap">
 		UPDATE	givr.gr_ax_ivr_blackconsumer
 		SET		description = #{description, jdbcType=VARCHAR},
 				connid = #{connid, jdbcType=VARCHAR},
+				bl_useyn = #{bl_useyn},
+				agentid = #{agentid, jdbcType=VARCHAR},
+				degree = #{degree},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
 		WHERE	seq = #{seq}

@@ -431,7 +431,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 		        				return '';
 		        				break; 	
 		            		case "0":		            			
-		            			return '<a href="#" data-grid-view-01-btn="add"><img src="/assets/images/speaker.png" width="20 height="18" border="0"><a>';
+		            			return '<a href="#"><img src="/assets/images/speaker.png" width="20 height="18" border="0"><a>';
 		            			break;                    		
 		            		default :
 		            			return '';

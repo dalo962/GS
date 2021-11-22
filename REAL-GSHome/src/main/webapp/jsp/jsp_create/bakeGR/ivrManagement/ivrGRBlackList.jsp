@@ -17,22 +17,22 @@
 		<ax:page-buttons></ax:page-buttons>
 
         <div role="page-header">
-            <ax:form name="searchView0">                    
-                <ax:tbl clazz="ax-search-tbl" minWidth="500px">                    	
-					                 
+            <ax:form name="searchView0">
+                <ax:tbl clazz="ax-search-tbl" minWidth="500px">   
+                	<ax:tr>
+						<ax:td label='전화번호' width="25%" labelWidth="100px">
+							<div class="form-group">			
+								<input type="text" id="selText" name="selText" class="form-control" placeholder="">	
+							</div>
+                    	</ax:td>
+                    </ax:tr>                 	
                 </ax:tbl>
             </ax:form>
-            <!-- <div class="H10"></div> -->
         </div>
 
         <ax:split-layout name="ax1" orientation="vertical">
             <ax:split-panel width="*" style="height:98%;">    
                 <div class="ax-button-group" data-fit-height-aside="grid-view-01">
-                    <!--  
-                    <div class="left">
-                        <h2><i class="cqc-list"></i>블랙컨슈머 목록</h2>
-                    </div>
-                    -->
                     <div class="right">     
                     	<button type="button" class="btn btn-default" data-grid-view-01-btn="add"><i class="cqc-circle-with-plus"></i> <ax:lang id="ax.admin.add"/></button>                                                                 
                         <button type="button" class="btn btn-default" data-grid-view-01-btn="delete"><i class="cqc-circle-with-minus"></i> <ax:lang id="ax.admin.delete"/></button>

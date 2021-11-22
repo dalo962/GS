@@ -17,6 +17,9 @@ public class ivrGRBlackList extends BaseJpaModel<String>{
 	private String ani; 		// 전화번호 
 	private String description;	// 사유
 	private String connid;		// ConnID
+	private String bl_useyn;	// 사용유무
+	private String agentid;		// 상담사 ID
+	private String degree;		// 차수 1:1차  2:2차
 	private String crt_dt;		// 생성일
 	private String crt_by;		// 생성자
 	private String upt_dt;		// 수정일
