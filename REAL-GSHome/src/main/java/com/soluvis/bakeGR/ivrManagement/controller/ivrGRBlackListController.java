@@ -73,6 +73,33 @@ public class ivrGRBlackListController extends commController{
 			
 			logger.info("ivrBlackListService.BlackListGet Query Start...");			
 			search = ivrGRBlackListService.BlackListGet(params);
+			
+			 if(search.size() > 0)
+		      {
+		         for(int i = 0; i < search.size(); i++)
+		         {
+		            if(search.get(i).getAni() != null && !"".equals(search.get(i).getAni()))
+		            {
+		               String Ani = search.get(i).getAni().toString();
+		               
+		               // 자리수 체크
+		               if(Ani.length() == 11)
+		               {
+		                  Ani = Ani.substring(0, 3) + "****" + Ani.substring(7, 11);   
+		               } 
+		               else if(Ani.length() == 10)
+		               {
+		            	   Ani = Ani.substring(0, 2) + "****" + Ani.substring(6, 10);
+		               }
+		               else if(Ani.length() == 9)
+		               {
+		            	   Ani = Ani.substring(0, 2) + "***" + Ani.substring(5, 9);
+		               }
+
+		               search.get(i).setAni(Ani); 
+		            } 
+		         }
+		      }
 		}
 		catch(Exception e)
 		{
