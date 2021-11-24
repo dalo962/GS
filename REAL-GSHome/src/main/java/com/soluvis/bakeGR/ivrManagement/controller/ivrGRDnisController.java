@@ -98,6 +98,8 @@ public class ivrGRDnisController extends commController{
 					{
 						map.put("dnis_useyn", hl.getDnis_useyn());
 						map.put("dnis_name", hl.getDnis_name());
+						map.put("dnis_group", hl.getDnis_group());
+						map.put("dnis_media", hl.getDnis_media());
 						map.put("crt_dt", sdf.format(new Date()));
 						map.put("crt_by", cid);
 						
@@ -114,6 +116,8 @@ public class ivrGRDnisController extends commController{
 				{
 					map.put("dnis_useyn", hl.getDnis_useyn());
 					map.put("dnis_name", hl.getDnis_name());
+					map.put("dnis_group", hl.getDnis_group());
+					map.put("dnis_media", hl.getDnis_media());
 					map.put("upt_dt", sdf.format(new Date()));
 					map.put("upt_by", cid);
 						

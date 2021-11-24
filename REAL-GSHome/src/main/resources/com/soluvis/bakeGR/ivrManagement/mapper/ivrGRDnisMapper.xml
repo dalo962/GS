@@ -5,6 +5,8 @@
    <select id="DnisGet" parameterType="hashmap" resultType="ivrGRDnis" fetchSize="1000">
 		SELECT	dnis 		as dnis, 
 				dnis_name 	as dnis_name,
+				dnis_group 	as dnis_group,
+				dnis_media 	as dnis_media,
 				dnis_useyn	as  dnis_useyn,
 				crt_dt 		as crt_dt, 
 				crt_by 		as crt_by, 
@@ -22,14 +24,16 @@
     </select>
     
     <insert id="DnisIst" parameterType="hashmap">
-		INSERT 	INTO givr.gr_ax_ivr_dnis (dnis, dnis_name, dnis_useyn, crt_dt, crt_by)	
-		VALUES	(#{dnis}, #{dnis_name, jdbcType=VARCHAR}, #{dnis_useyn}, #{crt_dt}, #{crt_by})
+		INSERT 	INTO givr.gr_ax_ivr_dnis (dnis, dnis_name, dnis_group, dnis_media, dnis_useyn, crt_dt, crt_by)	
+		VALUES	(#{dnis}, #{dnis_name, jdbcType=VARCHAR}, #{dnis_group, jdbcType=VARCHAR}, #{dnis_media, jdbcType=VARCHAR}, #{dnis_useyn}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="DnisUdt" parameterType="hashmap">
 		UPDATE	givr.gr_ax_ivr_dnis
 		SET		dnis_useyn = #{dnis_useyn},
 				dnis_name = #{dnis_name, jdbcType=VARCHAR},
+				dnis_group = #{dnis_group, jdbcType=VARCHAR},
+				dnis_media = #{dnis_media, jdbcType=VARCHAR},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
 		WHERE	dnis = #{dnis}

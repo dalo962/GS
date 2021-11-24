@@ -29,6 +29,8 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var reqExp = /^[0-9]*$/;
     	var dndnis = 0;
     	var dnuseyn = 0;
+    	var dngroup = 0;
+    	var dnmedia = 0;
     	saveList.forEach(function (n){
     		if(n.dnis == null || n.dnis == "")
     		{
@@ -37,6 +39,14 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		if(n.dnis_useyn == null || n.dnis_useyn == "")
     		{
     			dnuseyn = dnuseyn + 1;
+    		}
+    		if(n.dnis_group == null || n.dnis_group == "")
+    		{
+    			dngroup = dngroup + 1;
+    		}
+    		if(n.dnis_media == null || n.dnis_media == "")
+    		{
+    			dnmedia = dnmedia + 1;
     		}
     	});
     	if(dndnis > 0) 
@@ -47,6 +57,16 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(dnuseyn > 0) 
     	{ 
     		alert("대표번호 사용유무를 선택하시기 바랍니다."); 
+    		return;
+    	}
+    	if(dngroup > 0) 
+    	{ 
+    		alert("대표번호 그룹을 입력하시기 바랍니다."); 
+    		return;
+    	}
+    	if(dnuseyn > 0) 
+    	{ 
+    		alert("대표번호 매체를 입력하시기 바랍니다."); 
     		return;
     	}
 
@@ -282,6 +302,8 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         				return dis;
         			}
             	}},
+            	{key: "dnis_group", label: "그룹", width: 140, align: "center", editor:"text"},
+            	{key: "dnis_media", label: "매체", width: 140, align: "center", editor:"text"},
             	{key: "dnis_name", label: "명칭", width: 140, align: "center", editor:"text"},
                 {key: "dnis_useyn", label: "사용유무", width: 120, align: "center", sortable: true, editor: {
                 	type: "select", config: {
@@ -562,9 +584,3 @@ function handleFile(e) {
 }
  
 var input_dom_element;
-$(function() {
-    input_dom_element = document.getElementById('excel');
-    if(input_dom_element.addEventListener) {
-        input_dom_element.addEventListener('change', handleFile, false);
-    }
-});
