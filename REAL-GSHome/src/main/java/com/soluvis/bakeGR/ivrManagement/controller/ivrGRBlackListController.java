@@ -68,7 +68,6 @@ public class ivrGRBlackListController extends commController{
 		
 		try
 		{	
-//			map.put("ani", "");
 			
 			logger.info("ivrBlackListService.BlackListGet Query Start...");			
 			search = ivrGRBlackListService.BlackListGet(params);
@@ -208,6 +207,7 @@ public class ivrGRBlackListController extends commController{
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		Map<String,Object> params = RequestUtil.getParameterMap(request);
 		
+		int result = 0;
 		int sqlrst = 0;
 		
 //		map.put("ani", bl.getAni());
@@ -225,6 +225,15 @@ public class ivrGRBlackListController extends commController{
 		{	
 			logger.info("ivrGRBlackListService.BlackListIst Query Start...");
 			sqlrst = ivrGRBlackListService.BlackListIst(params);
+			
+			if(sqlrst == 0){
+				result++;
+			}
+			
+			if(globalVariables.url_sync_flag == false)
+				return sqlrst;
+			
+			sendURL(result);
 			
 			return sqlrst;
 		}
@@ -397,7 +406,6 @@ public class ivrGRBlackListController extends commController{
 			elist.setName("https://devrecm.gsts.kr");
 			recList.add(elist);
 		}
-		
 		
 		return recList;
 		
