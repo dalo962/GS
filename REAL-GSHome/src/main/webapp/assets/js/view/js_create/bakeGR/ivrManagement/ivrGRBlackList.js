@@ -321,8 +321,26 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		}
                 	}
                 },
-            	{key: "ani", label: "이슈고객 번호", width: 150, align: "center", sortable: true, editor: {
-            		type: "text", disabled:function(){
+            	{key: "ani", label: "이슈고객 번호", width: 150, align: "center", sortable: true,
+            		formatter: function () {
+            			var ani = this.item.ani;
+            			console.log(ani)
+            			if(ani != "" && ani != null) {
+            				var len = ani.length;
+                			// 자리수 체크
+                	        if(len == 11) { // 010****1234
+                	        	return ani.substr(0, 3) + "****" + ani.substr(7, 4);
+                	        } else if(len == 10) { // 02****1234
+                	        	return ani.substr(0, 2) + "****" + ani.substr(6, 4);
+                	        } else if(len == 9) { // 02***1234
+                	        	return ani.substr(0, 2) + "***" + ani.substr(5, 4);
+                	        } else {
+                	        	return "****";
+                	        }
+            			}
+            		},
+            		editor: {
+	            		type: "text", disabled:function(){
             				var dis = "";
             				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
             				{
@@ -334,7 +352,8 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             				}
             				return dis;
             			}
-            	}},
+            		}
+            	},
             	{key: "bl_useyn", label: "사용유무", width: 80, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
