@@ -667,9 +667,10 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
                 });
                 $("[data-ax5select='deptSelect']").ax5select({
         	        theme: 'primary',
-        	        multiple: "multi",
+        	        multiple: multi,
         	        options: resultSet,
     		        onStateChanged: function () {
+    		        	/*
     		        	if( this.item.selected.length  == 0 ) {
         	            	$('[data-ax5select="deptSelect"]').ax5select("setValue",[0],true);
         	            	this.item.options[0].sel = "1" ;
@@ -698,18 +699,14 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         	        			}
         	        			$('[data-ax5select-option-group]').click();
         	        		}
-        	        	} 
-    		        },        	       
+        	        	}*/ 
+    		        },     	       
                 });
                 $('[data-ax5select="deptSelect"]').ax5select("setValue",[""]);
                 
                 fnObj.searchView.teamSearch();
             }
         });
-        
-      $('[data-ax5select="deptSelect"]').ax5select("setValue",[""]);
-      
-      fnObj.searchView.teamSearch();
     },
     teamSearch: function(){
         var data = {}; 
