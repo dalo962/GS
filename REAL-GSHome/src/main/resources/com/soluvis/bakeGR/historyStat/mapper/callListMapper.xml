@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bakeGR.historyStat.mapper.callListMapper">
+	<select id="callListSel" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		SELECT	EMPLOYEEID,
+		        DEPT_NAME,
+		        TEAM_NAME,
+		        AGENT_NAME,
+		        STIMETS,
+		        TTALK,
+		        IOTYPE,
+		        IBANI,
+		        OBANI,
+		        EXTENSION,
+		        TICKET_NUM,
+		        CONNID
+		FROM    WDM.V_CALL_LIST
+		WHERE	1=1
+		<if test="s_day != '' and e_day != '' and s_time != '' and e_time != ''">
+		AND		STIMETS between WINK1.K2U(#{s_day}) and WINK1.K2U(#{e_day})
+		</if>
+		<if test="dept_name != '' and dept_name != null">
+		AND		DEPT_NAME = #{dept_name}	
+		</if>
+		<if test="team_name != '' and team_name != null">
+		AND		TEAM_NAME = #{team_name}	
+		</if>
+		<if test="iotype != '' and iotype != null">
+		AND		IOTYPE = #{iotype}
+		</if>
+		<if test="ani != '' and ani != null">
+		<if test='iotype.equals("")'>
+		AND		(IBANI in (${ani}) OR OBANI in (${ani}))
+		</if>
+		<if test='iotype.equals("I")'>
+		AND		IBANI in (${ani})
+		</if>
+		<if test='iotype.equals("O")'>
+		AND		OBANI in (${ani})
+		</if>
+		</if>
+		<if test="agentid != '' and agentid != null">
+		AND		EMPLOYEEID in (${agentid})	
+		</if>
+		<if test="connid != '' and connid != null">
+		AND		CONNID in (${connid})
+		</if>
+		<if test="ticket_num != '' and ticket_num != null">
+		AND		TICKET_NUM in (${ticket_num})
+		</if>
+		ORDER BY STIMETS ASC
+    </select>
+
+</mapper>
