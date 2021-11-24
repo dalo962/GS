@@ -1,8 +1,7 @@
 var fnObj = {};
+var rec_url = '';
 var ACTIONS = axboot.actionExtend(fnObj, {
     PAGE_SEARCH: function (caller, act, data) {    
-    	console.log(this.searchView.getData());
-    	console.log($.extend({}, this.searchView.getData()));
     	axboot.ajax({
             type: "GET",
             url: "/gr/api/ivr/ivrBlackList/BlackListSearch",
@@ -17,22 +16,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
                 }
             }
         });
-    	
-//    	axboot.ajax({
-//            type: "GET",
-//            cache: false,
-//            url: "/gr/api/ivr/ivrBlackList/BlackListSearch",
-//            data: "",
-//            callback: function (res) {
-//                caller.gridView01.setData(res);
-//                fnObj.excelgrid.initView();
-//            },
-//            options: {
-//                onError: function (err) {
-//                    console.log(err);
-//                }
-//            }
-//        });
 
         return false;
     },    
@@ -200,26 +183,41 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     },
     GET_REC: function (caller, act, data) {
     	var recList = [].concat(fnObj.gridView01.getData("selected"));
-    	console.log(recList);
-    	console.log(JSON.stringify(recList));
     	
-//    	inter = $("[data-ax5select='interval']").ax5select("getValue")[0].value;
+    	window.open(rec_url+"/recseePlayer/?SEQNO="+recList[0].connid, "Recording", 'width=800, height=300');
+//    	axboot.modal.open({
+//           width: 800,
+//           height: 200,
+//           header: false,
+//           iframe: {
+//               url: rec_url+"/recseePlayer/?SEQNO="+recList[0].connid
+//           },
+//           sendData: function(){
+//     
+//           },
+//           callback: function(){
+//               axboot.modal.close();
+//               this.close();
+//           }
+//       });
+    },
+    GET_RECURL: function (caller, act, data) {
+    	var recList = [].concat(fnObj.gridView01.getData("selected"));
     	
-    	axboot.modal.open({
-           width: 800,
-           height: 200,
-           header: false,
-           iframe: {
-               url: "http://localhost:8080/manager?connid=1a2a3a4a5a6a7a8a",
-               param: {connid : '1a2a3a4a5a6a7a8a'}
-           },
-           sendData: function(){
-     
-           },
-           callback: function(){
-               axboot.modal.close();
-           }
-       });
+    	axboot.ajax({
+            type: "GET",
+            cache: false,
+            url: "/gr/api/ivr/ivrBlackList/RecUrlSearch",
+            data: "",
+            callback: function (res) {
+            	rec_url = res[0].name;
+            },
+            options: {
+                onError: function (err) {
+                    alert("저장 작업에 실패하였습니다");
+                }
+            }
+        });
     }
 });
 
@@ -266,6 +264,7 @@ fnObj.pageStart = function () {
     _this.gridView01.initView();
 
     ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+    ACTIONS.dispatch(ACTIONS.GET_RECURL);
 };
 
 
@@ -422,7 +421,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     this.self.select(this.dindex, {selectedClear: true});
                     if (this.column.key == "recBtn" && (this.item.connid != null && this.item.connid != '')) 
                     {    
-                    	console.log("select recBtn");
                     	var data = this.list[this.dindex];
                     	if(data.__depth__ != '0')
                     	{

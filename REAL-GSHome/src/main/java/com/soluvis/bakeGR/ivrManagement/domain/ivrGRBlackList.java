@@ -24,6 +24,9 @@ public class ivrGRBlackList extends BaseJpaModel<String>{
 	private String crt_by;		// 생성자
 	private String upt_dt;		// 수정일
 	private String upt_by;		// 수정자
+	
+	private String code;		// 녹취 common_code code
+	private String name;		// 녹취 common_code name
 
 	@Override
 	public String getId() {

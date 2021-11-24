@@ -43,7 +43,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var bldnis = 0;
     	var blstime = 0;
     	var bletime = 0;
-    	var blvayn = 0;
+    	var blemertype = 0;
     	var blment = 0;
     	saveList.forEach(function (n){
     		if(n.dnis == null || n.dnis == "")
@@ -58,13 +58,13 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		{
     			bletime = bletime + 1;
     		}
-    		if(n.va_yn == null || n.va_yn == "")
+    		if(n.emer_type == null || n.emer_type == "")
     		{
-    			blvayn = blvayn + 1;
+    			blemertype = blemertype + 1;
     		}
     		if(n.ment == null || n.ment == "")
 			{
-    			if(!n.__deleted__ && n.va_yn == 0)
+    			if(!n.__deleted__ && n.emer_type == 0)
     			{
         			// 삭제되지 않고, 유형이 "직접입력" 인 경우
     				blment = blment + 1;
@@ -86,7 +86,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		alert("종료시간을 입력하시기 바랍니다."); 
     		return;
     	}
-    	if(blvayn > 0) 
+    	if(blemertype > 0) 
     	{ 
     		alert("유형을 선택하시기 바랍니다."); 
     		return;
@@ -415,7 +415,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		}
                 		return etime;
                 }},
-                {key: "va_yn", label: "비상멘트유형", width: 200, align: "center", sortable: true, editor: {
+                {key: "emer_type", label: "비상멘트유형", width: 200, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
                 			optionValue: "value", optionText: "text"
@@ -432,7 +432,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     	]
                 	}
                 }, formatter: function() {
-                	switch(this.item.va_yn) {
+                	switch(this.item.emer_type) {
                 		case "0":
             				return "00.직접입력";
             				break; 	
@@ -464,7 +464,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 }},    
                 {key: "ment", label: "멘트", width: 400, align: "center", sortable: true, 
                 	formatter: function () {
-                		if(this.item.va_yn == 0) {
+                		if(this.item.emer_type == 0) {
                 			return this.item.ment;
                 		} else {
                 			return "";
@@ -472,13 +472,13 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 	},
                 	editor: {
 	                	type: "text", disabled: function () {
-	                		return this.item.va_yn != 0;
+	                		return this.item.emer_type != 0;
 	                	}
 	                }
                 },
                 {key: "ttsBtn", label: "듣기", width: 50, align: "center", 
                 	formatter: function() {                
-	                	switch(this.item.va_yn) {
+	                	switch(this.item.emer_type) {
 		            		case "1":
 		        				return '';
 		        				break; 	
@@ -517,7 +517,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             body: {
                 onClick: function () {
                     this.self.select(this.dindex, {selectedClear: true});
-                    if (this.column.key == "ttsBtn" && this.item.va_yn == '0') 
+                    if (this.column.key == "ttsBtn" && this.item.emer_type == '0') 
                     {                    
                     	var data = this.list[this.dindex];
                     	if(data.__depth__ != '0')
@@ -531,13 +531,13 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     this.self.select(this.dindex, {selectedClear: true});
                 },
                 onDataChanged: function () {
-                	// 변경된 것이 va_yn 일 때
-                	if(this.key == "va_yn") {
-                		var type = this.item.va_yn;		// va_yn의 value
+                	// 변경된 것이 emer_type 일 때
+                	if(this.key == "emer_type") {
+                		var type = this.item.emer_type;		// emer_type의 value
 	                    var index = this.item.__index;	// 변경될 index
 	                    var ment = "";	// 변경될 ment 값 ( default = "" )
 	                    
-	                    // va_yn 가 TTS 로 설정되었고, 저장된 멘트가 있을 때
+	                    // emer_type 가 TTS 로 설정되었고, 저장된 멘트가 있을 때
 	                    if(type == 0 && _ment.index != null) {
 	                    	ment = _ment.index;
 	                    	_ment.index = null;
@@ -548,7 +548,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                    }
 	                    
 	                    this.self.setValue(index, "ment", ment);
-                	} // va_yn 종료
+                	} // emer_type 종료
                 }
             }
         });

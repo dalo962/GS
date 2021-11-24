@@ -9,7 +9,7 @@
 		        stime           as stime,
 		        edate           as edate,
 		        etime           as etime,
-		        va_yn           as va_yn,
+		        emer_type       as emer_type,
 		        ment            as ment,
 		        crt_dt          as crt_dt,
 		        crt_by          as crt_by,
@@ -37,7 +37,7 @@
 			WHERE   sdate||stime > #{sdate}||#{stime}
 			AND		#{edate}||#{etime} BETWEEN sdate||stime AND edate||etime
 			<if test="dnis != '' and dnis != null">
-			AND		dnis = #{dnis}
+			AND		dnis IN (#{dnis}, 'ALL')
 			</if>			
 			UNION ALL
 			SELECT  seq      	as seq      
@@ -45,7 +45,7 @@
 			WHERE   #{sdate}||#{stime} BETWEEN sdate||stime AND edate||etime
 			AND		#{edate}||#{etime} BETWEEN sdate||stime AND edate||etime
 			<if test="dnis != '' and dnis != null">
-			AND		dnis = #{dnis}
+			AND		dnis IN (#{dnis}, 'ALL')
 			</if>			
 			UNION ALL
 			SELECT  seq      	as seq      
@@ -53,7 +53,7 @@
 			WHERE   #{sdate}||#{stime} BETWEEN sdate||stime AND edate||etime
 			AND		#{edate}||#{etime} > edate||etime
 			<if test="dnis != '' and dnis != null">
-			AND		dnis = #{dnis}
+			AND		dnis IN (#{dnis}, 'ALL')
 			</if>
 			)						
 		WHERE	1=1
@@ -63,8 +63,8 @@
     </select>
     
     <insert id="EmerMentIst" parameterType="hashmap">
-		INSERT 	INTO givr.gr_ax_ivr_emerment (seq, dnis, sdate, stime, edate, etime, va_yn, ment, crt_dt, crt_by)	
-		VALUES	(givr.gr_ax_ivr_emerment_seq.nextval, #{dnis}, #{sdate}, #{stime}, #{edate}, #{etime}, #{va_yn}, #{ment, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by})
+		INSERT 	INTO givr.gr_ax_ivr_emerment (seq, dnis, sdate, stime, edate, etime, emer_type, ment, crt_dt, crt_by)	
+		VALUES	(givr.gr_ax_ivr_emerment_seq.nextval, #{dnis}, #{sdate}, #{stime}, #{edate}, #{etime}, #{emer_type}, #{ment, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="EmerMentUdt" parameterType="hashmap">
@@ -74,7 +74,7 @@
 				stime = #{stime},
 				edate = #{edate},
 				etime = #{etime},
-				va_yn = #{va_yn},
+				emer_type = #{emer_type},
 				ment = #{ment, jdbcType=VARCHAR},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}

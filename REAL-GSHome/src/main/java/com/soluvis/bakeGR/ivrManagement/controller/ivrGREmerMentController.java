@@ -123,7 +123,7 @@ public class ivrGREmerMentController extends commController{
 						if(em.getDnis().equals("ALL")){
 							map.put("dnis", em.getDnis());
 						}
-						map.put("va_yn", em.getVa_yn());
+						map.put("emer_type", em.getEmer_type());
 						map.put("ment", em.getMent());
 						map.put("crt_dt", sdf.format(new Date()));
 						map.put("crt_by", cid);
@@ -148,7 +148,7 @@ public class ivrGREmerMentController extends commController{
 					map.put("stime", em.getStime());
 					map.put("edate", em.getEdate());
 					map.put("etime", em.getEtime());
-					map.put("va_yn", em.getVa_yn());
+					map.put("emer_type", em.getEmer_type());
 					map.put("ment", em.getMent());
 					map.put("upt_dt", sdf.format(new Date()));
 					map.put("upt_by", cid);
@@ -192,7 +192,7 @@ public class ivrGREmerMentController extends commController{
 			Urlsearch = ivrGRUrlListService.UrlListGet(map);
 			int UrlSize = Urlsearch.size();
 
-			code.put("code", "EMERMENT_SYNC");
+			code.put("code", "EMER_SYNC");
 			logger.info("ivrGRUrlListService.IvrUrlGet Query Start...");
 			UrlCodesearch = ivrGRUrlListService.IvrUrlGet(code);
 			
@@ -312,7 +312,7 @@ public class ivrGREmerMentController extends commController{
 	 * @desc 블랙컨슈머 목록을 수정한다
 	 */
 	@RequestMapping(value = "/EmerMentTTS", method = RequestMethod.POST, produces = APPLICATION_JSON)
-    public ApiResponse EmerMentTTS(@Valid @RequestBody List<ivrGREmerMent> emerment, HttpServletRequest request) throws Exception {	
+    public ApiResponse EmerMentTTS(@Valid @RequestBody List<ivrGREmerMent> emerment, HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, String> ttsMap = new HashMap<String, String>();
 		List<ivrGREmerMent> search = null;

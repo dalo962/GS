@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +18,6 @@ import javax.validation.Valid;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -282,8 +281,8 @@ public class ivrGRBlackListController extends commController{
 		       try
 		       {
 		    	   URL obj = new URL(htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
-		    	   System.out.println("GR 블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
-	    		   logger.info("GR 블랙컨슈머관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
+		    	   System.out.println("GR 이슈고객관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
+	    		   logger.info("GR 이슈고객관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
 	    		   
 		    	   HttpURLConnection con = (HttpURLConnection)obj.openConnection(); 
 
@@ -304,8 +303,8 @@ public class ivrGRBlackListController extends commController{
 			    	   
 			    	   while((line = in.readLine()) != null)
 			    	   {
-			    		   System.out.println("GR 블랙컨슈머관리-->" + line + "===>result-" + rcode); 
-			    		   logger.info("GR 블랙컨슈머관리-->" + line + "===>result-" + rcode);
+			    		   System.out.println("GR 이슈고객관리-->" + line + "===>result-" + rcode); 
+			    		   logger.info("GR 이슈고객관리-->" + line + "===>result-" + rcode);
 			    		   
 			    		   rlt = line;
 			    		   
@@ -315,11 +314,11 @@ public class ivrGRBlackListController extends commController{
 			    	   
 			    	   rlt = jsonObject.getString("result");
 			    	   
-			    	   System.out.println("GR 블랙컨슈머관리rlt-->" + rlt); 
-		    		   logger.info("GR 블랙컨슈머관리rlt-->" + rlt);
+			    	   System.out.println("GR 이슈고객관리rlt-->" + rlt); 
+		    		   logger.info("GR 이슈고객관리rlt-->" + rlt);
 		    		   
-			    	   System.out.println("GR 블랙컨슈머관리err-->" + err.toString()); 
-		    		   logger.info("GR 블랙컨슈머관리err-->" + err.toString()) ;
+			    	   System.out.println("GR 이슈고객관리err-->" + err.toString()); 
+		    		   logger.info("GR 이슈고객관리err-->" + err.toString()) ;
 			    	   
 			    	   if(rcode == 200)
 			    	   {
@@ -365,6 +364,43 @@ public class ivrGRBlackListController extends commController{
 		}
 		
 		return msg;
+	}
+	
+	/** 
+	 * @desc 블랙컨슈머 목록을 조회한다
+	 */
+	@RequestMapping(value="/RecUrlSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
+	public @ResponseBody List<ivrGRBlackList> RecUrlSearch(HttpServletRequest request) throws Exception {
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<ivrGRBlackList> search = null;
+		List<ivrGRBlackList> recList = new ArrayList<ivrGRBlackList>();
+		
+		try {
+			logger.info("ivrGRBlackListService.RecGet Query Start...");
+			search = ivrGRBlackListService.RecGet(map);
+			
+			if(search.size() > 0){
+				for (ivrGRBlackList forEm : search){
+					recList.add(forEm);
+				}
+			}else{
+				ivrGRBlackList elist = new ivrGRBlackList();
+				elist.setCode("HOSTP");
+				elist.setName("https://devrecm.gsts.kr");
+				recList.add(elist);
+			}
+		} catch (Exception e) {
+			logger.info("ivrGRBlackListService.RecGet Query Fail..." + e.getMessage());
+			ivrGRBlackList elist = new ivrGRBlackList();
+			elist.setCode("HOSTP");
+			elist.setName("https://devrecm.gsts.kr");
+			recList.add(elist);
+		}
+		
+		
+		return recList;
+		
 	}
 }
 

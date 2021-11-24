@@ -19,4 +19,7 @@ public interface ivrGRBlackListMapper extends MyBatisMapper{
 	int BlackListUdt(Map<String,Object> params);
 	// 삭제
 	int BlackListDel(Map<String,Object> params);
+	// 조회
+	List<ivrGRBlackList> RecGet(Map<String,Object> params);
+	
 }
