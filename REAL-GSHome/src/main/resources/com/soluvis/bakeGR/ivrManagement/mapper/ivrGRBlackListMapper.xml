@@ -44,4 +44,11 @@
 		FROM	givr.gr_ax_ivr_blackconsumer
 		WHERE	seq = #{seq}
 	</delete>    
+	
+	<select id="RecGet" parameterType="hashmap" resultType="ivrGRBlack" fetchSize="1000">
+		SELECT  code            as code,
+				name            as name
+		FROM    ax_common_code_m
+		WHERE   group_cd = 'RECORD'		
+    </select>
 </mapper>

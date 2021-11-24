@@ -14,4 +14,6 @@ public interface ivrGRBlackListService {
 	public int BlackListUdt(Map<String,Object> params);
 	
 	public int BlackListDel(Map<String,Object> params);
+	
+	public List<ivrGRBlackList> RecGet(Map<String,Object> params);
 }

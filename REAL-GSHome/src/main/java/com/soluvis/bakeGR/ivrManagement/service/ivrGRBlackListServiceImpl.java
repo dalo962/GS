@@ -42,5 +42,11 @@ public class ivrGRBlackListServiceImpl implements ivrGRBlackListService{
 	{		
 		return ivrGRBlackListMapper.BlackListDel(params);
 	}
+
+	@Override
+	public List<ivrGRBlackList> RecGet(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return ivrGRBlackListMapper.RecGet(params);
+	}
 }
 
