@@ -8,11 +8,14 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.SQLInjectionSafe;
 import com.soluvis.bake.common.controller.SqlSafeUtil;
 import com.soluvis.bake.common.controller.commController;
@@ -22,7 +25,7 @@ import com.soluvis.bakeGR.historyStat.service.agLogStatService;
 
 /** 
  * @author gihyunpark
- * @desc   로그인 이력에 대한 내역을 조회한다
+ * @desc   상담사 로그인 이력을 조회한다
  */
 @Controller
 @RequestMapping(value = "/gr/api/hist/agLog")
@@ -31,6 +34,8 @@ public class agLogStatController extends commController{
 	@Inject
 	private agLogStatService agLogStatService;	
 		
+	private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
+	
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 	
 	MDCLoginUser loginUser;
@@ -39,9 +44,9 @@ public class agLogStatController extends commController{
 	 * @desc 포기호에 대한 상세내역을 조회한다
 	 */ 
 	@RequestMapping(value="/agLogSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
-	public @ResponseBody List<Map<String,Object>> abanSearch(@Valid @SQLInjectionSafe HttpServletRequest request) throws Exception {
+	public @ResponseBody List<Map<String,Object>> agLogSearch(@Valid @SQLInjectionSafe HttpServletRequest request) throws Exception {
 		Map<String,Object> params = RequestUtil.getParameterMap(request);			
-		if("ALL".equals(params.get("comSelect")))
+		if("".equals(params.get("comSelect")))
 		{
 			params.put("center", "");
 		}
@@ -50,7 +55,7 @@ public class agLogStatController extends commController{
 			params.put("center", SqlSafeUtil.getSqlInjectionSafe(params.get("comSelect").toString()));
 		}
 		//
-		if("ALL".equals(params.get("deptSelect")))
+		if("".equals(params.get("deptSelect")))
 		{
 			params.put("grp", "");
 		}
@@ -59,7 +64,7 @@ public class agLogStatController extends commController{
 			params.put("grp", SqlSafeUtil.getSqlInjectionSafe(params.get("deptSelect").toString()));
 		}
 		//
-		if("ALL".equals(params.get("teamSelect")))
+		if("".equals(params.get("teamSelect")))
 		{
 			params.put("team", "");
 		}

@@ -1204,7 +1204,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         var data = {}; 
         //data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
         //data.chnId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
-        data.compId = 2; //리테일
+        data.compId = 75; //리테일
         data.chnId = "";    	
         data.skId = "";
 	    axboot.ajax({

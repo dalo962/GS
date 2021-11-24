@@ -1,19 +1,9 @@
 var fnObj = {};
 var ACTIONS = axboot.actionExtend(fnObj, {
     PAGE_SEARCH: function (caller, act, data) {
-    	var check = $(":input:radio[name=checkag]:checked").val();
-    	var deptSelect = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
-    	var list = $('[data-ax5select="agentSelect"]').ax5select("getValue")[0].value;
-    	
     	var selText = $("#selText").val();
     	var startDate = $("#startDate").val();
         var endDate = $("#endDate").val();   
-                
-        if(deptSelect == "" && list =="" && (selText == "" || selText == null))
-        {
-        	alert("부서 전체조회시 상담사조건을 입력/선택하시기 바랍니다.");
-        	return;
-        }
         
         if(startDate != "" && startDate != null && endDate != "" && endDate != null)
         {
@@ -72,12 +62,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		{
 			alert("시작일이 종료일보다 클 수 없습니다.");
 			return;
-		}     
-        if(startDate == "" && endDate == "")
-		{
-			alert("날짜를 입력해 주시기 바랍니다.");
-			return;
-		} 
+		}           
         if(startDate == "" && endDate != "")
 		{
 			alert("시작일을 입력해 주시기 바랍니다.");
@@ -87,16 +72,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		{
 			alert("종료일을 입력해 주시기 바랍니다.");
 			return;
-		}              
-        
-        if(selText != "")
-        {
-	        if(check == "undefined" || check == "")
-	        {
-	        	alert("상담사 이름 또는 ID를 선택해 주시기 바랍니다.")
-            	return;
-	        }
-        }
+		}        
         
         startDate = startDate.split('-');
         endDate = endDate.split('-');
@@ -122,7 +98,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
         
     	axboot.ajax({
             type: "GET",
-            url: "/gr/api/hist/agLog/agLogSearch",
+            url: "/gr/api/hist/agInfo/agInfoSearch",
             cache : false,
             data: $.extend({}, this.searchView.getData()),
             callback: function (res) {
@@ -136,10 +112,100 @@ var ACTIONS = axboot.actionExtend(fnObj, {
         });
 
         return false;
-    },    
+    },
+    PAGE_SAVE: function (caller, act, data) {
+    	var saveList = [].concat(caller.gridView01.getData());
+    	
+    	var reqExp = /^[0-9]*$/;
+    	var join = 0;
+    	var leave = 0;
+    	var joinlen = 0;
+    	var leavelen = 0;
+    	saveList.forEach(function (n){
+    		if(n.join_date != null && n.join_date != "" && n.join_date != undefined)
+    		{
+    			var jo = n.join_date.replace(/-/gi, "");
+    			
+    			if(reqExp.test(jo) == false)
+    			{
+    				join = join + 1;
+    			}
+    			
+    			if(jo.length > 8)
+    			{
+    				joinlen = joinlen + 1;
+    			}    			
+    		}
+    		
+    		if(n.leave_date != null && n.leave_date != "" && n.join_date != undefined)
+    		{
+    			var le = n.leave_date.replace(/-/gi, "");
+    			
+    			if(reqExp.test(le) == false)
+    			{
+    				leave = leave + 1;
+    			}
+    			
+    			if(le.length > 8)
+    			{
+    				leavelen = leavelen + 1;
+    			}
+    		}
+    	});
+    	
+    	if(join > 0)
+    	{
+    		alert("입사날짜는 숫자만 입력하시기 바랍니다.");
+    		return;
+    	}
+    	if(joinlen > 0)
+    	{
+    		alert("입사날짜는 숫자 8자리로 입력하시기 바랍니다.");
+    		return;
+    	}
+    	if(leave > 0)
+    	{
+    		alert("퇴사날짜는 숫자만 입력하시기 바랍니다.");
+    		return;
+    	}
+    	if(leavelen > 0)
+    	{
+    		alert("퇴사날짜는 숫자 8자리로 입력하시기 바랍니다.");
+    		return;
+    	}
+    	
+    	axDialog.confirm({
+    		title:"확인",
+            msg: "저장하시겠습니까?" // 여기까지 추가한 소스
+        }, function () {
+            if (this.key == "ok") {
+		    	axboot.ajax({
+		            type: "POST",
+		            cache: false,
+		            url: "/gr/api/hist/agInfo/agInfoUpdate",
+		            data: JSON.stringify(saveList),
+		            callback: function (res) {
+		            	axToast.push("저장 되었습니다.");
+		            	ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+		            	
+		            	 fnObj.searchView.initView();
+		            },
+		            options: {
+		                onError: function (err) {
+		                    alert("저장 작업에 실패하였습니다");
+		                    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+		                }
+		            }
+		        });
+            }
+        });
+    },
     EXCEL_EXPORT: function (caller, act, data) {
         caller.gridView01.exportExcel();
-    }
+    },
+    EXCEL_DOWNLOAD: function (caller, act, data) {
+    	window.open('/assets/js/common/agent_template.xlsx');
+    },
 });
 
 var CODE = {};
@@ -195,6 +261,7 @@ fnObj.pageStart = function () {
 	    	        });
 	    	        $('[data-ax5select="comSelect"]').ax5select("setValue", info.comcd);
 	    	        _this.searchView.partSearch();
+	    	        _this.searchView.skillSearch();
 	    	    }
 	    	});
 	    }
@@ -204,9 +271,44 @@ fnObj.pageStart = function () {
         _this.searchView.initView();
         _this.gridView01.initView();
 
+        fnObj.initsearch();
     });
 
 };
+
+//처음 조회시에만 태운다
+fnObj.initsearch = function(){
+	axboot.ajax({
+        type: "GET",
+        url: "/gr/api/hist/agInfo/agInfoSearch",
+        cache : false,
+        data: $.extend({}, this.initsearchView.getData()),
+        callback: function (res) {
+            fnObj.gridView01.setData(res);
+        },
+        options: {
+            onError: function (err) {
+                console.log(err);
+            }
+        }
+    });
+}
+
+fnObj.initsearchView = axboot.viewExtend(axboot.searchView, {
+    getData: function () {    	
+        return {
+        	comSelect: 75,
+        	deptSelect: "",
+        	teamSelect: "",
+        	selText: "",
+        	startDate: "",
+        	endDate: "",
+        	depSelect: "",
+        	skSelect: "",
+        	workynSelect: ""
+        }
+    }
+});
 
 fnObj.pageButtonView = axboot.viewExtend({
     initView: function () {
@@ -214,8 +316,14 @@ fnObj.pageButtonView = axboot.viewExtend({
             "search": function () {
                 ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
             },
+            "save": function () {
+            	ACTIONS.dispatch(ACTIONS.PAGE_SAVE);
+            },
             "excel": function () {
                 ACTIONS.dispatch(ACTIONS.EXCEL_EXPORT);
+            },
+            "sample": function() {
+            	ACTIONS.dispatch(ACTIONS.EXCEL_DOWNLOAD);
             }
         });
     }
@@ -234,10 +342,10 @@ function date_set(){
     var dd = date.getDate().toString();
     if(dd.length == 1) dd = "0"+dd;
    
-    $("#startDate").val(yyyy+"-"+MM+"-"+dd);
-    $("#endDate").val(yyyy+"-"+MM+"-"+dd);
-    //$("#startDate").val("");
-    //$("#endDate").val("");
+    //$("#startDate").val(yyyy+"-"+MM+"-"+dd);
+    //$("#endDate").val(yyyy+"-"+MM+"-"+dd);
+    $("#startDate").val("");
+    $("#endDate").val("");
 }
 
 $("#startDate").on('focusout', function(){
@@ -250,6 +358,8 @@ $("#startDate").on('focusout', function(){
     
 	var interval = "day";
 	var startDate = $("#startDate").val();
+	
+	if(startDate == "") return;
 	
 	if(interval == "month")
 	{
@@ -384,6 +494,8 @@ $("#endDate").on('focusout', function(){
     
 	var interval = "day";
 	var endDate = $("#endDate").val();
+	
+	if(endDate == "") return;
 	
 	if(interval == "month")
 	{
@@ -575,34 +687,57 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
             }
         });
 		
+		var dep = [];
+		dep.push({value: "", text: "전체" });
+		
+		axboot.ajax({
+			type:"GET",
+			url:"/gr/api/hist/agInfo/agInfoDepSel",
+			cache : false,
+			data: "",
+			callback:function(res)
+			{
+				res.forEach(function (n) {
+                	dep.push({
+                        value: n.dep_nm, text: n.dep_nm,
+                    });
+                });
+				
+				$("[data-ax5select='depSelect']").ax5select({
+			        theme: 'primary',
+			        options: dep,
+			        onChange: function () {
+			        	
+			        }
+				});
+			}
+		});
+		
+		var join = [];
+		join.push({value: "", text: "전체" });
+		join.push({value: "1", text: "재직" });
+		join.push({value: "0", text: "퇴사" });
+		$("[data-ax5select='workynSelect']").ax5select({
+	        theme: 'primary',
+	        options: join,
+	        onChange: function () {
+	        	
+	        }
+		});
+		
 		date_set();
     },
-    getData: function () {    
-    	var chk = $(":input:radio[name=checkag]:checked").val();
-    	if(chk == "undefined" || chk == "")
-    	{
-    		chk = null;
-    	}   
-    	
-    	var list = $('[data-ax5select="agentSelect"]').ax5select("getValue");
-    	var aglist = "";
-    	if(list != "")
-    	{	    	
-	    	for(var i=0; i < list.length; i++)
-	    	{
-	    		aglist += list[i].value + ";";
-	    	}
-	    	aglist = aglist.substring(0,aglist.length-1);
-    	}
-        return {
-        	comSelect: $("[data-ax5select='comSelect']").ax5select("getValue")[0].value,
+    getData: function () {  
+    	return {
+        	comSelect: 75,
         	deptSelect: $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value,
         	teamSelect: $("[data-ax5select='teamSelect']").ax5select("getValue")[0].value,
+        	selText: $("#selText").val(),
         	startDate: this.startDate.val(),
         	endDate: this.endDate.val(),
-        	check: chk,
-        	selText: $("#selText").val(),
-        	agentSelect: aglist
+        	depSelect: $("[data-ax5select='depSelect']").ax5select("getValue")[0].value,
+        	skSelect: $("[data-ax5select='skSelect']").ax5select("getValue")[0].text,
+        	workynSelect: $("[data-ax5select='workynSelect']").ax5select("getValue")[0].value,
         }
     },
     partSearch: function(){
@@ -760,6 +895,42 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
                 $('[data-ax5select="agentSelect"]').ax5select("setValue",[""]);
             }
         });
+    },
+    skillSearch: function(){
+    	//console.log("compId : " + $("[data-ax5select='comSelect']").ax5select("getValue")[0].value);
+    	//console.log("chnId : " + $("[data-ax5select='chanSelect']").ax5select("getValue")[0].value);
+        var data = {}; 
+        //data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
+        //data.chnId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
+        data.compId = 75; //리테일
+        data.chnId = "";    	
+        data.skId = "";
+	    axboot.ajax({
+            type: "POST",
+            url: "/api/mng/searchCondition/skill",
+            cache : false,
+            data: JSON.stringify($.extend({}, data)),
+            callback: function (res) {
+                var resultSet = [{value:"", text:"전체", sel:"1"}];
+            	//var resultSet = [{value:"", text:"전체", sel:"0"}];
+                res.list.forEach(function (n) {
+                	resultSet.push({
+                        value: n.id, text: n.name, sel:"0"
+                    });
+                });
+                $("[data-ax5select='skSelect']").ax5select({
+        	        theme: 'primary',
+        	        multiple: false,
+        	        //reset:'<i class=\'fa fa-trash\'><img src="/assets/images/icon_delete.png" width="14" height="12" border="0"><i>',
+        	        options: resultSet,
+        	        onChange: function()
+        	        {
+        	        	      	        	
+					}        	        	        	        
+                });
+                $('[data-ax5select="skSelect"]').ax5select("setValue",[""]);
+            }
+        });
     }
 });
 
@@ -777,17 +948,124 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            showLineNumber:true,
 	            target: $('[data-ax5grid="grid-view-01"]'),
 	            columns: [
-	            	{key: "ROW_DATE", label: "날짜", width: 150, align: "center", sortable: true},
-	            	{key: "COMPANY_NAME", label: "센터", width: 200, align: "center", sortable: true},
-	            	{key: "DEPT_NAME", label: "그룹", width: 200, align: "center", sortable: true},
-	            	{key: "TEAM_NAME", label: "팀", width: 200, align: "center", sortable: true},
-	            	{key: "AGENT_NAME", label: "상담사명", width: 150, align: "center", sortable: true},
-	                {key: "AGENT_ID", label: "상담사ID", width: 150, align: "center", sortable: true},
-	                {key: "LOGINDT", label: "로그인시각", width: 230, align: "center", sortable: true},
-	                {key: "LOGOUTDT", label: "로그아웃시각", width: 230, align: "center", sortable: true},
+	            	{key: "company_name", label: "센터", width: 90, align: "center", sortable: true},
+	            	{key: "dept_name", label: "그룹", width: 90, align: "center", sortable: true},
+	            	{key: "team_name", label: "팀", width: 90, align: "center", sortable: true},
+	            	{key: "dep_nm", label: "*직책", width: 90, align: "center", sortable: true, editor:"text"},
+	                {key: "agent_name", label: "상담사명", width: 90, align: "center", sortable: true},
+	                {key: "join_date", label: "*입사일", width: 95, align: "center", sortable: true, editor:"text"},
+	                {key: "work_time", label: "*근무시간", width: 95, align: "center", sortable: true, editor:"text"},
+	                {key: "work", label: "*업무", width: 95, align: "center", sortable: true, editor:"text"},
+	                {key: "skill_name", label: "스킬", width: 400, align: "left", sortable: true, multiLine:true},
+	                {key: "age", label: "*연령대", width: 90, align: "center", sortable: true, editor: {
+                    	type: "select", config: {
+                    		columnKeys: {
+                    			optionValue: "value", optionText: "text"
+                    		},
+                    		options: [                        		
+                        		{value: "20age", text: "20대"},
+                        		{value: "30age", text: "30대"},
+                        		{value: "40age", text: "40대"},
+                        		{value: "50age", text: "50대"},
+                        		{value: "60age", text: "60대"}
+                        	]
+                    	}
+                    }, formatter: function() {
+                    	switch(this.item.age) {
+	                    	case "20age":
+	                			return "20대";
+	                			break;                    		
+	                		case "30age":
+	                			return "30대";
+	                			break;
+	                		case "40age" :
+	                			return "40대";
+	                			break;
+	                		case "50age" :
+	                			return "50대";
+	                			break;
+	                		case "60age" :
+	                			return "60대";
+	                			break;
+	                		default :
+	                			return "선택";
+	                			break;
+                    	}
+                    }},
+	                {key: "mey_yn", label: "*혼인여부", width: 90, align: "center", sortable: true, editor: {
+                    	type: "select", config: {
+                    		columnKeys: {
+                    			optionValue: "value", optionText: "text"
+                    		},
+                    		options: [
+                        		{value: "0", text: "미혼"},
+                        		{value: "1", text: "기혼"},
+                        	]
+                    	}
+                    }, formatter: function() {
+                    	switch(this.item.mey_yn) {               		
+	                		case "0":
+	                			return "미혼";
+	                			break;
+	                		case "1" :
+	                			return "기혼";
+	                			break;
+	                		default :
+	                			return "선택";
+	                			break;
+                    	}
+                    }},
+	                {key: "gender", label: "*성별", width: 90, align: "center", sortable: true, editor: {
+                    	type: "select", config: {
+                    		columnKeys: {
+                    			optionValue: "value", optionText: "text"
+                    		},
+                    		options: [
+                        		{value: "1", text: "남자"},
+                        		{value: "2", text: "여자"},
+                        	]
+                    	}
+                    }, formatter: function() {
+                    	switch(this.item.gender) {             		
+	                		case "1":
+	                			return "남자";
+	                			break;
+	                		case "2" :
+	                			return "여자";
+	                			break;
+	                		default :
+	                			return "선택";
+	                			break;
+                    	}
+                    }},
+	                {key: "work_yn", label: "*재직구분", width: 90, align: "center", sortable: true, editor: {
+                    	type: "select", config: {
+                    		columnKeys: {
+                    			optionValue: "value", optionText: "text"
+                    		},
+                    		options: [
+                        		{value: "0", text: "퇴사"},
+                        		{value: "1", text: "재직"},
+                        	]
+                    	}
+                    }, formatter: function() {
+                    	switch(this.item.work_yn) {               		
+	                		case "0":
+	                			return "퇴사";
+	                			break;
+	                		case "1" :
+	                			return "재직";
+	                			break;
+	                		default :
+	                			return "선택";
+	                			break;
+                    	}
+                    }},
+	                {key: "leave_date", label: "*퇴사일", width: 95, align: "center", sortable: true, editor:"text"},
 	            ],
 	            body: {
-	                onClick: function () {
+	            	columnHeight:50,
+	            	onClick: function () {
 	                    this.self.select(this.dindex, {selectedClear: true});
 	                    }
 	            }
@@ -805,6 +1083,9 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             list = _list;
         }
         return list;
+    },    
+    setValue: function (index, key, value) {
+    	this.target.setValue(index, key, value);
     },
     exportExcel: function () {
     	var date = new Date();
@@ -823,6 +1104,166 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
     	else{
     		dateString += date.getDate();
     	}  	
-    	this.target.exportExcel("상담사 로그인 현황_" +dateString+ ".xls");
+    	this.target.exportExcel("상담사 정보 관리_" +dateString+ ".xls");
+    }
+});
+
+
+//엑셀 업로드
+var rABS = true; 
+
+function fixdata(data) {
+    var o = "", l = 0, w = 10240;
+    for(; l<data.byteLength/w; ++l) o+=String.fromCharCode.apply(null,new Uint8Array(data.slice(l*w,l*w+w)));
+    o+=String.fromCharCode.apply(null, new Uint8Array(data.slice(l*w)));
+    return o;
+}
+
+function getConvertDataToBin($data){
+    var arraybuffer = $data;
+    var data = new Uint8Array(arraybuffer);
+    var arr = new Array();
+    for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+    var bstr = arr.join("");
+ 
+    return bstr;
+}
+
+function getCsvToJson($csv){
+ 
+    var startRow = 2;
+    var csvSP = $csv.split( "|" );
+    var csvRow = [], csvCell = [];
+    var cellName = ["agent_id", "dep_nm", "join_date", "work_time", "work", "age", "mey_yn", "gender", "work_yn" ,"leave_date"];
+    csvSP.forEach(function(item, index, array){
+ 
+        var patt = new RegExp(":"); 
+        var isExistTocken = patt.test( item );
+ 
+        if( isExistTocken && ( startRow - 1 ) <= index ){
+            csvRow.push( item );
+        }
+    });
+ 
+    csvRow.forEach(function(item, index, array){
+        var row = item.split(":");
+        var obj = {};
+        row.forEach(function(item, index, array){
+        	if(index == 5)
+        	{
+        		if(item == "20대") { item = "20age"}
+				else if(item == "30대") { item = "30age" }
+				else if(item == "40대") { item = "40age" }
+				else if(item == "50대") { item = "50age" }
+				else if(item == "60대") { item = "60age" }
+				else { gitem = null}
+        	}
+        	else if(index == 6)
+        	{
+        		if(item == "미혼") { item = "0"}
+				else if(item == "기혼") { item = "1" }
+				else { item = null}
+			}
+        	else if(index == 7)
+        	{
+        		if(item == "남자") { item = "1"}
+				else if(item == "여자") { item = "2" }
+				else { item = null}
+        	}
+        	else if(index == 8)
+        	{
+        		if(item == "재직") { item = "1"}
+				else if(item == "퇴사") { item = "0" }
+				else { item = null}
+        	}
+            obj[ cellName[index] ] = item;
+        });
+ 
+        csvCell[index] = obj;
+    });
+    return csvCell;
+}
+
+function handleFile(e) {
+    var files = e.target.files;
+    var i,f;
+    for (i = 0; i != files.length; ++i) {
+        f = files[i];
+        var reader = new FileReader();
+        var name = f.name;
+ 
+        reader.onload = function(e) {
+            var data = e.target.result;
+
+            var workbook;
+ 
+            if(rABS) {
+                /* if binary string, read with type 'binary' */
+                //workbook = XLSX.read(data, {type: 'binary'});
+            	var binary = "";
+            	var bytes = new Uint8Array(data);
+            	var length = bytes.byteLength;
+            	for (var i=0; i < length; i++){
+            		binary += String.fromCharCode(bytes[i])
+            	}
+            	workbook = XLSX.read(binary, {type:'binary'});          	
+            	
+            } else {
+                /* if array buffer, convert to base64 */
+                //var arr = fixdata(data);
+                //workbook = XLSX.read(btoa(arr), {type: 'base64'});
+            	workbook = XLSX.read(data, {type:'binary'}); 
+            }//end. if
+ 			console.log(workbook);
+            
+ 			workbook.SheetNames.forEach(function(item, index, array) 
+ 			{
+ 				if(item == 'Sheet1')
+ 				{
+ 					var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[item],{FS:":",RS:"|"} );
+	                 					
+ 					console.log(getCsvToJson(csv));
+ 					for(var i =0; i < getCsvToJson(csv).length; i++)
+ 					{
+ 						if(getCsvToJson(csv)[i].agent_id != null && getCsvToJson(csv)[i].agent_id != "" && getCsvToJson(csv)[i].agent_id != undefined)
+ 						{
+	 						var list = fnObj.gridView01.getData();
+	 						
+	 						list.forEach(function (n) {
+	 							if(getCsvToJson(csv)[i].agent_id == n.agent_id)
+	 							{
+	 								n.dep_nm = getCsvToJson(csv)[i].dep_nm;
+	 								n.join_date = getCsvToJson(csv)[i].join_date;
+	 								n.work_time = getCsvToJson(csv)[i].work_time;
+	 								n.work = getCsvToJson(csv)[i].work;
+	 								n.age = getCsvToJson(csv)[i].age;
+	 								n.mey_yn = getCsvToJson(csv)[i].mey_yn;
+	 								n.gender = getCsvToJson(csv)[i].gender;
+	 								n.work_yn = getCsvToJson(csv)[i].work_yn;
+	 								n.leave_date = getCsvToJson(csv)[i].leave_date;
+	 								
+	 								n.__modified__ = true;
+	 							}
+	 						});
+	 						
+	 						fnObj.gridView01.setData(list);	 						
+ 						} 						
+ 						//fnObj.gridView01.addRowExcel(getCsvToJson(csv)[i].ani, getCsvToJson(csv)[i].flag);
+ 					}
+ 				}
+ 			});//end. forEach 			 			
+        }; //end onload
+ 
+        if(rABS) reader.readAsArrayBuffer(f); //reader.readAsBinaryString(f);
+        else reader.readAsBinaryString(f); //reader.readAsArrayBuffer(f);
+ 
+    }//end. for
+}
+ 
+var input_dom_element;
+$(function() {
+    input_dom_element = document.getElementById('excel');
+    if(input_dom_element.addEventListener) {
+        input_dom_element.addEventListener('change', handleFile, false);
     }
 });

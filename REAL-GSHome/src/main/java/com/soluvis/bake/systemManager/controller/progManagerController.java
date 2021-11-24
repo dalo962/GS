@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.code.AXBootTypes;
+import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.SqlSafeUtil;
 import com.soluvis.bake.common.controller.commController;
-import com.soluvis.bake.common.controller.searchConditionController;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
 import com.soluvis.bake.system.utils.SessionUtils;
 import com.soluvis.bake.systemManager.domain.progManager;
@@ -38,8 +40,7 @@ public class progManagerController extends commController{
 	@Inject
 	private progManagerService progMngService;	
 		
-	@Inject
-    private searchConditionController scs;
+	private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 	

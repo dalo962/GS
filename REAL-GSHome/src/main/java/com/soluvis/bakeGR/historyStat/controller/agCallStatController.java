@@ -9,11 +9,14 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.SQLInjectionSafe;
 import com.soluvis.bake.common.controller.SqlSafeUtil;
 import com.soluvis.bake.common.controller.commController;
@@ -28,7 +31,7 @@ import com.soluvis.bakeGR.ivrManagement.service.ivrGRHolidayService;
 
 /** 
  * @author gihyunpark
- * @desc   통합 통계에 대한 누적 통계를 조회한다
+ * @desc   상담사 통화통계를 조회한다
  */
 @Controller
 @RequestMapping(value = "/gr/api/hist/agCall")
@@ -43,6 +46,8 @@ public class agCallStatController extends commController{
 	@Inject
 	private ivrGRHolidayService ivrHolidayService;
 	
+	private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
+	
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 	
 	MDCLoginUser loginUser;
@@ -51,7 +56,7 @@ public class agCallStatController extends commController{
 	 * @desc js에서 받은 조건을 조합하여 쿼리문을 만들어 list를 받아온다
 	 */ 
 	@RequestMapping(value="/agCallSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
-	public @ResponseBody List<Map<String,Object>> combineSearch(@Valid @SQLInjectionSafe HttpServletRequest request) throws Exception {
+	public @ResponseBody List<Map<String,Object>> agCallSearch(@Valid @SQLInjectionSafe HttpServletRequest request) throws Exception {
 		Map<String,Object> params = RequestUtil.getParameterMap(request);	
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String,Object>> search = null;

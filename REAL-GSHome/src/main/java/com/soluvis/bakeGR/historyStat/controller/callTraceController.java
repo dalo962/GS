@@ -8,12 +8,15 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.SQLInjectionSafe;
 import com.soluvis.bake.common.controller.SqlSafeUtil;
 import com.soluvis.bake.common.controller.commController;
@@ -32,6 +35,8 @@ public class callTraceController extends commController{
 	@Inject
 	private callTraceService callTrService;	
 		
+	private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
+	
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 	
 	MDCLoginUser loginUser;

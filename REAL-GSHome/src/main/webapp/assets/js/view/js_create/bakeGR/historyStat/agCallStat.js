@@ -378,9 +378,12 @@ fnObj.pageStart = function () {
 		    		callback: function (res) {
 		    			var resultSet = [];
 		    			res.list.forEach(function (n) {
-		    				resultSet.push({
-		    					value: n.id, text: n.name,
-		    				});
+		    				if(n.id == '75')
+		    	        	{
+		    					resultSet.push({
+		    						value: n.id, text: n.name,
+		    					});
+		    	        	}
 		    			});
 		    			$("[data-ax5select='comSelect']").ax5select({
 		    				theme: 'primary',
@@ -1229,7 +1232,6 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     partSearch: function(){
         var data = {}; 
         data.grpcd = info.grpcd;
-        data.dispyn = info.dispyn;
         data.cencd = info.cencd
         data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
 	    axboot.ajax({
@@ -1239,16 +1241,9 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
             data: JSON.stringify($.extend({}, data)),
             callback: function (res) {
             	var resultSet = [];
-            	if(data.dispyn == "N")
-            	{
-            		resultSet = [{value:"", text:"전체"}];
-            	}            	
-            	if(res.list.length == 0)
-            	{
-            		resultSet = [{value:"", text:"전체"}];
-            	}
+            	resultSet = [{value:"", text:"전체"}];
             	
-                res.list.forEach(function (n) {
+            	res.list.forEach(function (n) {
                 	resultSet.push({
                         value: n.id, text: n.name,
                     });
@@ -1260,7 +1255,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     		        },
         	        options: resultSet,
                 });
-                $("[data-ax5select='deptSelect']").ax5select("setValue", info.cencd);
+                $("[data-ax5select='deptSelect']").ax5select("setValue", "");
 
                 fnObj.searchView.teamSearch();
             }
@@ -1269,7 +1264,6 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     teamSearch: function(){
     	var data = {}; 
         data.grpcd = info.grpcd;
-        data.dispyn = info.dispyn;
         data.teamcd = info.teamcd
         data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
         data.partId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
@@ -1286,10 +1280,8 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
             data: JSON.stringify($.extend({}, data)),
             callback: function (res) {
             	var resultSet = [];
-            	if(data.dispyn == "N")
-            	{
-            		resultSet = [{value:"", text:"전체"}];
-            	}            	
+            	resultSet = [{value:"", text:"전체"}];
+            	          	
                 res.list.forEach(function (n) {
                 	resultSet.push({
                         value: n.id, text: n.name,
@@ -1302,7 +1294,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     		        },
         	        options: resultSet,
                 });
-                $("[data-ax5select='teamSelect']").ax5select("setValue", info.teamcd);
+                $("[data-ax5select='teamSelect']").ax5select("setValue", "");
                 fnObj.searchView.agentSearch();
             }
         });

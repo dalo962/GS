@@ -44,7 +44,6 @@ public class statListManagerController extends commController{
 	
 	MDCLoginUser loginUser;
 	
-	//String[] arrMedn = new String[]{"incalls"};	
 	String[] arrSkill = new String[]{"skCall", "skWait"};	
 	String[] arrAgent = new String[]{"agCall", "agProdt", "agSkill"};
 
@@ -373,7 +372,7 @@ public class statListManagerController extends commController{
 		int searchsize = search.size();
 		
 		map.put("seq", "");			
-		map.put("useyn", "Y");
+		map.put("useyn", "");
 		
 		List<statListManager> List = null;
 		
@@ -382,41 +381,52 @@ public class statListManagerController extends commController{
 		else if("AGENT".equals(stat_gubun)) 
 		{ List = statLstMngService.agentListSelmodal(map); }
 		
+		int listsize = List.size();
+		
 		if(searchsize > 0)
 		{
 			for(int i = 0; i < searchsize; i++)
 			{
 				if("Y".equals(search.get(i).getStat_yn()))
-				{
-					if(List.size() > 0)
+				{					
+					if(listsize > 0)
 					{
-						Map<String, Object> Mmap = new HashMap<String, Object>();
-						Mmap.put("key", List.get(i).getAsname());
-						Mmap.put("label", List.get(i).getHanname());
-						Mmap.put("sgroup", List.get(i).getSgroup());
-						Mmap.put("width", 120);
-						Mmap.put("align", "center");
-						Mmap.put("sortable", true);		
-						Mmap.put("stype", List.get(i).getStype());
-						Mmap.put("colname", List.get(i).getColname());
-						Mmap.put("interval", List.get(i).getInterval());
-						
-						if("M".equals(List.get(i).getGubun())) 
-						{Mmap.put("formatter", "major");}
-						else if("T".equals(List.get(i).getGubun())) 
-						{Mmap.put("formatter", "hour");}
-						else if("N".equals(List.get(i).getGubun())) 
-						{Mmap.put("formatter", "cnt");}
-						else if("P".equals(List.get(i).getGubun())) 
-						{Mmap.put("formatter", "ptg");}
-						else if("PS".equals(List.get(i).getGubun())) 
-						{Mmap.put("formatter", "person");}
-						//else if("PSG".equals(List.get(0).getGubun())) 
-						//{Mmap.put("formatter", "perptg");}
-						else if("TX".equals(List.get(i).getGubun())) 
-						{Mmap.put("formatter", "texter");}
-						
-						list.add(Mmap);
+						for(int j = 0; j < listsize; j++)
+						{
+							if(search.get(i).getStat_seq().equals(List.get(j).getSeq()))
+							{
+								if("Y".equals(List.get(j).getUse_yn()))
+								{
+									Map<String, Object> Mmap = new HashMap<String, Object>();
+									Mmap.put("key", List.get(j).getAsname());
+									Mmap.put("label", List.get(j).getHanname());
+									Mmap.put("sgroup", List.get(j).getSgroup());
+									Mmap.put("width", 120);
+									Mmap.put("align", "center");
+									Mmap.put("sortable", true);		
+									Mmap.put("stype", List.get(j).getStype());
+									Mmap.put("colname", List.get(j).getColname());
+									Mmap.put("interval", List.get(j).getInterval());
+									
+									if("M".equals(List.get(j).getGubun())) 
+									{Mmap.put("formatter", "major");}
+									else if("T".equals(List.get(j).getGubun())) 
+									{Mmap.put("formatter", "hour");}
+									else if("N".equals(List.get(j).getGubun())) 
+									{Mmap.put("formatter", "cnt");}
+									else if("P".equals(List.get(j).getGubun())) 
+									{Mmap.put("formatter", "ptg");}
+									else if("PS".equals(List.get(j).getGubun())) 
+									{Mmap.put("formatter", "person");}
+									//else if("PSG".equals(List.get(0).getGubun())) 
+									//{Mmap.put("formatter", "perptg");}
+									else if("TX".equals(List.get(j).getGubun())) 
+									{Mmap.put("formatter", "texter");}
+									
+									list.add(Mmap);
+								}
+							}
+						}
 					}
 				}		
 			}
@@ -447,34 +457,46 @@ public class statListManagerController extends commController{
 		
 		Map<String, Object> Mmap = new HashMap<String, Object>(); 
 		
-		Mmap.put("seq", "");
-		Mmap.put("useyn", "Y");
+		Mmap.put("seq", "");		
+		Mmap.put("useyn", "");
+		Mmap.put("dispname", dispname);
 		if("SKILL".equals(stat_gubun)) 
 		{ search = statLstMngService.skillListSelmodal(Mmap); }
 		else if("AGENT".equals(stat_gubun)) 
 		{ search = statLstMngService.agentListSelmodal(Mmap); }
 		
+		int searchsize = search.size();
+		
 		if(ulistsize > 0)
 		{
 			for(int i = 0; i < ulistsize; i++)
 			{
-				if(search.size() > 0)
+				if(searchsize > 0)
 				{
-					Mmap = new HashMap<String, Object>();
-					
-					Mmap.put("colname", search.get(i).getAsname());
-					Mmap.put("hanname", search.get(i).getHanname());
-					Mmap.put("sgroup", search.get(i).getSgroup());
-					Mmap.put("seq", ulist.get(i).getRm()) ; 	
-					Mmap.put("statseq", ulist.get(i).getStat_seq());
-					Mmap.put("interval", search.get(i).getInterval());
-					
-					search.get(i).setUse_yn(ulist.get(i).getStat_yn());
-					Mmap.put("use_yn", search.get(i).getUse_yn());
-						
-					Mmap.put("gubun", search.get(i).getGubun());								
-						
-					list.add(Mmap);
+					for(int j = 0; j < searchsize; j++)
+					{
+						if(ulist.get(i).getStat_seq().equals(search.get(j).getSeq()))					
+						{
+							if("Y".equals(search.get(j).getUse_yn()))
+							{								
+								Mmap = new HashMap<String, Object>();
+									
+								Mmap.put("colname", search.get(j).getAsname());
+								Mmap.put("hanname", search.get(j).getHanname());
+								Mmap.put("sgroup", search.get(j).getSgroup());
+								Mmap.put("seq", ulist.get(i).getRm()) ; 	
+								Mmap.put("statseq", ulist.get(i).getStat_seq());
+								Mmap.put("interval", search.get(j).getInterval());
+									
+								search.get(j).setUse_yn(ulist.get(i).getStat_yn());
+								Mmap.put("use_yn", search.get(j).getUse_yn());
+										
+								Mmap.put("gubun", search.get(j).getGubun());								
+										
+								list.add(Mmap);								
+							}
+						}
+					}				
 				}
 			}		
 		}
