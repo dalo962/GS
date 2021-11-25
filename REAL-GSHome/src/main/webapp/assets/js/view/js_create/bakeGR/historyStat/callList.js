@@ -767,7 +767,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         			// 청취 시 필요한 값 //
         			var conn_id = this.item.CONNID;
         			var extension = this.item.EXTENSION;
-        			var ani = this.item.IOTYPE == "I"
+        			var ani = this.item.IOTYPE == "IN"
         				? this.item.IBANI
 						: this.item.OBANI;
         			
