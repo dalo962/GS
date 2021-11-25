@@ -30,15 +30,20 @@
 							<div class="form-group">
 								<div data-ax5select="menuSelect" data-ax5select-config="{}"></div>							
 							</div>	
-                    	</ax:td>	
+                    	</ax:td>
                     </ax:tr>
                 </ax:tbl>
             </ax:form>
-            <div class="H10"></div>
         </div>
 	
         <ax:split-layout name="ax1" orientation="horizontal">
             <ax:split-panel width="*" style="*">
+            	<div class="ax-button-group" data-fit-height-aside="grid-view-01">
+            		<div class="right">     
+                    	<button type="button" class="btn btn-default" data-grid-view-01-btn="allselect">전체 선택</button>
+                    	<button type="button" class="btn btn-default" data-grid-view-01-btn="allxselect">전체 해제</button>                                                                            
+                    </div>
+				</div>
                 <div data-ax5grid="grid-view-01" data-fit-height-content="grid-view-01" style="height: 100%;"></div>
             </ax:split-panel>            
         </ax:split-layout>

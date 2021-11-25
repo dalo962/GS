@@ -147,6 +147,26 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     },          
             }
         });
+        
+        axboot.buttonClick(this, "data-grid-view-01-btn", {
+        	"allselect": function () {
+        		this.target.list.forEach(function (n){
+        			n.use_yn = "N";
+        			n.use_yn = "Y";
+        			
+        			n.__modified__ = true;
+        		});
+        		this.target.repaint();
+            },
+            "allxselect": function () {
+        		this.target.list.forEach(function (n){
+        			n.use_yn = "N";
+        			
+        			n.__modified__ = true;
+        		});
+        		this.target.repaint();
+            } 
+        });
     },
     getData: function (_type) {
         var list = [];

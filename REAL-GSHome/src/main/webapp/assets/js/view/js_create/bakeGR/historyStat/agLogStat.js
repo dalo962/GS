@@ -9,11 +9,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var startDate = $("#startDate").val();
         var endDate = $("#endDate").val();   
                 
-        if(deptSelect == "" && list =="" && (selText == "" || selText == null))
+        /*if(deptSelect == "" && list =="" && (selText == "" || selText == null))
         {
         	alert("부서 전체조회시 상담사조건을 입력/선택하시기 바랍니다.");
         	return;
-        }
+        }*/
         
         if(startDate != "" && startDate != null && endDate != "" && endDate != null)
         {

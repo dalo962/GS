@@ -217,7 +217,7 @@
 
     <insert id="userFacIstSetting" parameterType="hashmap">
 		INSERT 	INTO WDM.AX_USER_FACTOR 
-		SELECT 	#{user_cd}, USER_GROUP, STAT_GUBUN, STAT_SEQ, STAT_YN, SORT, DISTPNAME 
+		SELECT 	#{user_cd}, USER_GROUP, STAT_GUBUN, STAT_SEQ, STAT_YN, SORT, DISPNAME 
 		FROM	WDM.AX_USER_FACTOR
 		WHERE	USER_ID = 'setting'
 	</insert>
