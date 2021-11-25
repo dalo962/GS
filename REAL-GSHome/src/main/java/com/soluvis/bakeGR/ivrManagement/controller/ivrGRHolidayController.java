@@ -66,6 +66,7 @@ public class ivrGRHolidayController extends commController{
 		try
 		{
 			map.put("holiday", "");
+			map.put("hl_useyn", "");
 			
 			logger.info("ivrGRHolidayService.HolidayGet Query Start...");			
 			search = ivrGRHolidayService.HolidayGet(map);

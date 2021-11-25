@@ -754,31 +754,9 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         	{key: "DEPT_NAME", label: "그룹", width: 100, align: "center", sortable: true},
         	{key: "TEAM_NAME", label: "팀", width: 100, align: "center", sortable: true},
         	{key: "AGENT_NAME", label: "상담사명", width: 100, align: "center", sortable: true},
-        	{key: "STIMETS", label: "상담일시", width: 200, align: "center", sortable: true,
-        		formatter: function () {
-        			var stimets = this.item.STIMETS;
-        			var date = stimets.substr(0, 8);
-        			var time = stimets.substr(8, 6);
-        			
-        			date = date.substr(0,4) + "-" + date.substr(4,2) + "-" + date.substr(6,2);
-        			time = time.substr(0,2) + ":" + time.substr(2,2) + ":" + time.substr(4,2);
-        			
-        			return date + " " + time;
-        		}
-        	},
-        	{key: "TTALK", label: "통화시간", width: 80, align: "center", sortable: true,
-        		formatter: function() {
-        			var ttalk = this.item.TTALK;
-        			return ttalk.substr(0, 2) + ":" + ttalk.substr(2, 2);
-        		}
-        	},
-        	{key: "IOTYPE", label: "IN/OUT", width: 80, align: "center", sortable: true,
-        		formatter: function() {
-        			return this.item.IOTYPE == "I"
-        				? "IN"
-        				: "OUT";
-        		}
-        	},
+        	{key: "STIMETS", label: "상담일시", width: 200, align: "center", sortable: true},
+        	{key: "TTALK", label: "통화시간", width: 80, align: "center", sortable: true, formatter: "hour"},
+        	{key: "IOTYPE", label: "IN/OUT", width: 80, align: "center", sortable: true},
         	{key: "IBANI", label: "IB전화번호", width: 120, align: "center", sortable: true},
         	{key: "OBANI", label: "OB전화번호", width: 120, align: "center", sortable: true},
         	{key: "EXTENSION", label: "내선번호", width: 80, align: "center", sortable: true},

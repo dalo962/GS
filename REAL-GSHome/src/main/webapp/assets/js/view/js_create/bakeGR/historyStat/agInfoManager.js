@@ -619,10 +619,6 @@ $("#endDate").on('focusout', function(){
 	}
 });
 
-function date_change(){
-	fnObj.searchView.agentSearch();
-}
-
 
 ax5.info.weekNames = [
     {label: "일"},
@@ -680,9 +676,17 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 	                            .setContentValue(this.item.id, 1, ax5.util.date(yyyy+MM+dd, {"return": "yyyy-MM-dd"}))
 	                            .close()
                         ;
-	                        fnObj.searchView.agentSearch();
                     }
                 },
+	            clear: {
+	                label: "Clear", onClick: function () {
+	                        this.self
+	                            .setContentValue(this.item.id, 0, "")
+	                            .setContentValue(this.item.id, 1, "")
+	                            .close()
+	                    ;
+	                }
+	            },
                 ok:{label:"Close", theme:"default"}
             }
         });
@@ -799,100 +803,10 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
                 $("[data-ax5select='teamSelect']").ax5select({
         	        theme: 'primary',
         	        onStateChanged: function () {
-    		        	fnObj.searchView.agentSearch();
     		        },
         	        options: resultSet,
                 });
                 $("[data-ax5select='teamSelect']").ax5select("setValue", "");
-
-                fnObj.searchView.agentSearch();
-            }
-        });
-    }, 
-    agentSearch: function(){
-    	var data = {}; 
-    	data.interval = "";
-    	data.create_at = $("#startDate").val();
-        data.delete_at = $("#endDate").val(); 
-        data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
-        data.partId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
-        data.teamId = $("[data-ax5select='teamSelect']").ax5select("getValue")[0].value;
-        data.agname = "";
-        data.agid = "";
-        data.agsname = "";
-    	//console.log("compId : " + data.compId + " / partId : " + data.partId +" / teamId : " + data.teamId);
-    	
-	    axboot.ajax({
-            type: "POST",
-            url: "/api/mng/searchCondition/agent",
-            cache : false,
-            data: JSON.stringify($.extend({}, data)),
-            callback: function (res) {
-                var resultSet = [{value:"", text:"전체", sel:"1"}];
-                res.list.forEach(function (n) {
-                	resultSet.push({
-                		value: n.agid, text: n.agname, sel:"0"
-                    });
-                });
-                
-                if(data.teamId == "")
-                {
-                	resultSet = [{value:"", text:"전체", sel:"1"}];
-                }
-                
-                $("[data-ax5select='agentSelect']").ax5select({
-        	        theme: 'primary',
-        	        multiple: true,
-        	        //reset:'<i class=\'fa fa-trash\'><img src="/assets/images/icon_delete.png" width="14" height="12" border="0"><i>',
-        	        options: resultSet,
-        	        onChange: function()
-        	        {
-        	        	if( this.item.selected.length  == 0 )
-        	        	{
-        	            	$('[data-ax5select="agentSelect"]').ax5select("setValue",[0],true);
-        	            	this.item.options[0].sel = "1" ;
-        	            	$('[data-ax5select-option-group]').click();
-        	        	} 
-        	        	else if( this.item.selected.length  == 1 )
-        	        	{
-        	        		if ( this.item.selected[0].value == "" )
-        	        		{
-        	        			this.item.options[0].sel = "1" ;
-        	        		} 
-        	        		else
-        	        		{
-        	        			if ( this.item.options[0].sel != "0" )
-        	        			{
-        	        				this.item.options[0].sel = "0" ;
-        	        				$('[data-ax5select="agentSelect"]').ax5select("setValue",[0],false);
-        	        	    	
-        	        				$('[data-ax5select-option-group]').click();
-        	        			} 
-        	        		}
-        	        	} 
-        	        	else
-        	        	{
-        	        		if ( this.item.selected[0].value == "" )
-        	        		{
-        	        			if ( this.item.options[0].sel == "1" )
-        	        			{
-	        	        			$('[data-ax5select="agentSelect"]').ax5select("setValue",[0],false);
-	        	        			this.item.options[0].sel = "0" ;
-        	        			} 
-        	        			else
-        	        			{
-        	        				this.item.options[0].sel = "1" ;
-            	        			for(var i = 1; i < this.item.options.length; i++)
-            	        			{
-            	        				$('[data-ax5select="agentSelect"]').ax5select("setValue",[this.item.options[i].value],false);
-            	        			}
-        	        			}
-        	        			$('[data-ax5select-option-group]').click();
-        	        		}
-        	        	}       	        	
-					}        	        	        	        
-                });
-                $('[data-ax5select="agentSelect"]').ax5select("setValue",[""]);
             }
         });
     },

@@ -18,7 +18,7 @@
 		FROM    WDM.V_CALL_LIST
 		WHERE	1=1
 		<if test="s_day != '' and e_day != '' and s_time != '' and e_time != ''">
-		AND		STIMETS between WINK1.K2U(#{s_day}) and WINK1.K2U(#{e_day})
+		AND		STIME between WINK1.K2U(#{s_day}) and WINK1.K2U(#{e_day})
 		</if>
 		<if test="dept_name != '' and dept_name != null">
 		AND		DEPT_NAME = #{dept_name}	

@@ -15,6 +15,9 @@
 		<if test="holiday != '' and holiday != null">
 		AND		holiday = ${holiday}
 		</if>
+		<if test="hl_useyn != '' and hl_useyn != null">
+		AND		hl_useyn = #{hl_useyn}
+		</if>
 		ORDER BY holiday asc
     </select>
     

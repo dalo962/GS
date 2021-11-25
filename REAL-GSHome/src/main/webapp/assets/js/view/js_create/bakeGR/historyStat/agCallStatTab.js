@@ -41,9 +41,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
                 	str+="<td id='cb_yn'>";
 					if(res[i].use_yn == 'Y')
 					{
-						if(inter == '5m' || inter == '15m' || inter == '1h')
+						if(inter == '5m')
 						{
-							if(res[i].interval == "0" || res[i].interval == "1" || res[i].interval == "2") 
+							// 0,1,6,7
+							if(res[i].interval == "0" || res[i].interval == "1" || res[i].interval == "6" || res[i].interval == "7") 
 	                 		{
 								str+="<input id='use_yn' type='checkbox' checked='checked' name='" + res[i].gubun +"'>";
 	                 		}
@@ -52,9 +53,34 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 								str+="<input id='use_yn' type='checkbox' checked='checked' disabled=true name='" + res[i].gubun +"'>";	
 							}							
 						}
+						else if(inter == '15m')
+						{
+							// 0,2,6,7
+							if(res[i].interval == "0" || res[i].interval == "2" || res[i].interval == "6" || res[i].interval == "7") 
+	                 		{
+								str+="<input id='use_yn' type='checkbox' checked='checked' name='" + res[i].gubun +"'>";
+	                 		}
+							else
+							{
+								str+="<input id='use_yn' type='checkbox' checked='checked' disabled=true name='" + res[i].gubun +"'>";	
+							}	
+						}
+						else if(inter == '1h')
+						{
+							// 0,3,6,7
+							if(res[i].interval == "0" || res[i].interval == "3" || res[i].interval == "6" || res[i].interval == "7") 
+	                 		{
+								str+="<input id='use_yn' type='checkbox' checked='checked' name='" + res[i].gubun +"'>";
+	                 		}
+							else
+							{
+								str+="<input id='use_yn' type='checkbox' checked='checked' disabled=true name='" + res[i].gubun +"'>";	
+							}	
+						}
 						else if(inter == 'day')
 						{
-							if(res[i].interval == "0" || res[i].interval == "2" || res[i].interval == "3") 
+							// 0,4,7,8
+							if(res[i].interval == "0" || res[i].interval == "4" || res[i].interval == "7" || res[i].interval == "8") 
 	                 		{
 								str+="<input id='use_yn' type='checkbox' checked='checked' name='" + res[i].gubun +"'>";
 	                 		}
@@ -65,7 +91,8 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 						}
 						else if(inter == 'month' || inter == 'year')
 						{
-							if(res[i].interval == "0" || res[i].interval == "3") 
+							// 0,5,8
+							if(res[i].interval == "0" || res[i].interval == "5" || res[i].interval == "8") 
 	                 		{
 								str+="<input id='use_yn' type='checkbox' checked='checked' name='" + res[i].gubun +"'>";
 	                 		}
@@ -77,9 +104,34 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 					}
 					else
 					{
-						if(inter == '5m' || inter == '15m' || inter == '1h')
+						if(inter == '5m')
 						{
-							if(res[i].interval == "0" || res[i].interval == "1" || res[i].interval == "2") 
+							// 0,1,6,7
+							if(res[i].interval == "0" || res[i].interval == "1" || res[i].interval == "6" || res[i].interval == "7") 
+	                 		{
+								str+="<input id='use_yn' type='checkbox' name='" + res[i].gubun +"'>";
+	                 		}
+							else
+							{
+								str+="<input id='use_yn' type='checkbox' disabled=true name='" + res[i].gubun +"'>";	
+							}							
+						}
+						else if(inter == '15m')
+						{
+							// 0,2,6,7
+							if(res[i].interval == "0" || res[i].interval == "2" || res[i].interval == "6" || res[i].interval == "7") 
+	                 		{
+								str+="<input id='use_yn' type='checkbox' name='" + res[i].gubun +"'>";
+	                 		}
+							else
+							{
+								str+="<input id='use_yn' type='checkbox' disabled=true name='" + res[i].gubun +"'>";	
+							}							
+						}
+						else if(inter == '1h')
+						{
+							// 0,3,6,7
+							if(res[i].interval == "0" || res[i].interval == "3" || res[i].interval == "6" || res[i].interval == "7") 
 	                 		{
 								str+="<input id='use_yn' type='checkbox' name='" + res[i].gubun +"'>";
 	                 		}
@@ -90,7 +142,8 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 						}
 						else if(inter == 'day')
 						{
-							if(res[i].interval == "0" || res[i].interval == "2" || res[i].interval == "3") 
+							// 0,4,7,8
+							if(res[i].interval == "0" || res[i].interval == "4" || res[i].interval == "7" || res[i].interval == "8") 
 	                 		{
 								str+="<input id='use_yn' type='checkbox' name='" + res[i].gubun +"'>";
 	                 		}
@@ -101,7 +154,8 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 						}
 						else if(inter == 'month' || inter == 'year')
 						{
-							if(res[i].interval == "0" || res[i].interval == "3") 
+							// 0,5,8
+							if(res[i].interval == "0" || res[i].interval == "5" || res[i].interval == "8") 
 	                 		{
 								str+="<input id='use_yn' type='checkbox' name='" + res[i].gubun +"'>";
 	                 		}
@@ -109,7 +163,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 							{
 								str+="<input id='use_yn' type='checkbox' disabled=true name='" + res[i].gubun +"'>";	
 							}
-						}					
+						}
 					}
 					str+="</td>";
 									

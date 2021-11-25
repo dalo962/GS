@@ -490,9 +490,14 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     		},
                     		options: [
                     			{value: "0", text: "전체"},
-                    			{value: "1", text: "5분,15분,1시간"},
-                        		{value: "2", text: "5분,15분,1시간,일"},
-                        		{value: "3", text: "일,월"},
+                    			{value: "1", text: "5분"},
+                    			{value: "2", text: "15분"},
+                    			{value: "3", text: "1시간"},
+                    			{value: "4", text: "일"},
+                        		{value: "5", text: "월"},
+                        		{value: "6", text: "5분,15분,1시간"},
+                        		{value: "7", text: "5분,15분,1시간,일"},
+                        		{value: "8", text: "일,월"},
                         	]
                     	}
                     }, formatter: function() {
@@ -501,12 +506,27 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 				return "전체";
                 				break; 
 	                    	case "1":
-	                			return "5분,15분,1시간";
+	                			return "5분";
 	                			break;                    		
 	                		case "2":
-	                			return "5분,15분,1시간,일";
+	                			return "15분";
 	                			break;
 	                		case "3":
+	                			return "1시간";
+	                			break;
+	                		case "4":
+	                			return "일";
+	                			break;
+	                		case "5":
+	                			return "월";
+	                			break;
+	                		case "6":
+	                			return "5분,15분,1시간";
+	                			break;
+	                		case "7":
+	                			return "5분,15분,1시간,일";
+	                			break;
+	                		case "8":
 	                			return "일,월";
 	                			break;
 	                		default :
@@ -708,9 +728,14 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     		},
                     		options: [
                     			{value: "0", text: "전체"},
-                    			{value: "1", text: "5분,15분,1시간"},
-                        		{value: "2", text: "5분,15분,1시간,일"},
-                    			{value: "3", text: "일,월"},
+                    			{value: "1", text: "5분"},
+                    			{value: "2", text: "15분"},
+                    			{value: "3", text: "1시간"},
+                    			{value: "4", text: "일"},
+                        		{value: "5", text: "월"},
+                        		{value: "6", text: "5분,15분,1시간"},
+                        		{value: "7", text: "5분,15분,1시간,일"},
+                        		{value: "8", text: "일,월"},
                         	]
                     	}
                     }, formatter: function() {
@@ -719,12 +744,27 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 				return "전체";
                 				break; 
 	                    	case "1":
-	                			return "5분,15분,1시간";
+	                			return "5분";
 	                			break;                    		
 	                		case "2":
-	                			return "5분,15분,1시간,일";
+	                			return "15분";
 	                			break;
 	                		case "3":
+	                			return "1시간";
+	                			break;
+	                		case "4":
+	                			return "일";
+	                			break;
+	                		case "5":
+	                			return "월";
+	                			break;
+	                		case "6":
+	                			return "5분,15분,1시간";
+	                			break;
+	                		case "7":
+	                			return "5분,15분,1시간,일";
+	                			break;
+	                		case "8":
 	                			return "일,월";
 	                			break;
 	                		default :

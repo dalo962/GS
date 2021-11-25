@@ -290,23 +290,42 @@ var ACTIONS = axboot.actionExtend(fnObj, {
              callback: function (res) {
              	var timedel = [];
              	res.forEach(function (n, index){
-             		if(select == "5m" || select == "15m" || select == "1h")
+             		if(select == "5m")
              		{
-             			if(n.interval == "0" || n.interval == "1" || n.interval == "2") 
+             			// 0,1,6,7
+             			if(n.interval == "0" || n.interval == "1" || n.interval == "6" || n.interval == "7") 
                  		{
                  			timedel.push(res[index]);
                  		}	
              		}
+             		else if(select == "15m")
+             		{
+             			// 0,2,6,7
+                 		if(n.interval == "0" || n.interval == "2" || n.interval == "6" || n.interval == "7") 
+                     	{
+                     		timedel.push(res[index]);
+                     	}	             			
+             		}
+             		else if(select == "1h")
+             		{
+             			// 0,3,6,7
+             			if(n.interval == "0" || n.interval == "3" || n.interval == "6" || n.interval == "7") 
+                 		{
+                 			timedel.push(res[index]);
+                 		}	         			
+             		}
              		else if(select == "day")
              		{
-             			if(n.interval == "0" || n.interval == "2" || n.interval == "3") 
+             			// 0,4,7,8
+             			if(n.interval == "0" || n.interval == "4" || n.interval == "7" || n.interval == "8") 
                  		{
                  			timedel.push(res[index]);
                  		}
              		}
              		else if(select == "month")
              		{
-             			if(n.interval == "0" || n.interval == "3") 
+             			// 0,5,8
+             			if(n.interval == "0" || n.interval == "5" || n.interval == "8") 
                  		{
              				timedel.push(res[index]);
                  		}
@@ -1120,26 +1139,45 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 	                 callback: function (res) {
 	                 	var timedel = [];
 	                 	res.forEach(function (n, index){
-	                 		if(select == "5m" || select == "15m" || select == "1h")
+	                 		if(select == "5m")
 	                 		{
-	                 			if(n.interval == "0" || n.interval == "1" || n.interval == "2") 
-		                 		{
-		                 			timedel.push(res[index]);
-		                 		}	
+	                 			// 0,1,6,7
+	                 			if(n.interval == "0" || n.interval == "1" || n.interval == "6" || n.interval == "7") 
+	                     		{
+	                     			timedel.push(res[index]);
+	                     		}	
+	                 		}
+	                 		else if(select == "15m")
+	                 		{
+	                 			// 0,2,6,7
+	                     		if(n.interval == "0" || n.interval == "2" || n.interval == "6" || n.interval == "7") 
+	                         	{
+	                         		timedel.push(res[index]);
+	                         	}	             			
+	                 		}
+	                 		else if(select == "1h")
+	                 		{
+	                 			// 0,3,6,7
+	                 			if(n.interval == "0" || n.interval == "3" || n.interval == "6" || n.interval == "7") 
+	                     		{
+	                     			timedel.push(res[index]);
+	                     		}	         			
 	                 		}
 	                 		else if(select == "day")
 	                 		{
-	                 			if(n.interval == "0" || n.interval == "2" || n.interval == "3") 
-		                 		{
-		                 			timedel.push(res[index]);
-		                 		}
+	                 			// 0,4,7,8
+	                 			if(n.interval == "0" || n.interval == "4" || n.interval == "7" || n.interval == "8") 
+	                     		{
+	                     			timedel.push(res[index]);
+	                     		}
 	                 		}
 	                 		else if(select == "month")
 	                 		{
-	                 			if(n.interval == "0" || n.interval == "3") 
-		                 		{
+	                 			// 0,5,8
+	                 			if(n.interval == "0" || n.interval == "5" || n.interval == "8") 
+	                     		{
 	                 				timedel.push(res[index]);
-		                 		}
+	                     		}
 	                 		}
 	                 	});
 	                 	fnObj.gridView01.initView(timedel);

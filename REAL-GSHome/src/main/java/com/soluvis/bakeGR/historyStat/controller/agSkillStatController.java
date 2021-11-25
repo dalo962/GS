@@ -123,9 +123,34 @@ public class agSkillStatController extends commController{
 							groupbybf.append("");
 						}
 						
-						if("5m".equals(params.get("interval")) || "15m".equals(params.get("interval")) || "1h".equals(params.get("interval")))
+						if("5m".equals(params.get("interval")))
 						{
-							if("0".equals(statlist.get(i).getInterval()) || "1".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()))
+							// 0,1,6,7
+							if("0".equals(statlist.get(i).getInterval()) || "1".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+							{
+								selectbf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+								groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+								orderbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+								schk++;
+							}
+							
+						}
+						else if("15m".equals(params.get("interval")))
+						{
+							// 0,2,6,7
+							if("0".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+							{
+								selectbf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+								groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+								orderbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+								schk++;
+							}
+							
+						}
+						else if("1h".equals(params.get("interval")))
+						{
+							// 0,3,6,7
+							if("0".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
 							{
 								selectbf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
 								groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
@@ -136,7 +161,8 @@ public class agSkillStatController extends commController{
 						}
 						else if("day".equals(params.get("interval")))
 						{
-							if("0".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()))
+							// 0,4,7,8
+							if("0".equals(statlist.get(i).getInterval()) || "4".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
 							{
 								selectbf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
 								groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
@@ -146,7 +172,8 @@ public class agSkillStatController extends commController{
 						}
 						else if("month".equals(params.get("interval")))
 						{
-							if("0".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()))
+							// 0,5,8
+							if("0".equals(statlist.get(i).getInterval()) || "5".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
 							{
 								selectbf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
 								groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
@@ -184,9 +211,28 @@ public class agSkillStatController extends commController{
 					{
 						if("ROUND".equals(statlist.get(i).getStype()))
 						{
-							if("5m".equals(params.get("interval")) || "15m".equals(params.get("interval")) || "1h".equals(params.get("interval")))
+							if("5m".equals(params.get("interval")))
 							{
-								if("0".equals(statlist.get(i).getInterval()) || "1".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()))
+								// 0,1,6,7
+								if("0".equals(statlist.get(i).getInterval()) || "1".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+								{
+									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+								}
+							}
+							else if("15m".equals(params.get("interval")))
+							{
+								// 0,2,6,7
+								if("0".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+								{
+									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+								}
+							}
+							else if("1h".equals(params.get("interval")))
+							{
+								// 0,3,6,7
+								if("0".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
 								{
 									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
 									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
@@ -194,7 +240,8 @@ public class agSkillStatController extends commController{
 							}
 							else if("day".equals(params.get("interval")))
 							{
-								if("0".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()))
+								// 0,4,7,8
+								if("0".equals(statlist.get(i).getInterval()) || "4".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
 								{
 									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
 									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
@@ -202,7 +249,8 @@ public class agSkillStatController extends commController{
 							}
 							else if("month".equals(params.get("interval")))
 							{
-								if("0".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()))
+								// 0,5,8
+								if("0".equals(statlist.get(i).getInterval()) || "5".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
 								{
 									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
 									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
@@ -211,9 +259,28 @@ public class agSkillStatController extends commController{
 						}
 						else
 						{
-							if("5m".equals(params.get("interval")) || "15m".equals(params.get("interval")) || "1h".equals(params.get("interval")))
+							if("5m".equals(params.get("interval")))
 							{
-								if("0".equals(statlist.get(i).getInterval()) || "1".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()))
+								// 0,1,6,7
+								if("0".equals(statlist.get(i).getInterval()) || "1".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+								{
+									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+								}
+							}
+							else if("15m".equals(params.get("interval")))
+							{
+								// 0,2,6,7
+								if("0".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+								{
+									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+								}
+							}
+							else if("1h".equals(params.get("interval")))
+							{
+								// 0,3,6,7
+								if("0".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
 								{
 									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
 									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
@@ -221,7 +288,8 @@ public class agSkillStatController extends commController{
 							}
 							else if("day".equals(params.get("interval")))
 							{
-								if("0".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()))
+								// 0,4,7,8
+								if("0".equals(statlist.get(i).getInterval()) || "4".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
 								{
 									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
 									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
@@ -229,12 +297,13 @@ public class agSkillStatController extends commController{
 							}
 							else if("month".equals(params.get("interval")))
 							{
-								if("0".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()))
+								// 0,5,8
+								if("0".equals(statlist.get(i).getInterval()) || "5".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
 								{
 									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
 									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
 								}
-							}							
+							}								
 						}
 					}					
 				}
@@ -481,7 +550,7 @@ public class agSkillStatController extends commController{
 						map.put("hol", 1); // 일요일
 									
 						Map<String, Object> hmap = new HashMap<String, Object>();
-						hmap.put("holiday", '1'); // 0 미사용, 1 사용
+						hmap.put("hl_useyn", '1'); // 0 미사용, 1 사용
 						
 						List<ivrGRHoliday> hol_list = ivrHolidayService.HolidayGet(hmap);
 									
@@ -522,7 +591,7 @@ public class agSkillStatController extends commController{
 						map.put("hdt", 1); // 일요일
 										
 						Map<String, Object> hmap = new HashMap<String, Object>();
-						hmap.put("holiday", '1'); // 0 미사용, 1 사용
+						hmap.put("hl_useyn", '1'); // 0 미사용, 1 사용
 						
 						List<ivrGRHoliday> hdt_list = ivrHolidayService.HolidayGet(hmap);
 									
