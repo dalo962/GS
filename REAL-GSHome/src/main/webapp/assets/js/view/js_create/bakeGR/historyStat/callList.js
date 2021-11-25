@@ -603,7 +603,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 	    	onStateChanged: function () {
 	    		//
 	    	},
-	    	options: [{value: "", text: "전체"}, {value: "I", text: "IN"}, {value: "O", text: "OUT"}]
+	    	options: [{value: "", text: "전체"}, {value: "IN", text: "IN"}, {value: "OUT", text: "OUT"}]
 	    });
 	    
 	    
