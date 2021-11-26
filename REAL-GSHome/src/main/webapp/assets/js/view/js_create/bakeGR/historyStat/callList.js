@@ -776,11 +776,11 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         			if(conn_id == '' || conn_id == null) {
         				btn_option += " disabled='disabled'";
         			}
-        			
-        			return "<button type='button' " + btn_option + " onclick=\""
+
+        			return "<a href='#' onclick=\""
         				+ "clickPlay('" + conn_id + "')\";>" 
-        				+ "<i class='cqc-controller-play'>"
-        				+ "</button>";
+        				+ "<img src='/assets/images/speaker.png' width='20' height='18' border='0'>"
+        				+ "</a>";
         		}
     		},
         ];
@@ -839,7 +839,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 // 녹취 플레이 버튼 클릭 시 connid를 받아 녹취 청취 화면을 open
 // TODO 녹취 url 수정 필요
 function clickPlay (connid) {
-	console.log(connid);
 	var url = "https://devrecm.gsts.kr/recseePlayer/?SEQNO=" + connid;
 	var name = "recPopup";
 	var specs = "width=500,height=200,menubar=no,status=no";
