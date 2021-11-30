@@ -21,6 +21,11 @@
             <ax:form name="searchView0">
                 <ax:tbl clazz="ax-search-tbl" minWidth="500px">                    	
 					<ax:tr>
+						<ax:td label='센터' width="23%" labelWidth="100px">
+							<div class="form-group">
+								<div id="comSel" data-ax5select="comSelect" data-ax5select-config="{}"></div>					
+							</div>	
+                    	</ax:td>
 						<ax:td label='대표번호' width="23%" labelWidth="100px">
 							<div class="form-group">
 								<div id="didSel" data-ax5select="didSel" data-ax5select-config="{}"></div>					
