@@ -50,7 +50,7 @@
 	<select id="IvrUrlGet" parameterType="hashmap" resultType="ivrGRUrl" fetchSize="1000">
 		SELECT 	group_cd as group_cd, group_nm as group_nm, code as code, remark as remark, name as url
 		FROM 	AX_COMMON_CODE_M
-		WHERE 	GROUP_CD = 'GR_IVR_SYNC_URL'
+		WHERE 	GROUP_CD = 'RETAIL_IVR_SYNC_URL'
 		AND		USE_YN = 'Y'
 		AND 	CODE = #{code}
 	</select>
