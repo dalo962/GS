@@ -81,19 +81,19 @@ public class ivrServiceStatController extends commController{
 			// 테이블명
 			switch(params.get("interval").toString()) {
 				case "5m":
-					table = "givr.GR_ARS_SERVICE_NA";
+					table = "gsivr.ARS_SERVICE_NA";
 					break;
 				case "15m":
-					table = "givr.GR_ARS_SERVICE_FT";
+					table = "gsivr.ARS_SERVICE_FT";
 					break;
 				case "1h":
-					table = "givr.GR_ARS_SERVICE_HR";
+					table = "gsivr.ARS_SERVICE_HR";
 					break;
 				case "day":
-					table = "givr.GR_ARS_SERVICE_DY";
+					table = "gsivr.ARS_SERVICE_DY";
 					break;
 				case "month":
-					table = "givr.GR_ARS_SERVICE_MN";
+					table = "gsivr.ARS_SERVICE_MN";
 			}
 			
 			map.put("table", table);
