@@ -210,33 +210,19 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 		    url: "/api/statLstMng/userAuthLst",
 		    data: "",
 		    callback: function (res) {
-		    	res.forEach(function (n){
-		    		info.grpcd = n.grp_auth_cd;
-		    		info.comcd = n.company_cd;
-		    		info.cencd = n.center_cd;
-		    		info.teamcd = n.team_cd;
-		    		info.chncd = n.chn_cd;
-		    	}); 
-		    	
-		    	axboot.ajax({
-		    	    type: "POST",
-		    	    url: "/api/mng/searchCondition/company",
-		    	    cache : false,
-		    	    data: JSON.stringify($.extend({}, info)),
-		    	    callback: function (res) {
-		    		    var resultSet = [];
-		                //resultSet = [{value:"", text:"전체"}];
-//	    		        res.list.forEach(function (n) {
-//	    		        	resultSet.push({value: n.id, text: n.name});
-//	    		        });
-		    		    resultSet.push({value: "RETAIL", text: "GS리테일"});
-		    		    
-	    		        $("[data-ax5select='comSelect']").ax5select("setOptions", resultSet);
-			    	}
-			   });
+ 	    		var resultSet = [];
+ 	    		var grpcd = res[0].grp_auth_cd;
+ 	    		// 권한코드 :: 공통코드관리 => 권한그룹
+ 	    		
+ 	    		if(grpcd == "S0001") { // 시스템 권한인 경우 "전체" 추가
+ 	    			resultSet.push({value:"", text:"전체"});
+ 	    		}
+ 	    		
+    		    resultSet.push({value: "RETAIL", text: "GS리테일"});
+    		    
+		        $("[data-ax5select='comSelect']").ax5select("setOptions", resultSet);
 		    }
 	    });
-		
     },
     getData: function () {
     	var comp_cd = $("#comSel").ax5select("getValue");
