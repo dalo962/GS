@@ -26,7 +26,7 @@
     
     <insert id="BlackListIst" parameterType="hashmap">
 		INSERT 	INTO gsivr.ax_ivr_blackconsumer (seq, ani, description, connid, bl_useyn, agentid, degree, comp_cd, crt_dt, crt_by)	
-		VALUES	(gsivr.ax_ivr_blackconsumer_seq.nextval, #{ani}, #{description, jdbcType=VARCHAR}, #{connid, jdbcType=VARCHAR}, #{bl_useyn}, #{agentid, jdbcType=VARCHAR}, #{degree}, #{comp_cd}, #{crt_dt}, #{crt_by})
+		VALUES	(gsivr.seq_ax_ivr_blackconsumer.nextval, #{ani}, #{description, jdbcType=VARCHAR}, #{connid, jdbcType=VARCHAR}, #{bl_useyn}, #{agentid, jdbcType=VARCHAR}, #{degree}, #{comp_cd}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="BlackListUdt" parameterType="hashmap">
