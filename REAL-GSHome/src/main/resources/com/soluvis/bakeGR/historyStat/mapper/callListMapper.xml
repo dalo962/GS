@@ -41,7 +41,7 @@
 		</if>
 		</if>
 		<if test="agentid != '' and agentid != null">
-		AND		EMPLOYEEID in (${agentid})	
+		AND		AGENT_NAME in (${agentid})	
 		</if>
 		<if test="connid != '' and connid != null">
 		AND		CONNID in (${connid})

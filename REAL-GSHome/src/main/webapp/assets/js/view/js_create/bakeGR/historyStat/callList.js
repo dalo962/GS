@@ -187,7 +187,7 @@ fnObj.pageStart = function () {
 	                //resultSet = [{value:"", text:"전체"}];
 
     		        res.list.forEach(function (n) {
-    		        	if(n.id != '2') {
+    		        	if(n.id != '2') {	// GS홈쇼핑 제외
     		        		resultSet.push({
     		                	value: n.id, text: n.name,
     		            	});
@@ -212,10 +212,6 @@ fnObj.pageStart = function () {
         _this.gridView01.initView();
         
     });
-    
-    _this.pageButtonView.initView();
-	_this.searchView.initView();
-	_this.gridView01.initView();
 };
 
 fnObj.pageButtonView = axboot.viewExtend({
@@ -595,7 +591,6 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 		    }
 		});  
 		$("[data-ax5select='endTime']").ax5select("setValue",ehour + ":" + emin); 
-
 
 	    // IO Flag
 	    $("[data-ax5select='iotype']").ax5select({
