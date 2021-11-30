@@ -103,7 +103,7 @@
 	</delete>
 	
 	<select id="userFacSel" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
-		SELECT	(ROWNUM - 1) AS rm, A.USER_ID AS user_id, A.stat_gubun as stat_gubun, A.stat_seq as stat_seq, A.stat_yn as stat_yn, A.sort as sort, A.dispname as dispname
+		SELECT	(ROWNUM) AS rm, A.USER_ID AS user_id, A.stat_gubun as stat_gubun, A.stat_seq as stat_seq, A.stat_yn as stat_yn, A.sort as sort, A.dispname as dispname
 		FROM	(SELECT USER_ID AS user_id, stat_gubun as stat_gubun, stat_seq as stat_seq, stat_yn as stat_yn, sort as sort, dispname as dispname
 		FROM	WDM.AX_USER_FACTOR
 		WHERE	user_id = #{user_id}

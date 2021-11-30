@@ -686,7 +686,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     			break;
                     	}
                     }},
-                    {key: "stype", label: "조회타입", width: 100, align: "center", editor: {
+                    {key: "stype", label: "조회타입", width: 100, align: "center", sortable:true, editor: {
                     	type: "select", config: {
                     		columnKeys: {
                     			optionValue: "value", optionText: "text"
@@ -782,7 +782,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             });
         	$("#gird").hover(
 					function () {
-		                  $(this).attr('title','추가시 통계구분은 입력하지 않습니다.\n\n영문항목명은 중복될 수 없습니다.\n속성은 실제 컬럼명 및 수식입니다.');
+		                  $(this).attr('title','추가시 통계구분은 입력하지 않습니다.\n\n영문항목명은 중복될 수 없으며 대문자로 입력해야합니다.\n속성은 실제 컬럼명 및 수식입니다.');
 		            }, 
 						
 		               function () {

@@ -154,7 +154,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
         
     	axboot.ajax({
             type: "POST",
-            url: "/api/callTr/callTrSearch",
+            url: "/gr/api/hist/callTr/callTrSearch",
             cache : false,
             data: JSON.stringify(caller.searchView.getData()),
             callback: function (res) {

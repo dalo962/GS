@@ -115,7 +115,7 @@ public class statListManagerController extends commController{
 						map.put("gubun", sl.getGubun());
 						map.put("type", sl.getType());
 						map.put("stype", sl.getStype());
-						map.put("asname", sl.getAsname());
+						map.put("asname", sl.getAsname().toUpperCase());
 						map.put("interval", sl.getInterval());
 						
 						for(int i = 0; i < arrSkill.length; i++)
@@ -156,7 +156,7 @@ public class statListManagerController extends commController{
 						map.put("gubun", sl.getGubun());
 						map.put("type", sl.getType());
 						map.put("stype", sl.getStype());
-						map.put("asname", sl.getAsname());
+						map.put("asname", sl.getAsname().toUpperCase());
 						map.put("interval", sl.getInterval());
 						
 						for(int i = 0; i < arrAgent.length; i++)
@@ -193,7 +193,7 @@ public class statListManagerController extends commController{
 						map.put("type", sl.getType());
 						map.put("stype", sl.getStype());
 						map.put("seq", sl.getSeq());
-						map.put("asname", sl.getAsname());
+						map.put("asname", sl.getAsname().toUpperCase());
 						map.put("colname", sl.getColname());
 						map.put("interval", sl.getInterval());
 						
@@ -210,7 +210,7 @@ public class statListManagerController extends commController{
 						map.put("type", sl.getType());
 						map.put("stype", sl.getStype());
 						map.put("seq", sl.getSeq());
-						map.put("asname", sl.getAsname());
+						map.put("asname", sl.getAsname().toUpperCase());
 						map.put("colname", sl.getColname());
 						map.put("interval", sl.getInterval());
 						
@@ -536,7 +536,7 @@ public class statListManagerController extends commController{
 		{
 			Map<String, String> ufact = (Map<String, String>) user_factor[i];
 
-			map.put("stat_nseq", i+1) ;
+			map.put("stat_nseq", i) ;
 			map.put("stat_yn", ufact.get("yn"));
 			map.put("stat_oseq", ufact.get("stat_seq")); 
 			

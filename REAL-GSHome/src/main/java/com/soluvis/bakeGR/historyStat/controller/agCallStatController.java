@@ -108,7 +108,10 @@ public class agCallStatController extends commController{
 			// 기본값에 대한 SELECT, GROUP, ORDER문 생성
 			for(int i = 0; i < Usearchsize; i++)
 			{
-				if("MAJOR".equals(statlist.get(i).getType()))
+				map.put("seq", Usearch.get(i).getStat_seq());
+				statlist = statLstMngServcice.agentListSel(map);
+				
+				if("MAJOR".equals(statlist.get(0).getType()))
 				{
 					if("Y".equals(Usearch.get(i).getStat_yn()))
 					{
@@ -122,11 +125,11 @@ public class agCallStatController extends commController{
 						if("5m".equals(params.get("interval")))
 						{
 							// 0,1,6,7
-							if("0".equals(statlist.get(i).getInterval()) || "1".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+							if("0".equals(statlist.get(0).getInterval()) || "1".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
 							{
-								selectbf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
-								groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
-								orderbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+								selectbf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
+								groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
+								orderbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
 								schk++;
 							}
 							
@@ -134,11 +137,11 @@ public class agCallStatController extends commController{
 						else if("15m".equals(params.get("interval")))
 						{
 							// 0,2,6,7
-							if("0".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+							if("0".equals(statlist.get(0).getInterval()) || "2".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
 							{
-								selectbf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
-								groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
-								orderbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+								selectbf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
+								groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
+								orderbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
 								schk++;
 							}
 							
@@ -146,11 +149,11 @@ public class agCallStatController extends commController{
 						else if("1h".equals(params.get("interval")))
 						{
 							// 0,3,6,7
-							if("0".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+							if("0".equals(statlist.get(0).getInterval()) || "3".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
 							{
-								selectbf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
-								groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
-								orderbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+								selectbf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
+								groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
+								orderbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
 								schk++;
 							}
 							
@@ -158,22 +161,22 @@ public class agCallStatController extends commController{
 						else if("day".equals(params.get("interval")))
 						{
 							// 0,4,7,8
-							if("0".equals(statlist.get(i).getInterval()) || "4".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
+							if("0".equals(statlist.get(0).getInterval()) || "4".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
 							{
-								selectbf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
-								groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
-								orderbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+								selectbf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
+								groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
+								orderbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
 								schk++;
 							}
 						}
 						else if("month".equals(params.get("interval")))
 						{
 							// 0,5,8
-							if("0".equals(statlist.get(i).getInterval()) || "5".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
+							if("0".equals(statlist.get(0).getInterval()) || "5".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
 							{
-								selectbf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
-								groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
-								orderbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+								selectbf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
+								groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
+								orderbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
 								schk++;
 							}
 						}
@@ -185,16 +188,16 @@ public class agCallStatController extends commController{
 						{
 							if("5m".equals(params.get("interval")) || "15m".equals(params.get("interval")) || "1h".equals(params.get("interval")))
 							{
-								if("row_date".equals(statlist.get(i).getColname().toLowerCase()) || "starttime".equals(statlist.get(i).getColname().toLowerCase()))
+								if("row_date".equals(statlist.get(0).getColname().toLowerCase()) || "starttime".equals(statlist.get(0).getColname().toLowerCase()))
 								{
-									groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+									groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
 								}
 							}
 							else if("day".equals(params.get("interval")) || "month".equals(params.get("interval")))
 							{
-								if("row_date".equals(statlist.get(i).getColname().toLowerCase()))
+								if("row_date".equals(statlist.get(0).getColname().toLowerCase()))
 								{
-									groupbybf.append(" " + statlist.get(i).getColname().toLowerCase() + ",");
+									groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
 								}
 							}
 						}
@@ -205,51 +208,51 @@ public class agCallStatController extends commController{
 				{
 					if("Y".equals(Usearch.get(i).getStat_yn()))
 					{
-						if("ROUND".equals(statlist.get(i).getStype()))
+						if("ROUND".equals(statlist.get(0).getStype()))
 						{
 							if("5m".equals(params.get("interval")))
 							{
 								// 0,1,6,7
-								if("0".equals(statlist.get(i).getInterval()) || "1".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+								if("0".equals(statlist.get(0).getInterval()) || "1".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
 								{
-									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
 								}
 							}
 							else if("15m".equals(params.get("interval")))
 							{
 								// 0,2,6,7
-								if("0".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+								if("0".equals(statlist.get(0).getInterval()) || "2".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
 								{
-									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
 								}
 							}
 							else if("1h".equals(params.get("interval")))
 							{
 								// 0,3,6,7
-								if("0".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+								if("0".equals(statlist.get(0).getInterval()) || "3".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
 								{
-									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
 								}
 							}
 							else if("day".equals(params.get("interval")))
 							{
 								// 0,4,7,8
-								if("0".equals(statlist.get(i).getInterval()) || "4".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
+								if("0".equals(statlist.get(0).getInterval()) || "4".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
 								{
-									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
 								}
 							}
 							else if("month".equals(params.get("interval")))
 							{
 								// 0,5,8
-								if("0".equals(statlist.get(i).getInterval()) || "5".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
+								if("0".equals(statlist.get(0).getInterval()) || "5".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
 								{
-									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + ",1),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
 								}
 							}
 						}
@@ -258,46 +261,46 @@ public class agCallStatController extends commController{
 							if("5m".equals(params.get("interval")))
 							{
 								// 0,1,6,7
-								if("0".equals(statlist.get(i).getInterval()) || "1".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+								if("0".equals(statlist.get(0).getInterval()) || "1".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
 								{
-									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
 								}
 							}
 							else if("15m".equals(params.get("interval")))
 							{
 								// 0,2,6,7
-								if("0".equals(statlist.get(i).getInterval()) || "2".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+								if("0".equals(statlist.get(0).getInterval()) || "2".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
 								{
-									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
 								}
 							}
 							else if("1h".equals(params.get("interval")))
 							{
 								// 0,3,6,7
-								if("0".equals(statlist.get(i).getInterval()) || "3".equals(statlist.get(i).getInterval()) || "6".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()))
+								if("0".equals(statlist.get(0).getInterval()) || "3".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
 								{
-									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
 								}
 							}
 							else if("day".equals(params.get("interval")))
 							{
 								// 0,4,7,8
-								if("0".equals(statlist.get(i).getInterval()) || "4".equals(statlist.get(i).getInterval()) || "7".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
+								if("0".equals(statlist.get(0).getInterval()) || "4".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
 								{
-									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
 								}
 							}
 							else if("month".equals(params.get("interval")))
 							{
 								// 0,5,8
-								if("0".equals(statlist.get(i).getInterval()) || "5".equals(statlist.get(i).getInterval()) || "8".equals(statlist.get(i).getInterval()))
+								if("0".equals(statlist.get(0).getInterval()) || "5".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
 								{
-									selectbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(i).getStype() + "(" + statlist.get(i).getColname().toLowerCase() + "),0) as " + statlist.get(i).getAsname().toLowerCase() + ",");
+									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
 								}
 							}							
 						}
@@ -531,6 +534,7 @@ public class agCallStatController extends commController{
 									
 						Map<String, Object> hmap = new HashMap<String, Object>();
 						hmap.put("hl_useyn", '1'); // 0 미사용, 1 사용
+						hmap.put("comp_cd", "RETAIL");
 						
 						List<ivrGRHoliday> hol_list = ivrHolidayService.HolidayGet(hmap);
 									
@@ -572,6 +576,7 @@ public class agCallStatController extends commController{
 										
 						Map<String, Object> hmap = new HashMap<String, Object>();
 						hmap.put("hl_useyn", '1'); // 0 미사용, 1 사용
+						hmap.put("comp_cd", "RETAIL");
 						
 						List<ivrGRHoliday> hdt_list = ivrHolidayService.HolidayGet(hmap);
 									

@@ -1244,6 +1244,17 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	}
     	aglist = aglist.substring(0,aglist.length-1);
     	
+    	var list2 = $('[data-ax5select="skSelect"]').ax5select("getValue");
+    	var sklist = "";
+    	if(list2 != "")
+    	{	    	
+	    	for(var i=0; i < list2.length; i++)
+	    	{
+	    		sklist += list2[i].value + ";";
+	    	}
+	    	sklist = sklist.substring(0,sklist.length-1);
+    	}
+    	
         return {
         	comSelect: $("[data-ax5select='comSelect']").ax5select("getValue")[0].value,
         	deptSelect: $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value,
@@ -1270,6 +1281,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         	},
         	selText: $("#selText").val(),
         	agentSelect: aglist,
+        	skSelect: sklist,
         	check: chk
         }
     },

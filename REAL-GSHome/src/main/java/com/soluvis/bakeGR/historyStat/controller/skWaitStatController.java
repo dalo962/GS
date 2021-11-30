@@ -455,6 +455,7 @@ public class skWaitStatController extends commController{
 									
 						Map<String, Object> hmap = new HashMap<String, Object>();
 						hmap.put("hl_useyn", '1'); // 0 미사용, 1 사용
+						hmap.put("comp_cd", "RETAIL");
 						
 						List<ivrGRHoliday> hol_list = ivrHolidayService.HolidayGet(hmap);
 									
@@ -496,6 +497,7 @@ public class skWaitStatController extends commController{
 										
 						Map<String, Object> hmap = new HashMap<String, Object>();
 						hmap.put("hl_useyn", '1'); // 0 미사용, 1 사용
+						hmap.put("comp_cd", "RETAIL");
 						
 						List<ivrGRHoliday> hdt_list = ivrHolidayService.HolidayGet(hmap);
 									

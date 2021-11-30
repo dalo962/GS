@@ -862,16 +862,16 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            showLineNumber:true,
 	            target: $('[data-ax5grid="grid-view-01"]'),
 	            columns: [
-	            	{key: "company_name", label: "센터", width: 90, align: "center", sortable: true},
-	            	{key: "dept_name", label: "그룹", width: 90, align: "center", sortable: true},
-	            	{key: "team_name", label: "팀", width: 90, align: "center", sortable: true},
-	            	{key: "dep_nm", label: "*직책", width: 90, align: "center", sortable: true, editor:"text"},
-	                {key: "agent_name", label: "상담사명", width: 90, align: "center", sortable: true},
-	                {key: "join_date", label: "*입사일", width: 90, align: "center", sortable: true, editor:"text"},
-	                {key: "work_time", label: "*근무시간", width: 90, align: "center", sortable: true, editor:"text"},
-	                {key: "work", label: "*업무", width: 90, align: "center", sortable: true, editor:"text"},
-	                {key: "skill_name", label: "스킬", width: 450, align: "left", sortable: true, multiLine:true},
-	                {key: "age", label: "*연령대", width: 80, align: "center", sortable: true, editor: {
+	            	{key: "company_name", label: '<span style="font-weight:bold;color:#FF0000">' + "센터" + '</span>', width: 90, align: "center", sortable: true},
+	            	{key: "dept_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "그룹"+ '</span>', width: 90, align: "center", sortable: true},
+	            	{key: "team_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "팀" + '</span>', width: 90, align: "center", sortable: true},
+	            	{key: "dep_nm", label: "직책", width: 90, align: "center", sortable: true, editor:"text"},
+	                {key: "agent_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "상담사명" + '</span>', width: 90, align: "center", sortable: true},
+	                {key: "join_date", label: "입사일", width: 90, align: "center", sortable: true, editor:"text"},
+	                {key: "work_time", label: "근무시간", width: 90, align: "center", sortable: true, editor:"text"},
+	                {key: "work", label: "업무", width: 90, align: "center", sortable: true, editor:"text"},
+	                {key: "skill_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "스킬" + '</span>', width: 450, align: "left", sortable: true, multiLine:true},
+	                {key: "age", label: "연령대", width: 80, align: "center", sortable: true, editor: {
                     	type: "select", config: {
                     		columnKeys: {
                     			optionValue: "value", optionText: "text"
@@ -906,7 +906,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                			break;
                     	}
                     }},
-	                {key: "mey_yn", label: "*혼인여부", width: 80, align: "center", sortable: true, editor: {
+	                {key: "mey_yn", label: "혼인여부", width: 80, align: "center", sortable: true, editor: {
                     	type: "select", config: {
                     		columnKeys: {
                     			optionValue: "value", optionText: "text"
@@ -929,7 +929,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                			break;
                     	}
                     }},
-	                {key: "gender", label: "*성별", width: 80, align: "center", sortable: true, editor: {
+	                {key: "gender", label: "성별", width: 80, align: "center", sortable: true, editor: {
                     	type: "select", config: {
                     		columnKeys: {
                     			optionValue: "value", optionText: "text"
@@ -952,7 +952,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                			break;
                     	}
                     }},
-	                {key: "work_yn", label: "*재직구분", width: 80, align: "center", sortable: true, editor: {
+	                {key: "work_yn", label: "재직구분", width: 80, align: "center", sortable: true, editor: {
                     	type: "select", config: {
                     		columnKeys: {
                     			optionValue: "value", optionText: "text"
@@ -975,7 +975,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                			break;
                     	}
                     }},
-	                {key: "leave_date", label: "*퇴사일", width: 95, align: "center", sortable: true, editor:"text"},
+	                {key: "leave_date", label: "퇴사일", width: 95, align: "center", sortable: true, editor:"text"},
 	            ],
 	            body: {
 	            	columnHeight:65,

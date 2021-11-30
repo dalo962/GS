@@ -382,8 +382,7 @@ public class skCallStatController extends commController{
 				map.put("skId", "");
 			}
 			else
-			{			
-				SqlSafeUtil.getSqlInjectionSafe(params.get("skSelect").toString());
+			{
 				sklst = params.get("skSelect").toString().split(";");
 				for(int j = 0; j < sklst.length; j ++)
 				{
@@ -455,6 +454,7 @@ public class skCallStatController extends commController{
 									
 						Map<String, Object> hmap = new HashMap<String, Object>();
 						hmap.put("hl_useyn", '1'); // 0 미사용, 1 사용
+						hmap.put("comp_cd", "RETAIL");
 						
 						List<ivrGRHoliday> hol_list = ivrHolidayService.HolidayGet(hmap);
 									
@@ -496,6 +496,7 @@ public class skCallStatController extends commController{
 										
 						Map<String, Object> hmap = new HashMap<String, Object>();
 						hmap.put("hl_useyn", '1'); // 0 미사용, 1 사용
+						hmap.put("comp_cd", "RETAIL");
 						
 						List<ivrGRHoliday> hdt_list = ivrHolidayService.HolidayGet(hmap);
 									

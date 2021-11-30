@@ -18,7 +18,7 @@
 		<ax:page-buttons>			
 			<p class="chkeck"><input type="checkbox" id="cb_sat">토요일 제외</p>
 			<p class="chkeck"><input type="checkbox" id="cb_hol">휴일 제외</p>
-			<p class="chkeck"><input type="checkbox" id="cb_hdt">휴일 포함</p>
+			<p class="chkeck"><input type="checkbox" id="cb_hdt">휴일 만</p>
 		</ax:page-buttons>
 		
         <div role="page-header">
