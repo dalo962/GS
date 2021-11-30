@@ -37,6 +37,7 @@ public class ivrGRDnisTimeList extends BaseJpaModel<String>{
 	private String ov_stime;	//초과근무시작시간
 	private String ov_etime;	//초과근무종료시간
 		
+	private String comp_cd;		// 회사 코드
 	private String crt_dt;		//생성일
 	private String crt_by;		//생성자
 	private String upt_dt;		//수정일

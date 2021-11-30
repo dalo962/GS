@@ -21,10 +21,13 @@ public class ivrGREmerMent extends BaseJpaModel<String>{
 	private String etime;	// 종료시간
 	private String emer_type;	// 멘트타입
 	private String ment;	// 멘트
+	
+	private String comp_cd;		// 회사 코드
 	private String crt_dt;	// 생성일
 	private String crt_by;	// 생성자
 	private String upt_dt;	// 수정일
 	private String upt_by;	// 수정자
+	
 	private String cnt;		// 멘트 존재여부 카운트
 	
 	private String code;	// common_code code

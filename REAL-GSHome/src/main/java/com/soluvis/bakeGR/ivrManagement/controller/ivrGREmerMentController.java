@@ -66,7 +66,8 @@ public class ivrGREmerMentController extends commController{
 		
 		try
 		{	
-			logger.info("ivrGREmerMentService.EmerMentGet Query Start...");			
+			logger.info("ivrGREmerMentService.EmerMentGet Query Start...");		
+			map.put("comp_cd", "RETAIL");
 			search = ivrGREmerMentService.EmerMentGet(map);
 		}
 		catch(Exception e)
@@ -104,6 +105,7 @@ public class ivrGREmerMentController extends commController{
 		{
 			for (ivrGREmerMent em : emerment)
 			{
+				map.put("comp_cd", "RETAIL");
 				if(!em.getDnis().equals("ALL")){
 					map.put("dnis", em.getDnis());
 				}				

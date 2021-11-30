@@ -10,15 +10,17 @@ var ACTIONS = axboot.actionExtend(fnObj, {
             url: "/gr/api/ivr/ivrEmerMent/EmerMentSearch",
             data: "",
             callback: function (res) {
-            	if(fisrt_search_flag == true){
-            		setTimeout(function(){
+            	if(res.length > 0){
+            		if(fisrt_search_flag == true){
+                		setTimeout(function(){
+                    		caller.gridView01.setData(res);
+                            fnObj.excelgrid.initView();
+                            fisrt_search_flag = false;
+                    	}, 200);
+                	}else{
                 		caller.gridView01.setData(res);
                         fnObj.excelgrid.initView();
-                        fisrt_search_flag = false;
-                	}, 200);
-            	}else{
-            		caller.gridView01.setData(res);
-                    fnObj.excelgrid.initView();
+                	}
             	}
             },
             options: {
@@ -233,12 +235,14 @@ var ACTIONS = axboot.actionExtend(fnObj, {
             data: "",
             callback: function (res) {
             	dnis_options.push({value:"ALL", text:"전체"});
-                res.forEach(function (n) {
-                	dnis_options.push({
-                		value:n.dnis, text: n.dnis
+            	if(res.length > 0){
+            		res.forEach(function (n) {
+                    	dnis_options.push({
+                    		value:n.dnis, text: n.dnis
+                        });
                     });
-                });
-                fnObj.gridView01.initView();
+            	}
+            	fnObj.gridView01.initView();
             },
             options: {
                 onError: function (err) {

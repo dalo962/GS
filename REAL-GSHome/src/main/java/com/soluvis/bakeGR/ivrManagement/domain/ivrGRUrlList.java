@@ -15,12 +15,13 @@ public class ivrGRUrlList extends BaseJpaModel<String>{
 	private String id;
 	private String url_nm;		//URL명
 	private String svr_ip;		//서버IP
+	
+	private String comp_cd;		// 회사 코드
 	private String crt_dt;		//생성일
 	private String crt_by;		//생성자
 	private String upt_dt;		//수정일
 	private String upt_by;		//수정자
 	private String file_rst;	//수정자
-	
 	
 	private String group_cd;	//그룹코드
 	private String group_nm;	//그룹명

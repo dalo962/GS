@@ -210,7 +210,9 @@ var ACTIONS = axboot.actionExtend(fnObj, {
             url: "/gr/api/ivr/ivrBlackList/RecUrlSearch",
             data: "",
             callback: function (res) {
-            	rec_url = res[0].name;
+            	if(res.length > 0){
+            		rec_url = res[0].name;
+            	}            	
             },
             options: {
                 onError: function (err) {

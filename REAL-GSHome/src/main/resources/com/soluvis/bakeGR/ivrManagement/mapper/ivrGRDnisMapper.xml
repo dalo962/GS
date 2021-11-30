@@ -6,14 +6,17 @@
 		SELECT	dnis 		as dnis, 
 				dnis_name 	as dnis_name,
 				dnis_group 	as dnis_group,
+				dnis_group_eng 	as dnis_group_eng,
 				dnis_media 	as dnis_media,
-				dnis_useyn	as  dnis_useyn,
+				dnis_useyn	as dnis_useyn,
+				comp_cd		as comp_cd,
 				crt_dt 		as crt_dt, 
 				crt_by 		as crt_by, 
 				upt_dt 		as upt_dt, 
 				upt_by  	as upt_by
-		FROM 	givr.gr_ax_ivr_dnis
+		FROM 	gsivr.ax_ivr_dnis
 		WHERE	1=1
+		AND		comp_cd = #{comp_cd}
 		<if test="dnis != '' and dnis != null">
 		AND		dnis = #{dnis}
 		</if>
@@ -24,15 +27,16 @@
     </select>
     
     <insert id="DnisIst" parameterType="hashmap">
-		INSERT 	INTO givr.gr_ax_ivr_dnis (dnis, dnis_name, dnis_group, dnis_media, dnis_useyn, crt_dt, crt_by)	
-		VALUES	(#{dnis}, #{dnis_name, jdbcType=VARCHAR}, #{dnis_group, jdbcType=VARCHAR}, #{dnis_media, jdbcType=VARCHAR}, #{dnis_useyn}, #{crt_dt}, #{crt_by})
+		INSERT 	INTO gsivr.ax_ivr_dnis (dnis, dnis_name, dnis_group, dnis_group_eng, dnis_media, dnis_useyn, comp_cd, crt_dt, crt_by)	
+		VALUES	(#{dnis}, #{dnis_name, jdbcType=VARCHAR}, #{dnis_group, jdbcType=VARCHAR}, #{dnis_group_eng, jdbcType=VARCHAR}, #{dnis_media, jdbcType=VARCHAR}, #{dnis_useyn}, #{comp_cd}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="DnisUdt" parameterType="hashmap">
-		UPDATE	givr.gr_ax_ivr_dnis
+		UPDATE	gsivr.ax_ivr_dnis
 		SET		dnis_useyn = #{dnis_useyn},
 				dnis_name = #{dnis_name, jdbcType=VARCHAR},
 				dnis_group = #{dnis_group, jdbcType=VARCHAR},
+				dnis_group_eng = #{dnis_group_eng, jdbcType=VARCHAR},
 				dnis_media = #{dnis_media, jdbcType=VARCHAR},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
@@ -41,7 +45,7 @@
 	
     <delete id="DnisDel" parameterType="hashmap">
 		DELETE	
-		FROM	givr.gr_ax_ivr_dnis
+		FROM	gsivr.ax_ivr_dnis
 		WHERE	dnis = #{dnis}	
 	</delete>    
 </mapper>
