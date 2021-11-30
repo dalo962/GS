@@ -144,6 +144,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 });
 
 var CODE = {};
+var info = {};
 
 // fnObj 기본 함수 스타트와 리사이즈
 fnObj.pageStart = function () {
@@ -176,10 +177,58 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         this.target = $(document["searchView0"]);
         this.target.attr("onsubmit", "return ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);");
         this.filter = $("#filter"); 
+
+	    // 센터 선택 설정 //
+	    $("[data-ax5select='comSelect']").ax5select({
+	        theme: 'primary',
+	        onStateChanged: function () {
+	        	//
+	        }
+	    });
+	    
+		axboot.ajax({
+	    	type: "POST",
+		    url: "/api/statLstMng/userAuthLst",
+		    data: "",
+		    callback: function (res) {
+		    	res.forEach(function (n){
+		    		info.grpcd = n.grp_auth_cd;
+		    		info.comcd = n.company_cd;
+		    		info.cencd = n.center_cd;
+		    		info.teamcd = n.team_cd;
+		    		info.chncd = n.chn_cd;
+		    	}); 
+		    	
+		    	axboot.ajax({
+		    	    type: "POST",
+		    	    url: "/api/mng/searchCondition/company",
+		    	    cache : false,
+		    	    data: JSON.stringify($.extend({}, info)),
+		    	    callback: function (res) {
+		    		    var resultSet = [];
+		                //resultSet = [{value:"", text:"전체"}];
+//	    		        res.list.forEach(function (n) {
+//	    		        	resultSet.push({value: n.id, text: n.name});
+//	    		        });
+		    		    resultSet.push({value: "RETAIL", text: "GS리테일"});
+		    		    
+	    		        $("[data-ax5select='comSelect']").ax5select("setOptions", resultSet);
+			    	}
+			   });
+		    }
+	    });
+		
     },
     getData: function () {
-        return {
-
+    	var comp_cd = $("#comSel").ax5select("getValue");
+        return {       
+        	comp_cd: function() {
+        		if(comp_cd.length > 0) {
+        			return comp_cd[0].value;
+        		} else {
+            		return "";	
+        		}
+        	}
         }
     }
 });

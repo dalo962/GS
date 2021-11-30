@@ -19,7 +19,13 @@
         <div role="page-header">
             <ax:form name="searchView0">                    
                 <ax:tbl clazz="ax-search-tbl" minWidth="500px">
-                                    
+                	<ax:tr>
+						<ax:td label='센터' width="25%" labelWidth="100px">
+							<div class="form-group">
+								<div id="comSel" data-ax5select="comSelect" data-ax5select-config="{}"></div>					
+							</div>	
+                    	</ax:td>
+                	</ax:tr>        
                 </ax:tbl>
             </ax:form>
             <!-- <div class="H10"></div> -->
