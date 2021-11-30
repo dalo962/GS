@@ -165,7 +165,7 @@ public class ivrGRUrlListController extends commController{
 		else
 		{
 			htpcode = "http://";
-			urlcode = ":18080/GRConnector/workTimeUpdate";
+			urlcode = ":18080/GSConnector/retail/workTimeUpdate";
 		}
 				
 		try
@@ -175,8 +175,8 @@ public class ivrGRUrlListController extends commController{
 				try
 				{
 					URL obj = new URL(htpcode + dtl.getSvr_ip() + urlcode);
-					System.out.println("GR URL관리Url-->" + htpcode + dtl.getSvr_ip() + urlcode); 
-		    		logger.info("GR URL관리Url-->" + htpcode + dtl.getSvr_ip() + urlcode);
+					System.out.println("Retail URL관리Url-->" + htpcode + dtl.getSvr_ip() + urlcode); 
+		    		logger.info("Retail URL관리Url-->" + htpcode + dtl.getSvr_ip() + urlcode);
 		    		   
 					HttpURLConnection con = (HttpURLConnection)obj.openConnection(); 
 
@@ -197,8 +197,8 @@ public class ivrGRUrlListController extends commController{
 						
 						while((line = in.readLine()) != null)
 						{
-							System.out.println("GR URL관리-->" + line + "===>result-" + rcode);
-							logger.info("GR URL관리-->" + line + "===>result-" + rcode);
+							System.out.println("Retail URL관리-->" + line + "===>result-" + rcode);
+							logger.info("Retail URL관리-->" + line + "===>result-" + rcode);
 							
 							rlt = line;
 							
@@ -208,11 +208,11 @@ public class ivrGRUrlListController extends commController{
 				    	   
 						rlt = jsonObject.getString("result");
 				    	   
-						System.out.println("GR URL관리rlt-->" + rlt); 
-			    		logger.info("GR URL관리rlt-->" + rlt);
+						System.out.println("Retail URL관리rlt-->" + rlt); 
+			    		logger.info("Retail URL관리rlt-->" + rlt);
 			    		   
-				    	System.out.println("GR URL관리err-->" + err.toString()); 
-			    		logger.info("GR URL관리err-->" + err.toString()) ;
+				    	System.out.println("Retail URL관리err-->" + err.toString()); 
+			    		logger.info("Retail URL관리err-->" + err.toString()) ;
 			    		   
 					 	if(rcode == 200)
 					 	{
@@ -271,132 +271,6 @@ public class ivrGRUrlListController extends commController{
 			    	ivrGRUrlListService.UrlFileUdt(map);
 			    	
 			    	msgbf.append(dtl.getUrl_nm() + "(" + dtl.getSvr_ip() + ") - 실패\n");
-			    }
-			}
-			msgbf.append("*실패 된 사항은 확인해주시기 바랍니다.");
-			msg = msgbf.toString();			
-		}
-		catch(Exception e)
-		{
-			System.out.println(e.getStackTrace());
-			logger.error(e.toString());
-		}
-		
-		return ok(msg);
-	}
-	
-	/** 
-	 * @desc 호 동기화
-	 */
-	@RequestMapping(value = "/UrlResetSave", method = RequestMethod.POST, produces = APPLICATION_JSON)
-    public ApiResponse UrlResetSave(@Valid @RequestBody List<ivrGRUrlList> dtLst, HttpServletRequest request) throws Exception {	
-		//Map<String, Object> map = new HashMap<String, Object>(); 
-		Map<String, Object> code = new HashMap<String, Object>();
-		List<ivrGRUrlList> UrlCodesearch = null;
-		
-		BufferedReader in = null;
-		
-		String msg = "success";
-		StringBuffer msgbf = new StringBuffer(1024);
-		msgbf.append("*초기화 결과\n");
-		
-		code.put("code", "CALL_SYNC");
-		logger.info("ivrGRUrlListService.IvrUrlGet Query Start...");
-		UrlCodesearch = ivrGRUrlListService.IvrUrlGet(code);
-		
-		int UrlCodeSize = UrlCodesearch.size();
-		String htpcode = "";
-		String urlcode = "";
-		
-		if(UrlCodeSize > 0 && UrlCodeSize < 2)
-		{
-			htpcode = UrlCodesearch.get(0).getRemark();
-			urlcode = UrlCodesearch.get(0).getUrl();
-		}
-		else
-		{
-			htpcode = "http://";
-			urlcode = ":18080/GRinfomart/dmRecoveryProcess";
-		}
-		
-		try
-		{							
-			for (ivrGRUrlList dtl : dtLst)
-			{
-				try
-				{
-					URL obj = new URL(htpcode + dtl.getSvr_ip() + urlcode);
-					System.out.println("GR URL관리Url-->" + htpcode + dtl.getSvr_ip() + urlcode); 
-		    		logger.info("GR URL관리Url-->" + htpcode + dtl.getSvr_ip() + urlcode);
-		    		
-					HttpURLConnection con = (HttpURLConnection)obj.openConnection(); 
-
-					con.setRequestMethod("GET");
-					con.setReadTimeout(30000);
-
-					in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
-
-					if(in != null)
-					{
-						String line;
-						String err;
-				    	   
-						String rlt = null;
-						int rcode  = con.getResponseCode();
-
-						JSONObject jsonObject = null;
-						
-						while((line = in.readLine()) != null)
-						{
-							System.out.println("GR URL관리(re)-->" + line + "===>result-" + rcode);
-							logger.info("GR URL관리(re)-->" + line + "===>result-" + rcode);
-							
-							rlt = line;
-							
-							jsonObject = new JSONObject(line);
-						}
-						err = rlt;			
-				    	   
-						rlt = jsonObject.getString("result");
-				    	   
-						System.out.println("GR URL관리(re)rlt-->" + rlt); 
-			    		logger.info("GR URL관리(re)rlt-->" + rlt);
-			    		   
-				    	System.out.println("GR URL관리(re)err-->" + err.toString()); 
-			    		logger.info("GR URL관리(re)err-->" + err.toString()) ;
-			    		   
-					 	if(rcode == 200)
-					 	{
-					 		if(rlt.length() > 0)
-					 		{
-					 			if("success".equals(rlt) || "SUCCESS".equals(rlt))
-					 			{
-					 				msgbf.append(dtl.getUrl_nm() + "(" + dtl.getSvr_ip() + ") - 정상\n");
-					 			}
-					 			else
-					 			{
-					 				msgbf.append(dtl.getUrl_nm() + "(" + dtl.getSvr_ip() + ") - 실패 (" + err.substring(0, 30) + ")\n");
-					 			}
-					 		}
-					 		else
-					 		{
-					 			msgbf.append(dtl.getUrl_nm() + "(" + dtl.getSvr_ip() + ") - 실패 (in.readLine() is null)\n");
-					 		}
-					 	}
-					 	else
-					 	{
-					 		msgbf.append(dtl.getUrl_nm() + "(" + dtl.getSvr_ip() + ") - 실패 (" + err.substring(0, 30) + ")\n");
-					 	}			
-					}
-					if(in != null) try { in.close(); } catch(Exception e) { e.printStackTrace(); }
-				}
-			    catch(Exception e)
-			    { 
-			    	System.out.println(e);
-			    	//e.printStackTrace();
-			    	logger.error(e.toString());
-			    	
-			    	msgbf.append(dtl.getUrl_nm() + "(" + dtl.getSvr_ip() + ") - 실패 (" + e.toString().substring(0, 30) + ")\n");
 			    }
 			}
 			msgbf.append("*실패 된 사항은 확인해주시기 바랍니다.");
