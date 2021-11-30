@@ -66,6 +66,14 @@ public class ivrCalllogController extends commController{
 			map.put("enddate", params.get("enddate"));
 			map.put("starttime", params.get("starttime"));
 			map.put("endtime", params.get("endtime"));
+
+			// 센터 구분
+			String comp_cd = params.get("comp_cd").toString();
+			if(!comp_cd.equals("")) {
+				map.put("comp_cd", comp_cd);
+			} else {
+				map.put("comp_cd", "");
+			}
 			
 			// 대표번호 구분
 			String did = params.get("did").toString();

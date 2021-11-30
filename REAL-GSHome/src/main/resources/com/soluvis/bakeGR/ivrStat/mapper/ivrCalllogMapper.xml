@@ -6,24 +6,28 @@
 		SELECT	end_date as end_date,
 				in_date || ' ' || in_time as in_time,
 				end_date || ' ' || end_time as end_time,
-				did as did,
 				arsid as arsid,
-				machine_cd as machine_cd,
-				ani as ani,
-				last_code as last_code,
 				connid as connid,
+				comp_cd as comp_cd,
+				machine_cd as machine_cd,
 				dnis as dnis,
+				did as did,
+				ani as ani,
 				agent_flag as agent_flag,
 				out_vdn as out_vdn,
 				ars_history as ars_history,
 				last_code as last_code,
 				black_code as black_code,
-				privacy_yn as privacy_yn
+				privacy_yn as privacy_yn,
+				privacy_ani as privacy_ani
 		FROM 	gsivr.ARS_DATA_CALL
 		WHERE	in_date <![CDATA[>=]]> #{startdate}
 		AND		end_date <![CDATA[<=]]> #{enddate}
 		AND		in_time <![CDATA[>=]]> #{starttime}
 		AND		end_time <![CDATA[<=]]> #{endtime}
+		<if test="comp_cd != '' and comp_cd != null">
+		AND		comp_cd = #{comp_cd}
+		</if>
 		<if test="did != '' and did != null">
 		AND		did = #{did}
 		</if>

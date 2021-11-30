@@ -141,6 +141,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 });
 
 var CODE = {};
+var info = {};
 
 fmtDay = function (strValue) {
     var val = (strValue || "").replace(/\D/g, "");
@@ -181,11 +182,6 @@ fnObj.pageStart = function () {
    	_this.pageButtonView.initView();
     _this.searchView.initView();
     _this.gridView01.initView();
-
-    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-
-    ax5.ui.grid.formatter["fmtDay"] = fmtDay;
-	ax5.ui.grid.formatter["fmtTime"] = fmtTime;
 };
 
 fnObj.pageButtonView = axboot.viewExtend({
@@ -524,6 +520,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         this.eDate = $("#endDate");
         this.sTime = $("#startTime");
         this.eTime = $("#endTime");
+        this.compCd = $("#comSel");
         this.did = $("#didSel");
         this.ani = $("#aniText");
         
@@ -571,6 +568,46 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
                 ok:{label:"Close", theme:"default"}
             }
         });
+	    
+	    // 센터 선택 설정 //
+	    $("[data-ax5select='comSelect']").ax5select({
+	        theme: 'primary',
+	        onStateChanged: function () {
+	        	//
+	        }
+	    });
+	    
+		axboot.ajax({
+	    	type: "POST",
+		    url: "/api/statLstMng/userAuthLst",
+		    data: "",
+		    callback: function (res) {
+		    	res.forEach(function (n){
+		    		info.grpcd = n.grp_auth_cd;
+		    		info.comcd = n.company_cd;
+		    		info.cencd = n.center_cd;
+		    		info.teamcd = n.team_cd;
+		    		info.chncd = n.chn_cd;
+		    	}); 
+		    	
+		    	axboot.ajax({
+		    	    type: "POST",
+		    	    url: "/api/mng/searchCondition/company",
+		    	    cache : false,
+		    	    data: JSON.stringify($.extend({}, info)),
+		    	    callback: function (res) {
+		    		    var resultSet = [];
+		                //resultSet = [{value:"", text:"전체"}];
+//	    		        res.list.forEach(function (n) {
+//	    		        	resultSet.push({value: n.id, text: n.name});
+//	    		        });
+		    		    resultSet.push({value: "RETAIL", text: "GS리테일"});
+		    		    
+	    		        $("[data-ax5select='comSelect']").ax5select("setOptions", resultSet);
+			    	}
+			   });
+		    }
+	    });
 		
 		// 대표번호 설정
     	$("[data-ax5select='didSel']").ax5select({
@@ -607,9 +644,17 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 		time_set();
     },
     getData: function () {
-    	// params! :: starttime의 00, endtime의 59는 초 단위를 나타내기 위해 사용
     	var d = this.did;
+    	var cc = this.compCd;
         return {
+        	comp_cd: function() {
+        		console.log(cc.ax5select("getValue")[0].value);
+        		if(cc.ax5select("getValue").length != 0) {
+        			return cc.ax5select("getValue")[0].value;
+        		} else {
+        			return "";
+        		}
+        	},
         	did : function() {
         		if(d.ax5select("getValue").length != 0) {
         			return d.ax5select("getValue")[0].value;
@@ -683,6 +728,13 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		}
                 		return dt + " " + tm;
                 	}
+            	},
+            	{key: "COMP_CD", label: "센터", width: 200, align: "center", sortable: true,
+            		formatter: function() {
+            			switch(this.item.COMP_CD) {
+            			case "RETAIL": return "GS리테일";
+            			}
+            		}
             	},
             	{key: "DID", label: "대표번호", width: 200, align: "center", sortable: true},
             	{key: "ARSID", label: "ARSID", width: 300, align: "center", sortable: true},

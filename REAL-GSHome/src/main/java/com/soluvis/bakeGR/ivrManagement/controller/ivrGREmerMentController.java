@@ -210,7 +210,7 @@ public class ivrGREmerMentController extends commController{
 			else
 			{
 				htpcode = "http://";
-				urlcode = ":18080/GRConnector/emerMentUpdate";
+				urlcode = ":18080/GSConnector/retail/emerMentUpdate";
 			}
 			
 			if(result == 0)
@@ -220,8 +220,8 @@ public class ivrGREmerMentController extends commController{
 			       try
 			       {
 			    	   URL obj = new URL(htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
-			    	   System.out.println("GR 비상멘트관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
-		    		   logger.info("GR 비상멘트관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
+			    	   System.out.println("Retail 비상멘트관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
+		    		   logger.info("Retail 비상멘트관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
 		    		   
 			    	   HttpURLConnection con = (HttpURLConnection)obj.openConnection(); 
 
@@ -242,8 +242,8 @@ public class ivrGREmerMentController extends commController{
 				    	   
 				    	   while((line = in.readLine()) != null)
 				    	   {
-				    		   System.out.println("GR 비상멘트관리-->" + line + "===>result-" + rcode); 
-				    		   logger.info("GR 비상멘트관리-->" + line + "===>result-" + rcode);
+				    		   System.out.println("Retail 비상멘트관리-->" + line + "===>result-" + rcode); 
+				    		   logger.info("Retail 비상멘트관리-->" + line + "===>result-" + rcode);
 				    		   
 				    		   rlt = line;
 				    		   
@@ -253,11 +253,11 @@ public class ivrGREmerMentController extends commController{
 				    	   
 				    	   rlt = jsonObject.getString("result");
 				    	   
-				    	   System.out.println("GR 비상멘트관리rlt-->" + rlt); 
-			    		   logger.info("GR 비상멘트관리rlt-->" + rlt);
+				    	   System.out.println("Retail 비상멘트관리rlt-->" + rlt); 
+			    		   logger.info("Retail 비상멘트관리rlt-->" + rlt);
 			    		   
-				    	   System.out.println("GR 비상멘트관리err-->" + err.toString()); 
-			    		   logger.info("GR 비상멘트관리err-->" + err.toString()) ;
+				    	   System.out.println("Retail 비상멘트관리err-->" + err.toString()); 
+			    		   logger.info("Retail 비상멘트관리err-->" + err.toString()) ;
 				    	   
 				    	   if(rcode == 200)
 				    	   {

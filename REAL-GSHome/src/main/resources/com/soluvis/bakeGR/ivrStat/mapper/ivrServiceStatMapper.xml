@@ -7,6 +7,7 @@
 				<if test="interval != 'day' and interval != 'month'">
 				starttime as starttime,
 				</if>
+				comp_cd as comp_cd,
 				did as did,
 				service as service,
 				n_incall as n_incall,
@@ -17,6 +18,9 @@
 		<if test="interval != 'day' and interval != 'month'">
 		AND		starttime <![CDATA[>=]]> #{starttime}
 		AND		starttime <![CDATA[<=]]> #{endtime}
+		</if>
+		<if test="comp_cd != '' and comp_cd != null">
+		AND		comp_cd = #{comp_cd}
 		</if>
 		<if test="did != '' and did != null">
 		AND		did = #{did}

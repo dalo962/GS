@@ -69,7 +69,7 @@
     
     <insert id="EmerMentIst" parameterType="hashmap">
 		INSERT 	INTO gsivr.ax_ivr_emerment (seq, dnis, sdate, stime, edate, etime, emer_type, ment, comp_cd, crt_dt, crt_by)	
-		VALUES	(gsivr.ax_ivr_emerment_seq.nextval, #{dnis}, #{sdate}, #{stime}, #{edate}, #{etime}, #{emer_type}, #{ment, jdbcType=VARCHAR}, #{comp_cd}, #{crt_dt}, #{crt_by})
+		VALUES	(gsivr.seq_ax_ivr_emerment.nextval, #{dnis}, #{sdate}, #{stime}, #{edate}, #{etime}, #{emer_type}, #{ment, jdbcType=VARCHAR}, #{comp_cd}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="EmerMentUdt" parameterType="hashmap">

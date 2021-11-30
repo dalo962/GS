@@ -192,6 +192,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 });
 
 var CODE = {};
+var info = {};
 
 fmtDay = function (strValue) {
     var val = (strValue || "").replace(/\D/g, "");
@@ -228,15 +229,10 @@ nullChk = function(strValue){
 // fnObj 기본 함수 스타트와 리사이즈
 fnObj.pageStart = function () {
     var _this = this;
-
+	
    	_this.pageButtonView.initView();
     _this.searchView.initView();
     _this.gridView01.initView();
-
-    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-
-    ax5.ui.grid.formatter["fmtDay"] = fmtDay;
-	ax5.ui.grid.formatter["fmtTime"] = fmtTime;
 };
 
 fnObj.pageButtonView = axboot.viewExtend({
@@ -773,6 +769,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         this.interval = $("#interval");
         this.sTime = $("#startTime");
         this.eTime = $("#endTime");
+        this.compCd = $("#comSel");
         this.did = $("#didSel");
         
 		this.target.find('[data-ax5picker="date"]').ax5picker({
@@ -854,7 +851,47 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         });
 		$("[data-ax5select='interval']").ax5select("setValue","day");
 		$("#ti_div").hide();
-				
+	    
+	    // 센터 선택 설정 //
+	    $("[data-ax5select='comSelect']").ax5select({
+	        theme: 'primary',
+	        onStateChanged: function () {
+	        	//
+	        }
+	    });
+	    
+		axboot.ajax({
+	    	type: "POST",
+		    url: "/api/statLstMng/userAuthLst",
+		    data: "",
+		    callback: function (res) {
+		    	res.forEach(function (n){
+		    		info.grpcd = n.grp_auth_cd;
+		    		info.comcd = n.company_cd;
+		    		info.cencd = n.center_cd;
+		    		info.teamcd = n.team_cd;
+		    		info.chncd = n.chn_cd;
+		    	}); 
+		    	
+		    	axboot.ajax({
+		    	    type: "POST",
+		    	    url: "/api/mng/searchCondition/company",
+		    	    cache : false,
+		    	    data: JSON.stringify($.extend({}, info)),
+		    	    callback: function (res) {
+		    		    var resultSet = [];
+		                //resultSet = [{value:"", text:"전체"}];
+//	    		        res.list.forEach(function (n) {
+//	    		        	resultSet.push({value: n.id, text: n.name});
+//	    		        });
+		    		    resultSet.push({value: "RETAIL", text: "GS리테일"});
+		    		    
+	    		        $("[data-ax5select='comSelect']").ax5select("setOptions", resultSet);
+			    	}
+			   });
+		    }
+	    });
+		
 		// 대표번호 설정
     	$("[data-ax5select='didSel']").ax5select({
 	        theme: 'primary',
@@ -891,7 +928,16 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     },
     getData: function () {
     	var d = this.did;
+    	var cc = this.compCd;
         return {
+        	comp_cd: function() {
+        		console.log(cc.ax5select("getValue")[0].value);
+        		if(cc.ax5select("getValue").length != 0) {
+        			return cc.ax5select("getValue")[0].value;
+        		} else {
+        			return "";
+        		}
+        	},
         	did : function() {
         		if(d.ax5select("getValue").length != 0) {
         			return d.ax5select("getValue")[0].value;
@@ -944,6 +990,13 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	        	}
 	        };
         var starttime = {key: "STARTTIME", label: "시간", width: 200, align: "center", sortable: true};
+        var comp_cd = {key: "COMP_CD", label: "센터", width: 200, align: "center", sortable: true,
+        		formatter: function() {
+        			switch(this.item.COMP_CD) {
+        			case "RETAIL": return "GS리테일";
+        			}
+        		}
+        	};
         var did = {key: "DID", label: "대표번호", width: 200, align: "center", sortable: true};
         var dnis = {key: "DNIS", label: "VDN", width: 100, align: "center", sortable: true};
         var n_incall = {key: "N_INCALL", label: "인입건수", width: 150, align: "center", sortable: true};
@@ -952,11 +1005,11 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         var n_blackconsumer = {key: "N_BLACKCONSUMER", label: "이슈고객", width: 150, align: "center", sortable: true};
         
         if(select == "day") {
-        	columns = [row_date, weekday, did, dnis, n_incall, n_agentreq, n_privacy, n_blackconsumer];
+        	columns = [row_date, weekday, comp_cd, did, dnis, n_incall, n_agentreq, n_privacy, n_blackconsumer];
         } else if(select == "month") {
-        	columns = [row_date, did, dnis, n_incall, n_agentreq, n_privacy, n_blackconsumer];
+        	columns = [row_date, comp_cd, did, dnis, n_incall, n_agentreq, n_privacy, n_blackconsumer];
         } else {
-        	columns = [row_date, weekday, starttime, did, dnis, n_incall, n_agentreq, n_privacy, n_blackconsumer];
+        	columns = [row_date, weekday, starttime, comp_cd, did, dnis, n_incall, n_agentreq, n_privacy, n_blackconsumer];
         }
         
         this.target = axboot.gridBuilder({

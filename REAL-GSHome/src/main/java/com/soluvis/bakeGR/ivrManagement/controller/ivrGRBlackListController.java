@@ -255,7 +255,7 @@ public class ivrGRBlackListController extends commController{
 		else
 		{
 			htpcode = "http://";
-			urlcode = ":18080/GRConnector/blackConsumerUpdate";
+			urlcode = ":18080/GSConnector/retail/blackConsumerUpdate";
 		}
 		
 		if(result == 0)
@@ -265,8 +265,8 @@ public class ivrGRBlackListController extends commController{
 		       try
 		       {
 		    	   URL obj = new URL(htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
-		    	   System.out.println("GR 이슈고객관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
-	    		   logger.info("GR 이슈고객관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
+		    	   System.out.println("Retail 이슈고객관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode); 
+	    		   logger.info("Retail 이슈고객관리Url-->" + htpcode + Urlsearch.get(i).getSvr_ip() + urlcode);
 	    		   
 		    	   HttpURLConnection con = (HttpURLConnection)obj.openConnection(); 
 
@@ -287,8 +287,8 @@ public class ivrGRBlackListController extends commController{
 			    	   
 			    	   while((line = in.readLine()) != null)
 			    	   {
-			    		   System.out.println("GR 이슈고객관리-->" + line + "===>result-" + rcode); 
-			    		   logger.info("GR 이슈고객관리-->" + line + "===>result-" + rcode);
+			    		   System.out.println("Retail 이슈고객관리-->" + line + "===>result-" + rcode); 
+			    		   logger.info("Retail 이슈고객관리-->" + line + "===>result-" + rcode);
 			    		   
 			    		   rlt = line;
 			    		   
@@ -298,11 +298,11 @@ public class ivrGRBlackListController extends commController{
 			    	   
 			    	   rlt = jsonObject.getString("result");
 			    	   
-			    	   System.out.println("GR 이슈고객관리rlt-->" + rlt); 
-		    		   logger.info("GR 이슈고객관리rlt-->" + rlt);
+			    	   System.out.println("Retail 이슈고객관리rlt-->" + rlt); 
+		    		   logger.info("Retail 이슈고객관리rlt-->" + rlt);
 		    		   
-			    	   System.out.println("GR 이슈고객관리err-->" + err.toString()); 
-		    		   logger.info("GR 이슈고객관리err-->" + err.toString()) ;
+			    	   System.out.println("Retail 이슈고객관리err-->" + err.toString()); 
+		    		   logger.info("Retail 이슈고객관리err-->" + err.toString()) ;
 			    	   
 			    	   if(rcode == 200)
 			    	   {
