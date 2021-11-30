@@ -10,7 +10,7 @@
 <ax:layout name="base">
     <jsp:attribute name="script">
         <ax:script-lang key="ax.script" />
-        <script type="text/javascript" src="<c:url value='/assets/js/view/js_create/historyStat/callTraceTab.js?version=1'/>"></script>
+        <script type="text/javascript" src="<c:url value='/assets/js/view/js_create/bakeGR/historyStat/callTraceTab.js?version=1'/>"></script>
     </jsp:attribute>
     <jsp:attribute name="header">
         <h2 class="title">
