@@ -536,7 +536,7 @@ public class statListManagerController extends commController{
 		{
 			Map<String, String> ufact = (Map<String, String>) user_factor[i];
 
-			map.put("stat_nseq", i) ;
+			map.put("stat_nseq", i+1) ;
 			map.put("stat_yn", ufact.get("yn"));
 			map.put("stat_oseq", ufact.get("stat_seq")); 
 			

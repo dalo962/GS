@@ -1004,7 +1004,7 @@ function time_set(){
 		type:"GET",
 		url:"/api/statLstMng/historytimeget",
 		cache : false,
-		data:{comSelect:info.comcd, codeSelect: select + "_" + info.comcd},
+		data:{comSelect:75, codeSelect: select + "_75"},
 		callback:function(res)
 		{
 			var com_stime = "";

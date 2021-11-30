@@ -101,6 +101,7 @@ public class agCallStatController extends commController{
 		List<statListManager> statlist = statLstMngServcice.agentListSel(map);
 		
 		int Usearchsize = Usearch.size();
+		int statlistsize = statlist.size();
 		int schk = 0; // select 항목 체크 int
 	
 		if(Usearchsize > 0)
@@ -108,203 +109,206 @@ public class agCallStatController extends commController{
 			// 기본값에 대한 SELECT, GROUP, ORDER문 생성
 			for(int i = 0; i < Usearchsize; i++)
 			{
-				map.put("seq", Usearch.get(i).getStat_seq());
-				statlist = statLstMngServcice.agentListSel(map);
-				
-				if("MAJOR".equals(statlist.get(0).getType()))
+				for(int j = 0; j < statlistsize; j++)
 				{
-					if("Y".equals(Usearch.get(i).getStat_yn()))
+					if(Usearch.get(i).getStat_seq().equals(statlist.get(j).getSeq()))
 					{
-						// N N Y 나오면 schk는 0이므로 초기화
-						if(schk == 0)
+						if("MAJOR".equals(statlist.get(j).getType()))
 						{
-							groupbybf = new StringBuffer(512);
-							groupbybf.append("");
-						}
-						
-						if("5m".equals(params.get("interval")))
-						{
-							// 0,1,6,7
-							if("0".equals(statlist.get(0).getInterval()) || "1".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
+							if("Y".equals(Usearch.get(i).getStat_yn()))
 							{
-								selectbf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								orderbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								schk++;
-							}
-							
-						}
-						else if("15m".equals(params.get("interval")))
-						{
-							// 0,2,6,7
-							if("0".equals(statlist.get(0).getInterval()) || "2".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
-							{
-								selectbf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								orderbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								schk++;
-							}
-							
-						}
-						else if("1h".equals(params.get("interval")))
-						{
-							// 0,3,6,7
-							if("0".equals(statlist.get(0).getInterval()) || "3".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
-							{
-								selectbf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								orderbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								schk++;
-							}
-							
-						}
-						else if("day".equals(params.get("interval")))
-						{
-							// 0,4,7,8
-							if("0".equals(statlist.get(0).getInterval()) || "4".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
-							{
-								selectbf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								orderbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								schk++;
-							}
-						}
-						else if("month".equals(params.get("interval")))
-						{
-							// 0,5,8
-							if("0".equals(statlist.get(0).getInterval()) || "5".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
-							{
-								selectbf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								orderbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								schk++;
-							}
-						}
-					}
-					else
-					{
-						// Y문을 1번도 타지 않았을 경우 group by없이 sum하면 0 나오니 기본항목 중 날짜(시간)에 대해 group문을 만들어 준다.(값이 다른 기본항목을 넣으면 group의미 없어짐)		
-						if(schk == 0)
-						{
-							if("5m".equals(params.get("interval")) || "15m".equals(params.get("interval")) || "1h".equals(params.get("interval")))
-							{
-								if("row_date".equals(statlist.get(0).getColname().toLowerCase()) || "starttime".equals(statlist.get(0).getColname().toLowerCase()))
+								// N N Y 나오면 schk는 0이므로 초기화
+								if(schk == 0)
 								{
-									groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
+									groupbybf = new StringBuffer(512);
+									groupbybf.append("");
+								}
+								
+								if("5m".equals(params.get("interval")))
+								{
+									// 0,1,6,7
+									if("0".equals(statlist.get(j).getInterval()) || "1".equals(statlist.get(j).getInterval()) || "6".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()))
+									{
+										selectbf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										groupbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										orderbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										schk++;
+									}
+									
+								}
+								else if("15m".equals(params.get("interval")))
+								{
+									// 0,2,6,7
+									if("0".equals(statlist.get(j).getInterval()) || "2".equals(statlist.get(j).getInterval()) || "6".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()))
+									{
+										selectbf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										groupbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										orderbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										schk++;
+									}
+									
+								}
+								else if("1h".equals(params.get("interval")))
+								{
+									// 0,3,6,7
+									if("0".equals(statlist.get(j).getInterval()) || "3".equals(statlist.get(j).getInterval()) || "6".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()))
+									{
+										selectbf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										groupbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										orderbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										schk++;
+									}
+									
+								}
+								else if("day".equals(params.get("interval")))
+								{
+									// 0,4,7,8
+									if("0".equals(statlist.get(j).getInterval()) || "4".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()) || "8".equals(statlist.get(j).getInterval()))
+									{
+										selectbf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										groupbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										orderbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										schk++;
+									}
+								}
+								else if("month".equals(params.get("interval")))
+								{
+									// 0,5,8
+									if("0".equals(statlist.get(j).getInterval()) || "5".equals(statlist.get(j).getInterval()) || "8".equals(statlist.get(j).getInterval()))
+									{
+										selectbf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										groupbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										orderbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										schk++;
+									}
 								}
 							}
-							else if("day".equals(params.get("interval")) || "month".equals(params.get("interval")))
+							else
 							{
-								if("row_date".equals(statlist.get(0).getColname().toLowerCase()))
+								// Y문을 1번도 타지 않았을 경우 group by없이 sum하면 0 나오니 기본항목 중 날짜(시간)에 대해 group문을 만들어 준다.(값이 다른 기본항목을 넣으면 group의미 없어짐)		
+								if(schk == 0)
 								{
-									groupbybf.append(" " + statlist.get(0).getColname().toLowerCase() + ",");
-								}
-							}
-						}
-					}
-				}
-				// 통계 항목에 대한 세팅
-				else
-				{
-					if("Y".equals(Usearch.get(i).getStat_yn()))
-					{
-						if("ROUND".equals(statlist.get(0).getStype()))
-						{
-							if("5m".equals(params.get("interval")))
-							{
-								// 0,1,6,7
-								if("0".equals(statlist.get(0).getInterval()) || "1".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
-								{
-									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-								}
-							}
-							else if("15m".equals(params.get("interval")))
-							{
-								// 0,2,6,7
-								if("0".equals(statlist.get(0).getInterval()) || "2".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
-								{
-									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-								}
-							}
-							else if("1h".equals(params.get("interval")))
-							{
-								// 0,3,6,7
-								if("0".equals(statlist.get(0).getInterval()) || "3".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
-								{
-									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-								}
-							}
-							else if("day".equals(params.get("interval")))
-							{
-								// 0,4,7,8
-								if("0".equals(statlist.get(0).getInterval()) || "4".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
-								{
-									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-								}
-							}
-							else if("month".equals(params.get("interval")))
-							{
-								// 0,5,8
-								if("0".equals(statlist.get(0).getInterval()) || "5".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
-								{
-									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + ",1),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									if("5m".equals(params.get("interval")) || "15m".equals(params.get("interval")) || "1h".equals(params.get("interval")))
+									{
+										if("row_date".equals(statlist.get(j).getColname().toLowerCase()) || "starttime".equals(statlist.get(j).getColname().toLowerCase()))
+										{
+											groupbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										}
+									}
+									else if("day".equals(params.get("interval")) || "month".equals(params.get("interval")))
+									{
+										if("row_date".equals(statlist.get(j).getColname().toLowerCase()))
+										{
+											groupbybf.append(" " + statlist.get(j).getColname().toLowerCase() + ",");
+										}
+									}
 								}
 							}
 						}
+						// 통계 항목에 대한 세팅
 						else
 						{
-							if("5m".equals(params.get("interval")))
+							if("Y".equals(Usearch.get(i).getStat_yn()))
 							{
-								// 0,1,6,7
-								if("0".equals(statlist.get(0).getInterval()) || "1".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
+								if("ROUND".equals(statlist.get(j).getStype()))
 								{
-									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									if("5m".equals(params.get("interval")))
+									{
+										// 0,1,6,7
+										if("0".equals(statlist.get(j).getInterval()) || "1".equals(statlist.get(j).getInterval()) || "6".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()))
+										{
+											selectbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + ",1),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+											sumbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + ",1),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+										}
+									}
+									else if("15m".equals(params.get("interval")))
+									{
+										// 0,2,6,7
+										if("0".equals(statlist.get(j).getInterval()) || "2".equals(statlist.get(j).getInterval()) || "6".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()))
+										{
+											selectbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + ",1),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+											sumbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + ",1),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+										}
+									}
+									else if("1h".equals(params.get("interval")))
+									{
+										// 0,3,6,7
+										if("0".equals(statlist.get(j).getInterval()) || "3".equals(statlist.get(j).getInterval()) || "6".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()))
+										{
+											selectbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + ",1),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+											sumbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + ",1),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+										}
+									}
+									else if("day".equals(params.get("interval")))
+									{
+										// 0,4,7,8
+										if("0".equals(statlist.get(j).getInterval()) || "4".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()) || "8".equals(statlist.get(j).getInterval()))
+										{
+											selectbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + ",1),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+											sumbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + ",1),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+										}
+									}
+									else if("month".equals(params.get("interval")))
+									{
+										// 0,5,8
+										if("0".equals(statlist.get(j).getInterval()) || "5".equals(statlist.get(j).getInterval()) || "8".equals(statlist.get(j).getInterval()))
+										{
+											selectbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + ",1),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+											sumbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + ",1),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+										}
+									}
 								}
-							}
-							else if("15m".equals(params.get("interval")))
-							{
-								// 0,2,6,7
-								if("0".equals(statlist.get(0).getInterval()) || "2".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
+								else
 								{
-									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
+									if("5m".equals(params.get("interval")))
+									{
+										// 0,1,6,7
+										if("0".equals(statlist.get(j).getInterval()) || "1".equals(statlist.get(j).getInterval()) || "6".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()))
+										{
+											selectbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + "),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+											sumbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + "),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+										}
+									}
+									else if("15m".equals(params.get("interval")))
+									{
+										// 0,2,6,7
+										if("0".equals(statlist.get(j).getInterval()) || "2".equals(statlist.get(j).getInterval()) || "6".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()))
+										{
+											selectbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + "),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+											sumbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + "),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+										}
+									}
+									else if("1h".equals(params.get("interval")))
+									{
+										// 0,3,6,7
+										if("0".equals(statlist.get(j).getInterval()) || "3".equals(statlist.get(j).getInterval()) || "6".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()))
+										{
+											selectbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + "),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+											sumbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + "),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+										}
+									}
+									else if("day".equals(params.get("interval")))
+									{
+										// 0,4,7,8
+										if("0".equals(statlist.get(j).getInterval()) || "4".equals(statlist.get(j).getInterval()) || "7".equals(statlist.get(j).getInterval()) || "8".equals(statlist.get(j).getInterval()))
+										{
+											selectbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + "),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+											sumbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + "),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+										}
+									}
+									else if("month".equals(params.get("interval")))
+									{
+										// 0,5,8
+										if("0".equals(statlist.get(j).getInterval()) || "5".equals(statlist.get(j).getInterval()) || "8".equals(statlist.get(j).getInterval()))
+										{
+											selectbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + "),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+											sumbf.append(" NVL(" + statlist.get(j).getStype() + "(" + statlist.get(j).getColname().toLowerCase() + "),0) as " + statlist.get(j).getAsname().toLowerCase() + ",");
+										}
+									}							
 								}
-							}
-							else if("1h".equals(params.get("interval")))
-							{
-								// 0,3,6,7
-								if("0".equals(statlist.get(0).getInterval()) || "3".equals(statlist.get(0).getInterval()) || "6".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()))
-								{
-									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-								}
-							}
-							else if("day".equals(params.get("interval")))
-							{
-								// 0,4,7,8
-								if("0".equals(statlist.get(0).getInterval()) || "4".equals(statlist.get(0).getInterval()) || "7".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
-								{
-									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-								}
-							}
-							else if("month".equals(params.get("interval")))
-							{
-								// 0,5,8
-								if("0".equals(statlist.get(0).getInterval()) || "5".equals(statlist.get(0).getInterval()) || "8".equals(statlist.get(0).getInterval()))
-								{
-									selectbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-									sumbf.append(" NVL(" + statlist.get(0).getStype() + "(" + statlist.get(0).getColname().toLowerCase() + "),0) as " + statlist.get(0).getAsname().toLowerCase() + ",");
-								}
-							}							
+							}					
 						}
-					}					
+					}
 				}
 			}			
 			
