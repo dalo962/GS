@@ -16,7 +16,7 @@
 		        TICKET_NUM,
 		        CONNID
 		FROM    WDM.V_CALL_LIST
-		WHERE	1=1
+		WHERE	AGENT_NAME is not null
 		<if test="s_day != '' and e_day != '' and s_time != '' and e_time != ''">
 		AND		STIME between WINK1.K2U(#{s_day}) and WINK1.K2U(#{e_day})
 		</if>
