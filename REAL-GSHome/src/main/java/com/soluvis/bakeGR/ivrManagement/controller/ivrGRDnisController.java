@@ -184,6 +184,8 @@ public class ivrGRDnisController extends commController{
 		StringBuffer msgbf = new StringBuffer(1024);		
 		String msg = "success";
 		
+		map.put("comp_cd", "RETAIL");
+		
 		logger.info("ivrGRUrlListService.UrlListGet Query Start...");
 		Urlsearch = ivrGRUrlListService.UrlListGet(map);
 		int UrlSize = Urlsearch.size();

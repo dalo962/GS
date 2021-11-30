@@ -27,7 +27,9 @@
 				upt_by 		as 	upt_by
 		FROM 	gsivr.ax_ivr_worktime
 		WHERE	1=1
+		<if test="comp_cd != '' and comp_cd != null">
 		AND		comp_cd = #{comp_cd}
+		</if>
 		<if test="dnis != '' and dnis != null">
 		AND		dnis = #{dnis}
 		</if>
@@ -39,7 +41,7 @@
     
     <insert id="DnisListIst" parameterType="hashmap">
 		INSERT 	INTO gsivr.ax_ivr_worktime (dnis, useyn, lc_useyn, hl_useyn, ov_useyn, wr_stime, wr_etime, lc_stime, lc_etime, sat_stime, sat_etime, sun_stime, sun_etime, hl_stime, hl_etime, ov_stime, ov_etime, comp_cd, crt_dt, crt_by, delyn)	
-		VALUES	(#{dnis}, #{useyn}, #{lc_useyn}, #{hl_useyn}, #{ov_useyn}, #{wr_stime}, #{wr_etime}, #{lc_stime}, #{lc_etime}, #{sat_stime}, #{sat_etime}, #{sun_stime}, #{sun_etime}, #{hl_stime}, #{hl_etime}, #{ov_stime}, #{ov_etime}, #{comp_cd}, #{crt_dt}, #{crt_by}, 'N')
+		VALUES	(#{dnis}, #{useyn}, #{lc_useyn}, #{hl_useyn}, #{ov_useyn}, #{wr_stime}, #{wr_etime}, #{lc_stime}, #{lc_etime}, #{sat_stime}, #{sat_etime}, #{sun_stime}, #{sun_etime}, #{hl_stime}, #{hl_etime}, #{ov_stime}, #{ov_etime}, #{comp_cd, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by}, 'N')
 	</insert>
 	
     <update id="DnisListUdt" parameterType="hashmap">
@@ -60,6 +62,7 @@
 				hl_etime = #{hl_etime},
 				ov_stime = #{ov_stime},
 				ov_etime = #{ov_etime},
+				comp_cd = #{comp_cd, jdbcType=VARCHAR},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
 		WHERE	dnis = #{dnis}

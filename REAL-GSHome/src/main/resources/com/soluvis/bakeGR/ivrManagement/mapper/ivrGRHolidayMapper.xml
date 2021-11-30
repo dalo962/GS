@@ -12,7 +12,9 @@
 				upt_by  	as upt_by
 		FROM 	gsivr.ax_ivr_holiday
 		WHERE	1=1
+		<if test="comp_cd != '' and comp_cd != null">
 		AND		comp_cd = #{comp_cd}
+		</if>
 		<if test="holiday != '' and holiday != null">
 		AND		holiday = ${holiday}
 		</if>
@@ -24,13 +26,14 @@
     
     <insert id="HolidayIst" parameterType="hashmap">
 		INSERT 	INTO gsivr.ax_ivr_holiday (holiday, hl_useyn, description, comp_cd, crt_dt, crt_by)	
-		VALUES	(#{holiday}, #{hl_useyn}, #{description, jdbcType=VARCHAR}, #{comp_cd}, #{crt_dt}, #{crt_by})
+		VALUES	(#{holiday}, #{hl_useyn}, #{description, jdbcType=VARCHAR}, #{comp_cd, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="HolidayUdt" parameterType="hashmap">
 		UPDATE	gsivr.ax_ivr_holiday
 		SET		hl_useyn = #{hl_useyn},
 				description = #{description, jdbcType=VARCHAR},
+				comp_cd = #{comp_cd, jdbcType=VARCHAR},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
 		WHERE	holiday = #{holiday}

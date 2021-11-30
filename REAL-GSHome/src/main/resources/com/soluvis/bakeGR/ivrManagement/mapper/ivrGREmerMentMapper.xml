@@ -18,7 +18,9 @@
 		        upt_by          as upt_by        
 		FROM    gsivr.ax_ivr_emerment
 		WHERE   1=1
+		<if test="comp_cd != '' and comp_cd != null">
 		AND		comp_cd = #{comp_cd}
+		</if>
 		<if test="dnis != '' and dnis != null">
 		AND	dnis 	= #{dnis}
 		</if>
@@ -38,7 +40,9 @@
 			FROM    gsivr.ax_ivr_emerment
 			WHERE   sdate||stime > #{sdate}||#{stime}
 			AND		#{edate}||#{etime} BETWEEN sdate||stime AND edate||etime
+			<if test="comp_cd != '' and comp_cd != null">
 			AND		comp_cd = #{comp_cd}
+			</if>
 			<if test="dnis != '' and dnis != null">
 			AND		dnis IN (#{dnis}, 'ALL')
 			</if>			
@@ -47,7 +51,9 @@
 			FROM    gsivr.ax_ivr_emerment
 			WHERE   #{sdate}||#{stime} BETWEEN sdate||stime AND edate||etime
 			AND		#{edate}||#{etime} BETWEEN sdate||stime AND edate||etime
+			<if test="comp_cd != '' and comp_cd != null">
 			AND		comp_cd = #{comp_cd}
+			</if>
 			<if test="dnis != '' and dnis != null">
 			AND		dnis IN (#{dnis}, 'ALL')
 			</if>			
@@ -56,7 +62,9 @@
 			FROM    gsivr.ax_ivr_emerment
 			WHERE   #{sdate}||#{stime} BETWEEN sdate||stime AND edate||etime
 			AND		#{edate}||#{etime} > edate||etime
+			<if test="comp_cd != '' and comp_cd != null">
 			AND		comp_cd = #{comp_cd}
+			</if>
 			<if test="dnis != '' and dnis != null">
 			AND		dnis IN (#{dnis}, 'ALL')
 			</if>
@@ -69,7 +77,7 @@
     
     <insert id="EmerMentIst" parameterType="hashmap">
 		INSERT 	INTO gsivr.ax_ivr_emerment (seq, dnis, sdate, stime, edate, etime, emer_type, ment, comp_cd, crt_dt, crt_by)	
-		VALUES	(gsivr.seq_ax_ivr_emerment.nextval, #{dnis}, #{sdate}, #{stime}, #{edate}, #{etime}, #{emer_type}, #{ment, jdbcType=VARCHAR}, #{comp_cd}, #{crt_dt}, #{crt_by})
+		VALUES	(gsivr.seq_ax_ivr_emerment.nextval, #{dnis}, #{sdate}, #{stime}, #{edate}, #{etime}, #{emer_type}, #{ment, jdbcType=VARCHAR}, #{comp_cd, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="EmerMentUdt" parameterType="hashmap">
@@ -81,6 +89,7 @@
 				etime = #{etime},
 				emer_type = #{emer_type},
 				ment = #{ment, jdbcType=VARCHAR},
+				comp_cd = #{comp_cd, jdbcType=VARCHAR},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
 		WHERE	seq = #{seq}

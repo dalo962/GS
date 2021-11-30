@@ -16,7 +16,9 @@
 				upt_by  	as upt_by
 		FROM 	gsivr.ax_ivr_dnis
 		WHERE	1=1
+		<if test="comp_cd != '' and comp_cd != null">
 		AND		comp_cd = #{comp_cd}
+		</if>
 		<if test="dnis != '' and dnis != null">
 		AND		dnis = #{dnis}
 		</if>
@@ -28,7 +30,7 @@
     
     <insert id="DnisIst" parameterType="hashmap">
 		INSERT 	INTO gsivr.ax_ivr_dnis (dnis, dnis_name, dnis_group, dnis_group_eng, dnis_media, dnis_useyn, comp_cd, crt_dt, crt_by)	
-		VALUES	(#{dnis}, #{dnis_name, jdbcType=VARCHAR}, #{dnis_group, jdbcType=VARCHAR}, #{dnis_group_eng, jdbcType=VARCHAR}, #{dnis_media, jdbcType=VARCHAR}, #{dnis_useyn}, #{comp_cd}, #{crt_dt}, #{crt_by})
+		VALUES	(#{dnis}, #{dnis_name, jdbcType=VARCHAR}, #{dnis_group, jdbcType=VARCHAR}, #{dnis_group_eng, jdbcType=VARCHAR}, #{dnis_media, jdbcType=VARCHAR}, #{dnis_useyn}, #{comp_cd, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by})
 	</insert>
 	
     <update id="DnisUdt" parameterType="hashmap">
@@ -38,6 +40,7 @@
 				dnis_group = #{dnis_group, jdbcType=VARCHAR},
 				dnis_group_eng = #{dnis_group_eng, jdbcType=VARCHAR},
 				dnis_media = #{dnis_media, jdbcType=VARCHAR},
+				comp_cd = #{comp_cd, jdbcType=VARCHAR},
 				upt_dt = #{upt_dt},
 				upt_by = #{upt_by}
 		WHERE	dnis = #{dnis}
