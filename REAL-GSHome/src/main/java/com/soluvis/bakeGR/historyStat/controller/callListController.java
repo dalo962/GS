@@ -1,8 +1,11 @@
 package com.soluvis.bakeGR.historyStat.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -198,21 +201,22 @@ public class callListController extends commController{
 		return search;
 	}	
 	
+	// 전화번호 가운데자리 마스킹하는 메서드 //
 	private String maskPhoneNumber (String phoneNumber) {
-		int length = phoneNumber.length();
-		String resultNumber = "";
+		String resultNumber = phoneNumber;
+		String regex = "(\\d{2,3})(\\d{3,4})(\\d{4})$";	// 전화번호 정규식
+		Matcher matcher = Pattern.compile(regex).matcher(resultNumber);
 		
-		// 자리수 체크
-        if(length == 11) { // 010****1234
-        	resultNumber = phoneNumber.substring(0, 3) + "****" + phoneNumber.substring(7, 11);   
-        } else if(length == 10) { // 02****1234
-        	resultNumber = phoneNumber.substring(0, 2) + "****" + phoneNumber.substring(6, 10);
-        } else if(length == 9) { // 02***1234
-        	resultNumber = phoneNumber.substring(0, 2) + "***" + phoneNumber.substring(5, 9);
-        } else {
-        	resultNumber = "****";
-        }
-		
+		if(matcher.find()) { // 입력받은 번호에서 정규식과 맞는 패턴을 찾는다.
+			String target = matcher.group(2); // 두 번째 그룹(중간번호 3~4자리)를 가져온다.
+			int length = target.length();
+			char[] c = new char[length];
+			Arrays.fill(c, '*'); // 중간번호 사이즈만큼 * 을 채운다.
+			
+			return resultNumber.replace(target, String.valueOf(c));
+		}
+
+		// 3자리로 나눠지지 않는 경우 (1자리 또는 2자리)
 		return resultNumber;
 	}
 }
