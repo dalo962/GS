@@ -148,7 +148,7 @@ fnObj.pageStart = function () {
     axboot
     .call({
         type: "GET",
-        url: "/api/callTr/callTrSearchTab",
+        url: "/gr/api/hist/callTr/callTrSearchTab",
         data: {connid : connid},
         callback: function (res) {
         	list = res;
