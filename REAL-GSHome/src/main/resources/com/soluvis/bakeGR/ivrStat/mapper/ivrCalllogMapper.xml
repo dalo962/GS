@@ -19,7 +19,7 @@
 				last_code as last_code,
 				black_code as black_code,
 				privacy_yn as privacy_yn
-		FROM 	givr.GR_ARS_DATA_CALL
+		FROM 	gsivr.ARS_DATA_CALL
 		WHERE	in_date <![CDATA[>=]]> #{startdate}
 		AND		end_date <![CDATA[<=]]> #{enddate}
 		AND		in_time <![CDATA[>=]]> #{starttime}

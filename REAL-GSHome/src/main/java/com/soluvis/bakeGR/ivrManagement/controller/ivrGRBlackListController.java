@@ -69,35 +69,9 @@ public class ivrGRBlackListController extends commController{
 		try
 		{	
 			
-			logger.info("ivrBlackListService.BlackListGet Query Start...");			
+			logger.info("ivrBlackListService.BlackListGet Query Start...");		
+			params.put("comp_cd", "RETAIL");
 			search = ivrGRBlackListService.BlackListGet(params);
-			// 수정 또는 추가 후 저장 시 *이 걸림 //			
-//			 if(search.size() > 0)
-//		      {
-//		         for(int i = 0; i < search.size(); i++)
-//		         {
-//		            if(search.get(i).getAni() != null && !"".equals(search.get(i).getAni()))
-//		            {
-//		               String Ani = search.get(i).getAni().toString();
-//		               
-//		               // 자리수 체크
-//		               if(Ani.length() == 11)
-//		               {
-//		                  Ani = Ani.substring(0, 3) + "****" + Ani.substring(7, 11);   
-//		               } 
-//		               else if(Ani.length() == 10)
-//		               {
-//		            	   Ani = Ani.substring(0, 2) + "****" + Ani.substring(6, 10);
-//		               }
-//		               else if(Ani.length() == 9)
-//		               {
-//		            	   Ani = Ani.substring(0, 2) + "***" + Ani.substring(5, 9);
-//		               }
-//
-//		               search.get(i).setAni(Ani); 
-//		            } 
-//		         }
-//		      }
 		}
 		catch(Exception e)
 		{
@@ -127,6 +101,7 @@ public class ivrGRBlackListController extends commController{
 		{
 			for (ivrGRBlackList bl : blackLst)
 			{
+				map.put("comp_cd", "RETAIL");
 				if(AXBootTypes.DataStatus.CREATED.equals(bl.getDataStatus()))
 				{
 					map.put("ani", bl.getAni());
@@ -215,11 +190,11 @@ public class ivrGRBlackListController extends commController{
 //		map.put("description", bl.getDescription());
 //		map.put("agentid", bl.getAgentid());
 		
+		params.put("comp_cd", "RETAIL");
 		params.put("bl_useyn", "1");
 		params.put("degree", "1");
 		params.put("crt_dt", sdf.format(new Date()));
 		params.put("crt_by", "IVR");
-		
 		
 		try
 		{	

@@ -10,8 +10,8 @@
 				ov_useyn	as 	ov_useyn,
 				substr(wr_stime,0,2)  || ':' || substr(wr_stime,3,2)  || ':' || substr(wr_stime,5,2)	as 	wr_stime,
 				substr(wr_etime,0,2)  || ':' || substr(wr_etime,3,2)  || ':' || substr(wr_etime,5,2)	as 	wr_etime,
-				substr(lcstime,0,2)   || ':' || substr(lcstime,3,2)   || ':' || substr(lcstime,5,2)		as 	lc_stime,
-				substr(lcetime,0,2)   || ':' || substr(lcetime,3,2)   || ':' || substr(lcetime,5,2)		as 	lc_etime,
+				substr(lc_stime,0,2)   || ':' || substr(lc_stime,3,2)   || ':' || substr(lc_stime,5,2)		as 	lc_stime,
+				substr(lc_etime,0,2)   || ':' || substr(lc_etime,3,2)   || ':' || substr(lc_etime,5,2)		as 	lc_etime,
 				substr(sat_stime,0,2) || ':' || substr(sat_stime,3,2) || ':' || substr(sat_stime,5,2)	as 	sat_stime, 
 				substr(sat_etime,0,2) || ':' || substr(sat_etime,3,2) || ':' || substr(sat_etime,5,2)	as 	sat_etime,
 				substr(sun_stime,0,2) || ':' || substr(sun_stime,3,2) || ':' || substr(sun_stime,5,2)	as 	sun_stime,
@@ -20,12 +20,14 @@
 				substr(hl_etime,0,2)  || ':' || substr(hl_etime,3,2)  || ':' || substr(hl_etime,5,2)	as	hl_etime,
 				substr(ov_stime,0,2)  || ':' || substr(ov_stime,3,2)  || ':' || substr(ov_stime,5,2)	as 	ov_stime,
 				substr(ov_etime,0,2)  || ':' || substr(ov_etime,3,2)  || ':' || substr(ov_etime,5,2)	as	ov_etime,
+				comp_cd		as	comp_cd,
 				crt_dt 		as 	crt_dt, 
 				crt_by 		as 	crt_by, 
 				upt_dt 		as 	upt_dt, 
 				upt_by 		as 	upt_by
-		FROM 	givr.gr_ax_ivr_worktime
+		FROM 	gsivr.ax_ivr_worktime
 		WHERE	1=1
+		AND		comp_cd = #{comp_cd}
 		<if test="dnis != '' and dnis != null">
 		AND		dnis = #{dnis}
 		</if>
@@ -36,20 +38,20 @@
     </select>
     
     <insert id="DnisListIst" parameterType="hashmap">
-		INSERT 	INTO givr.gr_ax_ivr_worktime (dnis, useyn, lc_useyn, hl_useyn, ov_useyn, wr_stime, wr_etime, lcstime, lcetime, sat_stime, sat_etime, sun_stime, sun_etime, hl_stime, hl_etime, ov_stime, ov_etime, crt_dt, crt_by, delyn)	
-		VALUES	(#{dnis}, #{useyn}, #{lc_useyn}, #{hl_useyn}, #{ov_useyn}, #{wr_stime}, #{wr_etime}, #{lc_stime}, #{lc_etime}, #{sat_stime}, #{sat_etime}, #{sun_stime}, #{sun_etime}, #{hl_stime}, #{hl_etime}, #{ov_stime}, #{ov_etime}, #{crt_dt}, #{crt_by}, 'N')
+		INSERT 	INTO gsivr.ax_ivr_worktime (dnis, useyn, lc_useyn, hl_useyn, ov_useyn, wr_stime, wr_etime, lc_stime, lc_etime, sat_stime, sat_etime, sun_stime, sun_etime, hl_stime, hl_etime, ov_stime, ov_etime, comp_cd, crt_dt, crt_by, delyn)	
+		VALUES	(#{dnis}, #{useyn}, #{lc_useyn}, #{hl_useyn}, #{ov_useyn}, #{wr_stime}, #{wr_etime}, #{lc_stime}, #{lc_etime}, #{sat_stime}, #{sat_etime}, #{sun_stime}, #{sun_etime}, #{hl_stime}, #{hl_etime}, #{ov_stime}, #{ov_etime}, #{comp_cd}, #{crt_dt}, #{crt_by}, 'N')
 	</insert>
 	
     <update id="DnisListUdt" parameterType="hashmap">
-		UPDATE	givr.gr_ax_ivr_worktime
+		UPDATE	gsivr.ax_ivr_worktime
 		SET		useyn = #{useyn},
 				lc_useyn = #{lc_useyn},
 				hl_useyn = #{hl_useyn},
 				ov_useyn = #{ov_useyn},
 				wr_stime = #{wr_stime},
 				wr_etime = #{wr_etime},
-				lcstime = #{lc_stime},
-				lcetime = #{lc_etime},
+				lc_stime = #{lc_stime},
+				lc_etime = #{lc_etime},
 				sat_stime = #{sat_stime},
 				sat_etime = #{sat_etime},
 				sun_stime = #{sun_stime},
@@ -64,13 +66,13 @@
 	</update>
 	
     <update id="DnisListDel" parameterType="hashmap">
-		UPDATE	givr.gr_ax_ivr_worktime
+		UPDATE	gsivr.ax_ivr_worktime
 		SET		delyn = 'Y'
 		WHERE	dnis = #{dnis}	
 	</update>
 	
 	<update id="DnisListDelUdt" parameterType="hashmap">
-		UPDATE	givr.gr_ax_ivr_worktime
+		UPDATE	gsivr.ax_ivr_worktime
 		SET		delyn = 'N'
 		WHERE	dnis = #{dnis}	
 	</update>

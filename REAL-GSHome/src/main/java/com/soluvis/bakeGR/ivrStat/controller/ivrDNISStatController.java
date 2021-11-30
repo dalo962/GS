@@ -81,19 +81,19 @@ public class ivrDNISStatController extends commController{
 			// 테이블명
 			switch(params.get("interval").toString()) {
 				case "5m":
-					table = "givr.GR_ARS_DNIS_NA";
+					table = "gsivr.ARS_DNIS_NA";
 					break;
 				case "15m":
-					table = "givr.GR_ARS_DNIS_FT";
+					table = "gsivr.ARS_DNIS_FT";
 					break;
 				case "1h":
-					table = "givr.GR_ARS_DNIS_HR";
+					table = "gsivr.ARS_DNIS_HR";
 					break;
 				case "day":
-					table = "givr.GR_ARS_DNIS_DY";
+					table = "gsivr.ARS_DNIS_DY";
 					break;
 				case "month":
-					table = "givr.GR_ARS_DNIS_MN";
+					table = "gsivr.ARS_DNIS_MN";
 			}
 			
 			map.put("table", table);

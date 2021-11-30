@@ -56,6 +56,7 @@ public class ivrGRDnisController extends commController{
 		try
 		{
 			logger.info("ivrGRDnisService.DnisGet Query Start...");			
+			map.put("comp_cd", "RETAIL");
 			search = ivrGRDnisService.DnisGet(map);
 		}
 		catch(Exception e)
@@ -88,6 +89,7 @@ public class ivrGRDnisController extends commController{
 			for (ivrGRDnis hl : hlLst)
 			{
 				map.put("dnis", hl.getDnis());
+				map.put("comp_cd", "RETAIL");
 								
 				if(AXBootTypes.DataStatus.CREATED.equals(hl.getDataStatus()))
 				{		
@@ -99,6 +101,7 @@ public class ivrGRDnisController extends commController{
 						map.put("dnis_useyn", hl.getDnis_useyn());
 						map.put("dnis_name", hl.getDnis_name());
 						map.put("dnis_group", hl.getDnis_group());
+						map.put("dnis_group_eng", hl.getDnis_group_eng());
 						map.put("dnis_media", hl.getDnis_media());
 						map.put("crt_dt", sdf.format(new Date()));
 						map.put("crt_by", cid);
@@ -117,6 +120,7 @@ public class ivrGRDnisController extends commController{
 					map.put("dnis_useyn", hl.getDnis_useyn());
 					map.put("dnis_name", hl.getDnis_name());
 					map.put("dnis_group", hl.getDnis_group());
+					map.put("dnis_group_eng", hl.getDnis_group_eng());
 					map.put("dnis_media", hl.getDnis_media());
 					map.put("upt_dt", sdf.format(new Date()));
 					map.put("upt_by", cid);
@@ -160,6 +164,7 @@ public class ivrGRDnisController extends commController{
 		try
 		{
 			map.put("dnis_useyn", "1");
+			map.put("comp_cd", "RETAIL");
 			logger.info("ivrGRDnisService.DnisGet Query Start...");			
 			search = ivrGRDnisService.DnisGet(map);
 		}

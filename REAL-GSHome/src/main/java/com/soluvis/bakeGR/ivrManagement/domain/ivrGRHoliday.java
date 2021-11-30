@@ -16,6 +16,8 @@ public class ivrGRHoliday extends BaseJpaModel<String>{
 	private String holiday; 	// 휴일 
 	private String hl_useyn;	// 사용유무
 	private String description;	// 사유
+	
+	private String comp_cd;		// 회사 코드
 	private String crt_dt;		// 생성일
 	private String crt_by;		// 생성자
 	private String upt_dt;		// 수정일

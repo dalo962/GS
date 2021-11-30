@@ -60,9 +60,8 @@ public class ivrGRUrlListController extends commController{
 		
 		try
 		{	
-			map.put("ani", "");
-			
 			logger.info("ivrGRUrlListService.UrlListGet Query Start...");
+			map.put("comp_cd", "RETAIL");
 			search = ivrGRUrlListService.UrlListGet(map);
 		}
 		catch(Exception e)
@@ -89,6 +88,7 @@ public class ivrGRUrlListController extends commController{
 		{
 			for (ivrGRUrlList ul : urlLst)
 			{
+				map.put("comp_cd", "RETAIL");
 				map.put("url_nm", ul.getUrl_nm());
 								
 				if(AXBootTypes.DataStatus.CREATED.equals(ul.getDataStatus()))

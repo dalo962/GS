@@ -68,6 +68,7 @@ public class ivrGRDnisTimeListController extends commController{
 		{	
 			map.put("dnis", "");
 			map.put("delchk", "1");
+			map.put("comp_cd", "RETAIL");
 			
 			logger.info("ivrGRDnisListService.DnisListGet Query Start...");	
 			search = ivrGRDnisListService.DnisListGet(map);
@@ -108,6 +109,7 @@ public class ivrGRDnisTimeListController extends commController{
 			for (ivrGRDnisTimeList dtl : dtLst)
 			{
 				map.put("dnis", dtl.getDnis());
+				map.put("comp_cd", "RETAIL");
 								
 				// 평일근무시작시간
 				if("".equals(dtl.getWr_stime()) || dtl.getWr_stime() == null)

@@ -303,6 +303,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         			}
             	}},
             	{key: "dnis_group", label: "그룹", width: 140, align: "center", editor:"text"},
+            	{key: "dnis_group_eng", label: "그룹(영문)", width: 140, align: "center", editor:"text"},
             	{key: "dnis_media", label: "매체", width: 140, align: "center", editor:"text"},
             	{key: "dnis_name", label: "명칭", width: 140, align: "center", editor:"text"},
                 {key: "dnis_useyn", label: "사용유무", width: 120, align: "center", sortable: true, editor: {
