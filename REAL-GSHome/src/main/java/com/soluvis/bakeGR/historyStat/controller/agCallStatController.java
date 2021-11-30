@@ -107,7 +107,7 @@ public class agCallStatController extends commController{
 		{
 			// 기본값에 대한 SELECT, GROUP, ORDER문 생성
 			for(int i = 0; i < Usearchsize; i++)
-			{			
+			{
 				if("MAJOR".equals(statlist.get(i).getType()))
 				{
 					if("Y".equals(Usearch.get(i).getStat_yn()))
