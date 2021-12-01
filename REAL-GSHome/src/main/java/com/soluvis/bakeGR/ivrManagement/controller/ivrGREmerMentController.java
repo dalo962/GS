@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
-import com.gargoylesoftware.htmlunit.javascript.host.Console;
 import com.soluvis.bake.common.controller.commController;
 import com.soluvis.bake.common.utils.RequestUtil;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
