@@ -147,7 +147,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
             url: "/gr/api/ivr/ivrDnis/DnisSearchY",
             data: "",
             callback: function (res) {
-            	dnis_options.push({value:"ALL", text:"전체"});
+            	// dnis_options.push({value:"ALL", text:"전체"});
             	if(res.length > 0){
             		res.forEach(function (n) {
                     	dnis_options.push({
