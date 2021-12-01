@@ -252,16 +252,27 @@ var ACTIONS = axboot.actionExtend(fnObj, {
         });
     },
     GET_TTS: function (caller, act, data) {
+    	var audio = null;
+    	var filePN = "";
     	
     	var ttsList = [].concat(fnObj.gridView01.getData("selected"));
-    	console.log(ttsList);
-    	console.log(JSON.stringify(ttsList));
+    	
+    	if(ttsList[0].upt_dt != undefined && ttsList[0].upt_dt != ''){
+    		filePN = window.location.origin+'/assets/sound/tts/'+ttsList[0].seq+'_'+ttsList[0].upt_dt+'.wav';
+    	}else{
+    		filePN = window.location.origin+'/assets/sound/tts/'+ttsList[0].seq+'_'+ttsList[0].crt_dt+'.wav';
+    		ttsList[0].upt_dt = '';
+    	}
+    	
     	var params = {
+    			seq : ttsList[0].seq,
+    			crt_dt : ttsList[0].crt_dt,
+    			upt_dt : ttsList[0].upt_dt,
     			ment : ttsList[0].ment,
-    			ttsPath : window.location.origin
     	};
+    	
     	console.log(params);
-    	console.log($.extend({}, params));
+    	
     	axboot.ajax({
             type: "GET",
     		cache: false,
@@ -269,7 +280,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
             data: params,
             callback: function (res) {
             	console.log(res);
-            	var audio = new Audio(window.location.origin+'/assets/sound/tts/mTTS.wav');
+            	audio = new Audio(filePN);
             	audio.play();
             },
             options: {

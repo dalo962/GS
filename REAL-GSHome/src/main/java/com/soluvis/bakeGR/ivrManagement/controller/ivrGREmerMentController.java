@@ -323,13 +323,25 @@ public class ivrGREmerMentController extends commController{
 		List<ivrGREmerMent> search = null;
 		
 		String msg = "";
+		String seq = "";
 		String ment = "";
+		String crt_dt = "";
+		String upt_dt = "";
 		String reqPath = "";
+		String filename = "";
 		
 		try {
+			seq = params.get("seq").toString();
 			ment = params.get("ment").toString();
-			reqPath = params.get("ttsPath").toString();
-			reqPath = "/gcti/tomcat/webapps/ROOT/assets/sound/tts";
+			crt_dt = params.get("crt_dt").toString();
+			upt_dt = params.get("upt_dt").toString();
+			reqPath = "/gcti/tomcat/webapps/ROOT/assets/sound/tts/";
+			
+			if(upt_dt != null && !upt_dt.equals("")){
+				filename = seq+"_"+upt_dt+".wav";
+			}else{
+				filename = seq+"_"+crt_dt+".wav";
+			}
 			
 			logger.info("ivrGREmerMentService.EmerMentTTS Query Start...");
 			search = ivrGREmerMentService.EmerMentTTS(map);
@@ -340,15 +352,21 @@ public class ivrGREmerMentController extends commController{
 				}				
 			}
 			
-			makeSound ms = new makeSound(ttsMap.get("TTS_HOSTP"), Integer.parseInt(ttsMap.get("TTS_PORTP")), "yumi", reqPath);
+			makeSound ms = new makeSound(ttsMap.get("TTS_HOSTP"), Integer.parseInt(ttsMap.get("TTS_PORTP")), "yumi", reqPath, filename);
 			int tts_result = ms.makeV(ment);
 			
 			if(tts_result == 1){
-				msg = "ok B";
+				msg = "ok P";
 			}else{
-				msg = "Fail PB";
+				ms = new makeSound(ttsMap.get("TTS_HOSTB"), Integer.parseInt(ttsMap.get("TTS_PORTB")), "yumi", reqPath, filename);
+				tts_result = ms.makeV(ment);
+				
+				if(tts_result == 1){
+					msg = "ok B";
+				}else{
+					msg = "Fail PB";
+				}
 			}
-			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			logger.error(e.toString());
