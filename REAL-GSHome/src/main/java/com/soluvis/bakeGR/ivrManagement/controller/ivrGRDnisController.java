@@ -259,8 +259,8 @@ public class ivrGRDnisController extends commController{
 			    	   {
 			    		   if(rlt.length() > 0)
 			    		   {
-			    			   //if("success".equals(rlt) || "SUCCESS".equals(rlt))
-			    			   if("00".equals(rlt))
+			    			   if("success".equals(rlt) || "SUCCESS".equals(rlt))
+//			    			   if("00".equals(rlt))
 			    			   {
 			    				   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 정상\n");
 			    			   }

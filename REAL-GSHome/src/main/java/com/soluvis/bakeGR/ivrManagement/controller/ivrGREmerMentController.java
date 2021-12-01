@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
+import com.gargoylesoftware.htmlunit.javascript.host.Console;
 import com.soluvis.bake.common.controller.commController;
+import com.soluvis.bake.common.utils.RequestUtil;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
 import com.soluvis.bake.system.utils.SessionUtils;
 import com.soluvis.bakeGR.ivrManagement.domain.ivrGREmerMent;
@@ -263,8 +265,8 @@ public class ivrGREmerMentController extends commController{
 				    	   {
 				    		   if(rlt.length() > 0)
 				    		   {
-				    			   //if("success".equals(rlt) || "SUCCESS".equals(rlt))
-				    			   if("00".equals(rlt))
+				    			   if("success".equals(rlt) || "SUCCESS".equals(rlt))
+//				    			   if("00".equals(rlt))
 				    			   {
 				    				   msgbf.append(Urlsearch.get(i).getUrl_nm() + "(" + Urlsearch.get(i).getSvr_ip() + ") - 정상\n");
 				    			   }
@@ -313,48 +315,48 @@ public class ivrGREmerMentController extends commController{
 	/** 
 	 * @desc 블랙컨슈머 목록을 수정한다
 	 */
-	@RequestMapping(value = "/EmerMentTTS", method = RequestMethod.POST, produces = APPLICATION_JSON)
-    public ApiResponse EmerMentTTS(@Valid @RequestBody List<ivrGREmerMent> emerment, HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/EmerMentTTS", method = RequestMethod.GET, produces = APPLICATION_JSON)
+    public @ResponseBody ApiResponse EmerMentTTS(HttpServletRequest request) throws Exception {
+		Map<String,Object> params = RequestUtil.getParameterMap(request);
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, String> ttsMap = new HashMap<String, String>();
 		List<ivrGREmerMent> search = null;
+		
+		String msg = "";
 		String ment = "";
+		String reqPath = "";
+		
 		try {
-			if(emerment.size() > 0){
-				ivrGREmerMent em = emerment.get(0);
-				ment = em.getMent();
-				
-				logger.info("ivrGREmerMentService.EmerMentTTS Query Start...");
-				search = ivrGREmerMentService.EmerMentTTS(map);
-				
-				if(search.size() > 0){
-					for (ivrGREmerMent forEm : search){
-						ttsMap.put(forEm.getCode(), forEm.getName());
-					}				
-				}
-				makeSound ms = new makeSound(ttsMap.get("TTS_HOSTP"), Integer.parseInt(ttsMap.get("TTS_PORTP")), "yumi");
-				int tts_result = ms.makeV(ment);
-				
-				if(tts_result == 1){
-					return ok("ok P");
-				}else{
-					ms = new makeSound(ttsMap.get("TTS_HOSTB"), Integer.parseInt(ttsMap.get("TTS_PORTB")), "yumi");
-					tts_result = ms.makeV(ment);
-					if(tts_result == 1){
-						return ok("ok B");
-					}else{
-						return ok("Fail PB");
-					}
-				}
-			}else{
-				return ok("ok");
+			ment = params.get("ment").toString();
+			reqPath = params.get("ttsPath").toString();
+			reqPath = "/gcti/tomcat/webapps/ROOT/assets/sound/tts";
+			
+			logger.info("ivrGREmerMentService.EmerMentTTS Query Start...");
+			search = ivrGREmerMentService.EmerMentTTS(map);
+			
+			if(search.size() > 0){
+				for (ivrGREmerMent forEm : search){
+					ttsMap.put(forEm.getCode(), forEm.getName());
+				}				
 			}
+			
+			makeSound ms = new makeSound(ttsMap.get("TTS_HOSTP"), Integer.parseInt(ttsMap.get("TTS_PORTP")), "yumi", reqPath);
+			int tts_result = ms.makeV(ment);
+			
+			if(tts_result == 1){
+				msg = "ok B";
+			}else{
+				msg = "Fail PB";
+			}
+			
 		} catch (Exception e) {
-			System.out.println(e.getStackTrace());
+			System.out.println(e.getMessage());
 			logger.error(e.toString());
+			msg = e.getMessage();
 		}
 		
-		return ok("ok");
+		return ok(msg);
 	}
 }
 

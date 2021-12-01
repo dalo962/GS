@@ -252,17 +252,25 @@ var ACTIONS = axboot.actionExtend(fnObj, {
         });
     },
     GET_TTS: function (caller, act, data) {
+    	
     	var ttsList = [].concat(fnObj.gridView01.getData("selected"));
     	console.log(ttsList);
     	console.log(JSON.stringify(ttsList));
-    	
+    	var params = {
+    			ment : ttsList[0].ment,
+    			ttsPath : window.location.origin
+    	};
+    	console.log(params);
+    	console.log($.extend({}, params));
     	axboot.ajax({
-            type: "POST",
+            type: "GET",
     		cache: false,
             url: "/gr/api/ivr/ivrEmerMent/EmerMentTTS",
-            data: JSON.stringify(ttsList),
+            data: params,
             callback: function (res) {
             	console.log(res);
+            	var audio = new Audio(window.location.origin+'/assets/sound/tts/mTTS.wav');
+            	audio.play();
             },
             options: {
                 onError: function (err) {
@@ -319,8 +327,10 @@ fnObj.pageStart = function () {
     ACTIONS.dispatch(ACTIONS.SET_DNIS);
     ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
     
+    console.log(window.location);
+    console.log(window.location.origin);
+    //window.location.pathname.substring(0, window.location.pathname.indexOf("/",2));
 };
-
 
 fnObj.pageButtonView = axboot.viewExtend({
     initView: function () {
@@ -461,13 +471,14 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		},
                 		options: [
                 			{value: "0", text: "00.직접입력"},
-                			{value: "1", text: "01.POS장애"},
-                			{value: "2", text: "02.GOT"},
-                			{value: "3", text: "03.통합SC"},
-                			{value: "4", text: "04.통신장애"},
-                			{value: "5", text: "05.전산장애"},
-                			{value: "6", text: "06.신용카드"},
-                			{value: "7", text: "07.점포경영시스템장애"},
+                			{value: "1", text: "01.비상멘트_POS장애"},
+                			{value: "2", text: "02.비상멘트_GOT"},
+                			{value: "3", text: "03.비상멘트_통합SC"},
+                			{value: "4", text: "04.비상멘트_통신장애"},
+                			{value: "5", text: "05.비상멘트_전산장애"},
+                			{value: "6", text: "06.비상멘트_신용카드"},
+                			{value: "7", text: "07.비상멘트_점포경영시스템장애"},
+                			{value: "8", text: "08.작업후 재고불일치"},
                     	]
                 	}
                 }, formatter: function() {
@@ -495,7 +506,10 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			break;       	
                 		case "7":
                 			return "07.점포경영시스템장애";
-                			break;                       		
+                			break;   
+                		case "8":
+                			return "08.작업후 재고불일치";
+                			break;  
                 		default :
                 			return "선택";
                 			break;
