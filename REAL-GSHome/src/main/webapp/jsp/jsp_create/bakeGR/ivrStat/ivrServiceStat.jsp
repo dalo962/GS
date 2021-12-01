@@ -33,7 +33,7 @@
                     	</ax:td>
                     </ax:tr>
                     <ax:tr>  
-                    	<ax:td label='간격' width="23%" labelWidth="100px">
+                    	<ax:td label='단위' width="23%" labelWidth="100px">
 							<div class="form-group">
 								<div id="interval" data-ax5select="interval" data-ax5select-config="{}"></div>
 							</div>		
