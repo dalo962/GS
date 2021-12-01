@@ -1053,48 +1053,26 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            	{key: "CONNIDFST", label: "최초CONNID", width: 170, align: "center", sortable: true},
 	    	        {key: "CONNID", label: "최종CONNID", width: 170, align: "center", sortable: true}	,  
 	        		{key: "CALLTYPE", label: "호유형", width: 130, align: "center", sortable: true},
-	        		{key: "ANI", label: "고객번호", width: 130, align: "center", sortable: true,
+	        		{key: "ANI", label: "고객/내선번호", width: 130, align: "center", sortable: true,
 	    	        	formatter:function(){
 	    	        		if(this.value != null)
 	                		{
-		                		var gil = this.value.length;
-		                		var val = "";
-		                		if(gil > 5)
-		                		{
-		                			if(gil < 11)
-			                		{
-			                			for(var i=0; i < gil; i++)
-				                		{
-			                				//if(i > 1 && i < 6)
-			                				if(i > 5)
-			                				{
-			                					val += "*";
-			                				}
-			                				else
-			                				{
-			                					val += this.value.substr(i,1)
-			                				}				                			
-				                		}			                			
-			                		}
-			                		else
-			                		{
-			                			for(var i=0; i < gil; i++)
-				                		{
-			                				//if(i > 2 && i < 7)
-			                				if(i > 6)
-			                				{
-			                					val += "*";
-			                				}
-			                				else
-			                				{
-			                					val += this.value.substr(i,1)
-			                				}				                			
-				                		}	
-			                		}
-		                						                		
-			                		return val;
-		                		}
-		                		return this.value;
+	    	        			var ani = this.value;
+	    	        			
+	                			if(ani != "" && ani != null) {
+	                				var len = ani.length;
+	                    			// 자리수 체크
+	                    	        if(len == 11) { // 010****1234
+	                    	        	return ani.substr(0, 3) + "****" + ani.substr(7, 4);
+	                    	        } else if(len == 10) { // 02****1234
+	                    	        	return ani.substr(0, 2) + "****" + ani.substr(6, 4);
+	                    	        } else if(len == 9) { // 02***1234
+	                    	        	return ani.substr(0, 2) + "***" + ani.substr(5, 4);
+	                    	        } else {
+	                    	        	//return "****";
+	                    	        	return ani;
+	                    	        }
+	                			}
 	                		}
 	                		return null;
 	                	}
@@ -1103,44 +1081,22 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 		    	        	formatter:function(){
 		                		if(this.value != null)
 		                		{
-			                		var gil = this.value.length;
-			                		var val = "";
-			                		if(gil > 5)
-			                		{
-			                			if(gil < 11)
-				                		{
-				                			for(var i=0; i < gil; i++)
-					                		{
-				                				//if(i > 1 && i < 6)
-				                				if(i > 5)
-				                				{
-				                					val += "*";
-				                				}
-				                				else
-				                				{
-				                					val += this.value.substr(i,1)
-				                				}				                			
-					                		}			                			
-				                		}
-				                		else
-				                		{
-				                			for(var i=0; i < gil; i++)
-					                		{
-				                				//if(i > 2 && i < 7)
-				                				if(i > 6)
-				                				{
-				                					val += "*";
-				                				}
-				                				else
-				                				{
-				                					val += this.value.substr(i,1)
-				                				}				                			
-					                		}	
-				                		}			                			
-			                						                		
-				                		return val;
-			                		}
-			                		return this.value;
+		                			var dnis = this.value;
+		    	        			
+		                			if(dnis != "" && dnis != null) {
+		                				var len = dnis.length;
+		                    			// 자리수 체크
+		                    	        if(len == 11) { // 010****1234
+		                    	        	return dnis.substr(0, 3) + "****" + dnis.substr(7, 4);
+		                    	        } else if(len == 10) { // 02****1234
+		                    	        	return dnis.substr(0, 2) + "****" + dnis.substr(6, 4);
+		                    	        } else if(len == 9) { // 02***1234
+		                    	        	return dnis.substr(0, 2) + "***" + dnis.substr(5, 4);
+		                    	        } else {
+		                    	        	//return "****";
+		                    	        	return dnis;
+		                    	        }
+		                			}
 		                		}
 		                		return null;
 		                	}
@@ -1213,7 +1169,7 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>최초CONNID</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>최종CONNID</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>호유형</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>고객번호</th>";
+		detailHeadStr += "<th align='center' colspan=1 rowspan=1>고객/내선번호</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>대표번호</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>센터</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>그룹</th>";
@@ -1240,41 +1196,25 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    
 		    if(m.ANI != null)
     		{
-        		var gil = m.ANI.length;
+		    	var gil = m.ANI.length;
         		var val = "";
         		if(gil > 5)
         		{
-        			if(gil < 11)
-            		{
-            			for(var i=0; i < gil; i++)
-                		{
-            				//if(i > 1 && i < 6)
-            				if(i > 5)
-            				{
-            					val += "*";
-            				}
-            				else
-            				{
-            					val += m.ANI.substr(i,1)
-            				}				                			
-                		}			                			
-            		}
-            		else
-            		{
-            			for(var i=0; i < gil; i++)
-                		{
-            				//if(i > 2 && i < 7)
-            				if(i > 6)
-            				{
-            					val += "*";
-            				}
-            				else
-            				{
-            					val += m.ANI.substr(i,1)
-            				}				                			
-                		}	
-            		}
-        						                		
+        			var ani = m.ANI;
+        			
+        			if(ani != "" && ani != null) {
+        				var len = ani.length;
+            			// 자리수 체크
+            	        if(len == 11) { // 010****1234
+            	        	val = ani.substr(0, 3) + "****" + ani.substr(7, 4);
+            	        } else if(len == 10) { // 02****1234
+            	        	val = ani.substr(0, 2) + "****" + ani.substr(6, 4);
+            	        } else if(len == 9) { // 02***1234
+            	        	val = ani.substr(0, 2) + "***" + ani.substr(5, 4);
+            	        } else {
+            	        	val = ani;
+            	        }
+        			}
         			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(val) + "</td>";
         		}
         		else
@@ -1290,40 +1230,25 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    
 		    if(m.DNIS != null)
     		{
-        		var gil = m.DNIS.length;
+		    	var gil = m.DNIS.length;
         		var val = "";
         		if(gil > 5)
         		{
-        			if(gil < 11)
-            		{
-            			for(var i=0; i < gil; i++)
-                		{
-            				//if(i > 1 && i < 6)
-            				if(i > 5)
-            				{
-            					val += "*";
-            				}
-            				else
-            				{
-            					val += m.DNIS.substr(i,1)
-            				}				                			
-                		}			                			
-            		}
-            		else
-            		{
-            			for(var i=0; i < gil; i++)
-                		{
-            				//if(i > 2 && i < 7)
-            				if(i > 6)
-            				{
-            					val += "*";
-            				}
-            				else
-            				{
-            					val += m.DNIS.substr(i,1)
-            				}				                			
-                		}	
-            		}
+        			var dnis = m.DNIS;
+        			
+        			if(dnis != "" && dnis != null) {
+        				var len = dnis.length;
+            			// 자리수 체크
+            	        if(len == 11) { // 010****1234
+            	        	val = dnis.substr(0, 3) + "****" + dnis.substr(7, 4);
+            	        } else if(len == 10) { // 02****1234
+            	        	val = dnis.substr(0, 2) + "****" + dnis.substr(6, 4);
+            	        } else if(len == 9) { // 02***1234
+            	        	val = dnis.substr(0, 2) + "***" + dnis.substr(5, 4);
+            	        } else {
+            	        	val = dnis;
+            	        }
+        			}
         						                		
         			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(val) + "</td>";
         		}

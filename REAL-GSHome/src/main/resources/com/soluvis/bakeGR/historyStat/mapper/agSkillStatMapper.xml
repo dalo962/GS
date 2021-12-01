@@ -37,13 +37,13 @@
 		and		team_cd = #{teamId}
 		</if>
 		<if test="agid != '' and agid != null">
-		and		AGENT_ID in (${agid})
+		and		LOGID in (${agid})
 		</if>
 		<if test="agname != '' and agname != null">
 		and		AGENT_NAME in (${agname})
 		</if>	
 		<if test="agids != '' and agids != null">
-		and		AGENT_ID in (${agids})
+		and		LOGID in (${agids})
 		</if>
 		<if test="skId != '' and skId != null">
 		and		skill_dbid in (${skId})

@@ -69,7 +69,7 @@
                     	<ax:td label='상담사' width="14%" labelWidth="100px">
 							<div class="form-group">
 								<label class="checkbox-inline"><input type="radio" name="checkag" id="name" value="name" checked="true"> 이름</label>
-								<label class="checkbox-inline"><input type="radio" name="checkag" id="id" value="id"> ID</label>								
+								<label class="checkbox-inline"><input type="radio" name="checkag" id="id" value="id"> 사번</label>								
 							</div>	
                     	</ax:td>
                     	<ax:td label=' ' width="11%" labelWidth="1px">

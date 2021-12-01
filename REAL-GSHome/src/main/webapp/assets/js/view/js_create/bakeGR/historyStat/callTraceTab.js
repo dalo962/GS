@@ -215,17 +215,22 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	    	        	formatter:function(){
 	                		if(this.value != null)
 	                		{
-		                		var gil = this.value.length;
-		                		if(gil > 5)
-		                		{
-			                		var val = "";
-			                		for(var i=0; i < gil; i++)
-			                		{                			
-			                			val += "*";
-			                		}
-			                		return val;
-		                		}
-		                		return this.value;
+	                			var thisdn = this.value;
+	    	        			
+	                			if(thisdn != "" && thisdn != null) {
+	                				var len = thisdn.length;
+	                    			// 자리수 체크
+	                    	        if(len == 11) { // 010****1234
+	                    	        	return thisdn.substr(0, 3) + "****" + thisdn.substr(7, 4);
+	                    	        } else if(len == 10) { // 02****1234
+	                    	        	return thisdn.substr(0, 2) + "****" + thisdn.substr(6, 4);
+	                    	        } else if(len == 9) { // 02***1234
+	                    	        	return thisdn.substr(0, 2) + "***" + thisdn.substr(5, 4);
+	                    	        } else {
+	                    	        	//return "****";
+	                    	        	return thisdn;
+	                    	        }
+	                			}
 	                		}
 	                		return null;
 	                	}},
@@ -233,17 +238,22 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 		    	        	formatter:function(){
 		                		if(this.value != null)
 		                		{
-			                		var gil = this.value.length;
-			                		if(gil > 5)
-			                		{
-				                		var val = "";
-				                		for(var i=0; i < gil; i++)
-				                		{                			
-				                			val += "*";
-				                		}
-				                		return val;
-			                		}
-			                		return this.value;
+		                			var otherdn = this.value;
+		    	        			
+		                			if(otherdn != "" && otherdn != null) {
+		                				var len = otherdn.length;
+		                    			// 자리수 체크
+		                    	        if(len == 11) { // 010****1234
+		                    	        	return otherdn.substr(0, 3) + "****" + otherdn.substr(7, 4);
+		                    	        } else if(len == 10) { // 02****1234
+		                    	        	return otherdn.substr(0, 2) + "****" + otherdn.substr(6, 4);
+		                    	        } else if(len == 9) { // 02***1234
+		                    	        	return otherdn.substr(0, 2) + "***" + otherdn.substr(5, 4);
+		                    	        } else {
+		                    	        	//return "****";
+		                    	        	return otherdn;
+		                    	        }
+		                			}
 		                		}
 		                		return null;
 		                	}},
@@ -251,17 +261,22 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 			    	        	formatter:function(){
 			                		if(this.value != null)
 			                		{
-				                		var gil = this.value.length;
-				                		if(gil > 5)
-				                		{
-					                		var val = "";
-					                		for(var i=0; i < gil; i++)
-					                		{                			
-					                			val += "*";
-					                		}
-					                		return val;
-				                		}
-				                		return this.value;
+			                			var thirddn = this.value;
+			    	        			
+			                			if(thirddn != "" && thirddn != null) {
+			                				var len = thirddn.length;
+			                    			// 자리수 체크
+			                    	        if(len == 11) { // 010****1234
+			                    	        	return thirddn.substr(0, 3) + "****" + thirddn.substr(7, 4);
+			                    	        } else if(len == 10) { // 02****1234
+			                    	        	return thirddn.substr(0, 2) + "****" + thirddn.substr(6, 4);
+			                    	        } else if(len == 9) { // 02***1234
+			                    	        	return thirddn.substr(0, 2) + "***" + thirddn.substr(5, 4);
+			                    	        } else {
+			                    	        	//return "****";
+			                    	        	return thirddn;
+			                    	        }
+			                			}
 			                		}
 			                		return null;
 			                	}},   	        
@@ -270,13 +285,22 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	    	        	formatter:function(){
 	                		if(this.value != null)
 	                		{
-		                		var gil = this.value.length;
-		                		var val = "";
-		                		for(var i=0; i < gil; i++)
-		                		{                			
-		                			val += "*";
-		                		}
-		                		return val;
+	                			var ani = this.value;
+	    	        			
+	                			if(ani != "" && ani != null) {
+	                				var len = ani.length;
+	                    			// 자리수 체크
+	                    	        if(len == 11) { // 010****1234
+	                    	        	return ani.substr(0, 3) + "****" + ani.substr(7, 4);
+	                    	        } else if(len == 10) { // 02****1234
+	                    	        	return ani.substr(0, 2) + "****" + ani.substr(6, 4);
+	                    	        } else if(len == 9) { // 02***1234
+	                    	        	return ani.substr(0, 2) + "***" + ani.substr(5, 4);
+	                    	        } else {
+	                    	        	//return "****";
+	                    	        	return ani;
+	                    	        }
+	                			}
 	                		}
 	                		return null;
 	                	}},
@@ -374,13 +398,24 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    if(m.THISDN != null)
     		{
         		var gil = m.THISDN.length;
+        		var val = "";
         		if(gil > 5)
         		{
-            		var val = "";
-            		for(var i=0; i < gil; i++)
-            		{                			
-            			val += "*";
-            		}
+            		var thisdn = m.THISDN;
+        			
+        			if(thisdn != "" && thisdn != null) {
+        				var len = thisdn.length;
+            			// 자리수 체크
+            	        if(len == 11) { // 010****1234
+            	        	val = thisdn.substr(0, 3) + "****" + thisdn.substr(7, 4);
+            	        } else if(len == 10) { // 02****1234
+            	        	val = thisdn.substr(0, 2) + "****" + thisdn.substr(6, 4);
+            	        } else if(len == 9) { // 02***1234
+            	        	val = thisdn.substr(0, 2) + "***" + thisdn.substr(5, 4);
+            	        } else {
+            	        	val = thisdn;
+            	        }
+        			}
             		detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(val) + "</td>";
         		}
         		else
@@ -396,13 +431,24 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    if(m.OTHERDN != null)
     		{
         		var gil = m.OTHERDN.length;
+        		var val = "";
         		if(gil > 5)
         		{
-            		var val = "";
-            		for(var i=0; i < gil; i++)
-            		{                			
-            			val += "*";
-            		}
+        			var otherdn = m.OTHERDN;
+        			
+        			if(otherdn != "" && otherdn != null) {
+        				var len = otherdn.length;
+            			// 자리수 체크
+            	        if(len == 11) { // 010****1234
+            	        	val = otherdn.substr(0, 3) + "****" + otherdn.substr(7, 4);
+            	        } else if(len == 10) { // 02****1234
+            	        	val = otherdn.substr(0, 2) + "****" + otherdn.substr(6, 4);
+            	        } else if(len == 9) { // 02***1234
+            	        	val = otherdn.substr(0, 2) + "***" + otherdn.substr(5, 4);
+            	        } else {
+            	        	val = otherdn;
+            	        }
+        			}
             		detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(val) + "</td>";
         		}
         		else
@@ -418,13 +464,24 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    if(m.THIRDDN != null)
     		{
         		var gil = m.THIRDDN.length;
+        		var val = "";
         		if(gil > 5)
         		{
-            		var val = "";
-            		for(var i=0; i < gil; i++)
-            		{                			
-            			val += "*";
-            		}
+        			var thirddn = m.THIRDDN;
+        			
+        			if(thirddn != "" && thirddn != null) {
+        				var len = thirddn.length;
+            			// 자리수 체크
+            	        if(len == 11) { // 010****1234
+            	        	val = thirddn.substr(0, 3) + "****" + thirddn.substr(7, 4);
+            	        } else if(len == 10) { // 02****1234
+            	        	val = thirddn.substr(0, 2) + "****" + thirddn.substr(6, 4);
+            	        } else if(len == 9) { // 02***1234
+            	        	val = thirddn.substr(0, 2) + "***" + thirddn.substr(5, 4);
+            	        } else {
+            	        	val = thirddn;
+            	        }
+        			}
             		detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(val) + "</td>";
         		}
         		else
@@ -441,13 +498,31 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    
 		    if(m.ANI != null)
     		{
-        		var gil = m.ANI.length;
+		    	var gil = m.ANI.length;
         		var val = "";
-        		for(var i=0; i < gil; i++)
-        		{                			
-        			val += "*";
+        		if(gil > 5)
+        		{
+        			var ani = m.ANI;
+        			
+        			if(ani != "" && ani != null) {
+        				var len = ani.length;
+            			// 자리수 체크
+            	        if(len == 11) { // 010****1234
+            	        	val = ani.substr(0, 3) + "****" + ani.substr(7, 4);
+            	        } else if(len == 10) { // 02****1234
+            	        	val = ani.substr(0, 2) + "****" + ani.substr(6, 4);
+            	        } else if(len == 9) { // 02***1234
+            	        	val = ani.substr(0, 2) + "***" + ani.substr(5, 4);
+            	        } else {
+            	        	val = ani;
+            	        }
+        			}
+        			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(val) + "</td>";
         		}
-        		detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(val) + "</td>";
+        		else
+        		{
+        			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(m.ANI) + "</td>";
+        		}
     		}		    
 		    else
 		    {
