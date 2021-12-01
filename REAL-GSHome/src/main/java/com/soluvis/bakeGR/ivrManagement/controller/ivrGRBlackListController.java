@@ -110,6 +110,7 @@ public class ivrGRBlackListController extends commController{
 					map.put("bl_useyn", bl.getBl_useyn());
 					map.put("degree", bl.getDegree());
 					map.put("agentid", bl.getAgentid());
+					map.put("agentname", bl.getAgentname());
 					map.put("crt_dt", sdf.format(new Date()));
 					if(cid.equals("") || cid == null)	map.put("crt_by", "IVR");
 					else	map.put("crt_by", cid);
@@ -131,6 +132,7 @@ public class ivrGRBlackListController extends commController{
 					map.put("bl_useyn", bl.getBl_useyn());
 					map.put("degree", bl.getDegree());
 					map.put("agentid", bl.getAgentid());
+					map.put("agentname", bl.getAgentname());
 					map.put("upt_dt", sdf.format(new Date()));
 					map.put("upt_by", cid);
 						

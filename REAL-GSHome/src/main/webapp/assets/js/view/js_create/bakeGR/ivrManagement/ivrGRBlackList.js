@@ -439,7 +439,8 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 	}
                 }}, 
             	{key: "description", label: "사유", width: 240, align: "center", editor:"text"},
-            	{key: "agentid", label: "상담사", width: 80, align: "center", editor:"text"},
+            	{key: "agentid", label: "사번", width: 80, align: "center", editor:"text"},
+            	{key: "agentname", label: "상담사", width: 80, align: "center", editor:"text"},
             	{key: "connid", label: "ConnID", width: 130, align: "center", editor:"text"},
             	{key: "recBtn", label: "듣기", width: 50, align: "center", 
                 	formatter: function() {     

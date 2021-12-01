@@ -1,4 +1,6 @@
 var fnObj = {};
+var dnis_options = [];
+
 var ACTIONS = axboot.actionExtend(fnObj, {
     PAGE_SEARCH: function (caller, act, data) {        
     	axboot.ajax({
@@ -138,6 +140,30 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     PAGE_DEL: function (caller, act, data) {
     	caller.gridView01.delRow("selected");
     },
+    SET_DNIS: function (caller, act, data) {
+    	axboot.ajax({
+            type: "GET",
+            cache: false,
+            url: "/gr/api/ivr/ivrDnis/DnisSearchY",
+            data: "",
+            callback: function (res) {
+            	dnis_options.push({value:"ALL", text:"전체"});
+            	if(res.length > 0){
+            		res.forEach(function (n) {
+                    	dnis_options.push({
+                    		value:n.dnis, text: n.dnis
+                        });
+                    });
+            	}
+            	fnObj.gridView01.initView();
+            },
+            options: {
+                onError: function (err) {
+                    console.log(err);
+                }
+            }
+        });
+    },
     EXCEL_EXPORT: function (caller, act, data) {
         caller.gridView01.exportExcel();
     }
@@ -149,11 +175,12 @@ var info = {};
 // fnObj 기본 함수 스타트와 리사이즈
 fnObj.pageStart = function () {
     var _this = this;
-
+	
    	_this.pageButtonView.initView();
     _this.searchView.initView();
-    _this.gridView01.initView();
+//    _this.gridView01.initView();	// SET_DNIS로 위치변경
 
+    ACTIONS.dispatch(ACTIONS.SET_DNIS);
     ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
 };
 
@@ -234,7 +261,14 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
             	{key: "dnis", label: "대표번호", width: 150, align: "center", sortable: true, editor: {
-            		type: "text", disabled:function(){
+            		type: "select",
+            		config: {
+            			columnKeys: {
+            				optionValue: "value", optionText: "text"
+            			},
+            			options: dnis_options
+            		},
+            		disabled:function(){
         				var dis = "";
         				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
         				{
