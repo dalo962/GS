@@ -468,7 +468,8 @@ function date_set(){
     var yyyy = date.getFullYear().toString();
     var MM = (date.getMonth() + 1).toString();
     if(MM.length == 1) MM = "0"+MM;
-    var dd = (date.getDate() - 1).toString();
+    //var dd = (date.getDate() - 1).toString();
+    var dd = date.getDate().toString();
     if(dd == "0" || dd == "00")
     {    	
     	MM = MM - 1;

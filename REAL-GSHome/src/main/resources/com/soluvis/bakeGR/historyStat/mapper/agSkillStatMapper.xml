@@ -21,11 +21,9 @@
 		<if test="hol != '' and hol != null">
 		and 	TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') not in (#{hol})
 		</if>
-		<if test="hdtday != '' and hdtday != null">
-		and 	row_date in (${hdtday})
-		</if>
 		<if test="hdt != '' and hdt != null">
-		and 	TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') in (#{hdt})
+		and 	<if test="hdtday != '' and hdtday != null"> ( </if> TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') in (#{hdt}) 
+				<if test="hdtday != '' and hdtday != null"> OR row_date in (${hdtday})) </if>
 		</if>
 		<if test="compId != '' and compId != null">
 		and		company_cd = #{compId}
@@ -73,11 +71,9 @@
 		<if test="hol != '' and hol != null">
 		and 	TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') not in (#{hol})
 		</if>
-		<if test="hdtday != '' and hdtday != null">
-		and 	row_date in (${hdtday})
-		</if>
 		<if test="hdt != '' and hdt != null">
-		and 	TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') in (#{hdt})
+		and 	<if test="hdtday != '' and hdtday != null"> ( </if> TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') in (#{hdt}) 
+				<if test="hdtday != '' and hdtday != null"> OR row_date in (${hdtday})) </if>
 		</if>
 		<if test="compId != '' and compId != null">
 		and		company_cd = #{compId}
@@ -89,13 +85,13 @@
 		and		team_cd = #{teamId}
 		</if>
 		<if test="agid != '' and agid != null">
-		and		AGENT_ID in (${agid})
+		and		LOGID in (${agid})
 		</if>
 		<if test="agname != '' and agname != null">
 		and		AGENT_NAME in (${agname})
 		</if>	
 		<if test="agids != '' and agids != null">
-		and		AGENT_ID in (${agids})
+		and		LOGID in (${agids})
 		</if>
 		<if test="skId != '' and skId != null">
 		and		skill_dbid in (${skId})
