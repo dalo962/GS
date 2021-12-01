@@ -605,157 +605,116 @@ function time_set(){
 	// searchView의 startTime과 endTime를 Setting하는 function ( 일 월 년 제외 )
 	var select = $("[data-ax5select='interval']").ax5select("getValue")[0].value;
 	var opt_time = [];
-	var lasttime = "00:00";
-	
-	if(select == "5m")
-	{
+
+	if(select == "5m") {
 		// 5분 간격
-		for (var i = 0; i < 24; i++) 
-		{
-        	for (var j = 0; j < 12; j++) 
-        	{
+		for (var i = 0; i < 24; i++) {
+        	for (var j = 0; j < 12; j++) {
 				var hour = "";
 				var min = "";
 				
-				if(i < 10) {
+				if(i<10) {
 					hour="0"+i;
-				}
-				else {
+				} else{
 					hour=i;
 				}
-				
-				if(j == 0) {
+				if(j==0) {
 					min="00";
-				}
-				else { 
-					if(j < 2){
-						min = "0" + (j * 5);  
-					}
-					else {
+				} else {
+					if(j < 2) {
+						min = "0" + (j*5)  
+					} else {
 						min = (j*5);
 					}
 				}
-				
 				opt_time.push({value: hour+":"+min, text: hour+":"+min});
 			}
 		} 
-		lasttime = "23:55";
-	}
-	else if(select == "15m")
-	{
+	} else if(select == "15m") {
 		// 15분 간격
-		for (var i = 0; i < 24; i++) 
-		{
-        	for (var j = 0; j < 4; j++) 
-        	{
+		for (var i = 0; i < 24; i++) {
+        	for (var j = 0; j < 4; j++) {
 				var hour = "";
 				var min = "";
 				
-				if(i < 10) {
+				if(i<10) {
 					hour="0"+i;
-				}
-				else {
+				} else {
 					hour=i;
 				}
-				
-				if(j == 0) {
+				if(j==0) {
 					min="00";
-				}
-				else { 
+				} else {
 					min = (j*15);
 				}
-				
 				opt_time.push({value: hour+":"+min, text: hour+":"+min});
 			}
 		}
-		lasttime = "23:45";
-	}
-	else if(select == "30m")
-	{
+	} else if(select == "30m") {
 		// 30분 간격
-		for (var i = 0; i < 24; i++) 
-		{
-        	for (var j = 0; j < 2; j++) 
-        	{
+		for (var i = 0; i < 24; i++) {
+        	for (var j = 0; j < 2; j++) {
 				var hour = "";
 				var min = "";
 				
-				if(i < 10) {
+				if(i<10) {
 					hour="0"+i;
-				}
-				else {
+				} else {
 					hour=i;
 				}
-				
-				if(j == 0) {
+				if(j==0) {
 					min="00";
-				}
-				else { 
+				} else {
 					min = (j*30);
 				}
-				
 				opt_time.push({value: hour+":"+min, text: hour+":"+min});
 			}
 		}
-		lasttime = "23:30";
-	}
-	else
-	{	
+	} else {	
 		// 1시간 간격
-		for (var i = 0; i < 24; i++) 
-		{
+		for (var i = 0; i < 24; i++) {
 	    	var hour = "";
 	    	var min = "00";
 	    	
-	    	if(i < 10) {
+	    	if(i<10) {
 	    		hour="0"+i;
+	    	} else {
+	    		hour=i;
 	    	}
-			else {
-				hour=i;
-			}
-	    	
 	    	opt_time.push({value: hour+":"+min, text: hour+":"+min});
 		}
-		lasttime = "23:00";
 	}
 
-	$("[data-ax5select='startTime']").ax5select({
-	    theme: 'primary',
-	    options: opt_time,
-	    onChange: function () {
-	    	var stime = $("[data-ax5select='startTime']").ax5select("getValue")[0].value;
-	    	var etime = $("[data-ax5select='endTime']").ax5select("getValue")[0].value;
-	    	
-        	var starttime = stime.substring(0,2)+stime.substring(3,5);
-        	var endtime = etime.substring(0,2)+etime.substring(3,5);
-        	
-        	if(starttime > endtime)
-        	{
-        		$("[data-ax5select='endTime']").ax5select("setValue",stime); 
-        	}
-	    }
+	axboot.ajax({
+		type: "GET",
+		url: "/api/statLstMng/historytimeget",
+		cache: false,
+		data: {comSelect:75, codeSelect: select + "_75"},
+		callback: function(res) {
+			var com_stime = "";
+			var com_etime = "";
+			
+			if(res.length != 0) {
+				com_stime = res[0].data1;
+				com_etime = res[0].data2;
+			} else {
+				com_stime = "00:00";
+				
+				if(select == "5m") {
+					com_etime = "23:55"; 
+				} else if(select == "15m") {
+					com_etime = "23:45"; 
+				} else if(select == "30m") {
+					com_etime = "23:30"; 
+				} else {
+					com_etime = "23:00"; 
+				} 
+			}
+			
+			$("[data-ax5select='startTime']").ax5select("setValue",com_stime);
+			$("[data-ax5select='endTime']").ax5select("setValue",com_etime);
+		}
 	});
-	
-	$("[data-ax5select='endTime']").ax5select({
-	    theme: 'primary',
-	    options: opt_time,
-	    onChange: function () {
-	    	var stime = $("[data-ax5select='startTime']").ax5select("getValue")[0].value;
-	    	var etime = $("[data-ax5select='endTime']").ax5select("getValue")[0].value;
-	    	
-        	var starttime = stime.substring(0,2)+stime.substring(3,5);
-        	var endtime = etime.substring(0,2)+etime.substring(3,5);
-        	
-        	if(starttime > endtime)
-        	{
-        		$("[data-ax5select='startTime']").ax5select("setValue",etime); 
-        	}
-        	
-	    }
-	});
-	
-	// 마지막 시간으로 설정!
-	$("#endTime").ax5select("setValue", lasttime);
 } // time_set() 종료
 
 // searchView 

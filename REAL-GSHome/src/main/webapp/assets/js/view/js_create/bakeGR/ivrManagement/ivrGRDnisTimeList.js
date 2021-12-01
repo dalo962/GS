@@ -476,7 +476,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         return list;
     },
     addRow: function () {
-        this.target.addRow({__created__: true, wr_stime:"000000", wr_etime:"000000", lc_stime:"000000", lc_etime:"000000", sat_stime:"000000", sat_etime:"000000", sun_stime:"000000", sun_etime:"000000", hl_stime:"000000", hl_etime:"000000"}, "last");
+        this.target.addRow({__created__: true, wr_stime:"000000", wr_etime:"000000", ov_stime:"000000", ov_etime:"000000", lc_stime:"000000", lc_etime:"000000", sat_stime:"000000", sat_etime:"000000", sun_stime:"000000", sun_etime:"000000", hl_stime:"000000", hl_etime:"000000"}, "last");
         this.target.focus("END");
     },
     exportExcel: function () {
