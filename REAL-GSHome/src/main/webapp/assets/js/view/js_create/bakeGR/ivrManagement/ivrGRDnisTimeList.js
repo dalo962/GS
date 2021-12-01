@@ -260,27 +260,37 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             showLineNumber:true,
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
-            	{key: "dnis", label: "대표번호", width: 150, align: "center", sortable: true, editor: {
-            		type: "select",
-            		config: {
-            			columnKeys: {
-            				optionValue: "value", optionText: "text"
-            			},
-            			options: dnis_options
-            		},
-            		disabled:function(){
-        				var dis = "";
-        				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
-        				{
-        					dis = true
-        				}
-        				else
-        				{
-        					dis = false;
-        				}
-        				return dis;
-        			}
-            	}}, 
+            	{key: "dnis", label: "대표번호", width: 150, align: "center", sortable: true, 
+            		editor: {
+	            		type: "select",
+	            		config: {
+	            			columnKeys: {
+	            				optionValue: "value", optionText: "text"
+	            			},
+	            			options: dnis_options
+	            		},
+	            		disabled:function(){
+	        				var dis = "";
+	        				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
+	        				{
+	        					dis = true
+	        				}
+	        				else
+	        				{
+	        					dis = false;
+	        				}
+	        				return dis;
+	        			}
+	            	}, formatter: function() {
+	            		var dnis = this.item.dnis;
+	            		// dnis 값이 빈칸이거나 null이면 "선택" 출력 //
+	            		if(dnis == '' || dnis == null) {
+	            			return '선택';
+	            		} else {
+	            			return dnis;
+	            		}
+	            	}
+	            }, 
                 {key: "useyn", label: "근무시간 사용유무", width: 140, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
