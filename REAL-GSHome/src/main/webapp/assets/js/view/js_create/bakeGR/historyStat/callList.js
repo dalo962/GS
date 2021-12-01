@@ -1,4 +1,6 @@
 var fnObj = {};
+var rec_url = '';
+
 var ACTIONS = axboot.actionExtend(fnObj, {
     PAGE_SEARCH: function (caller, act, data) { 
     	var callText = $("#callText").val();
@@ -147,6 +149,26 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     EXCEL_EXPORT: function (caller, act, data) {
 		// EXCEL_EXPORT :: 엑셀로 내보내기(엑셀버튼)
     	caller.gridView01.exportExcel();
+    },
+    GET_RECURL: function (caller, act, data) {
+    	var recList = [].concat(fnObj.gridView01.getData("selected"));
+    	
+    	axboot.ajax({
+            type: "GET",
+            cache: false,
+            url: "/gr/api/ivr/ivrBlackList/RecUrlSearch",
+            data: "",
+            callback: function (res) {
+            	if(res.length > 0){
+            		rec_url = res[0].name;
+            	}            	
+            },
+            options: {
+                onError: function (err) {
+                    alert("받아오기를 실패했습니다.");
+                }
+            }
+        });
     }
 });
 
@@ -211,6 +233,7 @@ fnObj.pageStart = function () {
         _this.searchView.initView();
         _this.gridView01.initView();
         
+        ACTIONS.dispatch(ACTIONS.GET_RECURL);
     });
 };
 
@@ -834,7 +857,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 // 녹취 플레이 버튼 클릭 시 connid를 받아 녹취 청취 화면을 open
 // TODO 녹취 url 수정 필요
 function clickPlay (connid) {
-	var url = "https://devrecm.gsts.kr/recseePlayer/?SEQNO=" + connid;
+	var url = rec_url + "/recseePlayer/?SEQNO=" + connid;
 	var name = "recPopup";
 	var specs = "width=500,height=200,menubar=no,status=no";
 	var recPopup = window.open(url, name, specs);
