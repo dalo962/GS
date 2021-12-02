@@ -23,6 +23,11 @@
             <ax:form name="searchView0">
                 <ax:tbl clazz="ax-search-tbl dpt_statmode" minWidth="300px">
 					<ax:tr>
+						<ax:td label='센터' width="25%" labelWidth="100px">
+							<div class="form-group">
+								<div data-ax5select="comSelect" data-ax5select-config="{}"></div>					
+							</div>	
+                    	</ax:td>
                     	<ax:td label='스킬' width="25%" labelWidth="100px">
 							<div class="form-group">
 								<div data-ax5select="skSelect" data-ax5select-config="{}"></div>

@@ -373,14 +373,22 @@ fnObj.pageStart = function () {
 	    	    	 cache : false,
 	    	    	 data: JSON.stringify($.extend({}, info)),
 	    	    	 callback: function (res) {
-	    	    		/*
-	    	    		var resultSet = [];
-	    	    		res.list.forEach(function (n) {
-	    	    			 resultSet.push({
-	    	    				 value: n.id, text: n.name,
-	    	    			});
-	    	    		});
-						*/
+	    	    		 var resultSet = [];
+			    			res.list.forEach(function (n) {
+			    				if(n.id == '75')
+			    	        	{
+			    					resultSet.push({
+			    						value: n.id, text: n.name,
+			    					});
+			    	        	}
+			    			});
+			    			$("[data-ax5select='comSelect']").ax5select({
+			    				theme: 'primary',
+			    				onStateChanged: function () {
+			    					_this.searchView.skillSearch();
+			    				},
+			    				options: resultSet,
+			    			});
 	    	    		_this.searchView.skillSearch();
 	    	    		ok();
 	    	    	 }
@@ -1241,9 +1249,9 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	//console.log("compId : " + $("[data-ax5select='comSelect']").ax5select("getValue")[0].value);
     	//console.log("chnId : " + $("[data-ax5select='chanSelect']").ax5select("getValue")[0].value);
         var data = {}; 
-        //data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
+        data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
         //data.chnId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
-        data.compId = 75; //리테일
+        //data.compId = 75; //리테일
         data.chnId = "";    	
         data.skId = "";
 	    axboot.ajax({
