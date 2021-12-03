@@ -351,7 +351,16 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			break;
                 	}
                 }},      
-                {key: "description", label: "사유", width: 140, align: "center", editor:"text"},
+                {key: "description", label: "사유", width: 140, align: "center", editor:"text",	
+                	formatter: function() {
+	            		var description = this.item.description;
+	            		if(description == '' || description == null) {
+	            			return '<span style="color: red;">입력</span>';
+	            		}
+
+	            		return description;
+	        		}
+                },
                 {key: "crt_dt", label: "작성일자", width: 200, align: "center", sortable: true,
                 	formatter: function() {
                 		var crdt = "";
