@@ -520,15 +520,17 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		},
                 		options: [
                 			{value: "0", text: "00.직접입력"},
-                			{value: "1", text: "01.POS장애"},
-                			{value: "2", text: "02.GOT"},
-                			{value: "3", text: "03.통합SC"},
-                			{value: "4", text: "04.통신장애"},
-                			{value: "5", text: "05.전산장애"},
-                			{value: "6", text: "06.신용카드"},
-                			{value: "7", text: "07.점포경영시스템장애"},
-                			{value: "8", text: "08.작업후 재고불일치"},
-                			{value: "9", text: "09.SC작업"},
+                			{value: "1", text: "01.POS 장애"},
+                			{value: "2", text: "02.GOT 장애"},
+                			{value: "3", text: "03.점포경영시스템 장애"},
+                			{value: "4", text: "04.통신 장애"},
+                			{value: "5", text: "05.전산 장애"},
+                			{value: "6", text: "06.신용카드 장애"},
+                			{value: "7", text: "07.점포경영시스템 작업"},
+                			{value: "8", text: "08.점포경영시스템 재고반영"},
+                			{value: "9", text: "09.코로나확진자 발생"},
+                			{value: "10", text: "10.택배기기 장애"},
+                			{value: "11", text: "11.기상악화(폭우,폭설)"},
                     	]
                 	}
                 }, formatter: function() {
@@ -537,31 +539,37 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             				return "00.직접입력";
             				break; 	
                 		case "1":
-                			return "01.POS장애";
+                			return "01.POS 장애";
                 			break; 	
                 		case "2":
-                			return "02.GOT";
+                			return "02.GOT 장애";
                 			break;       	
                 		case "3":
-                			return "03.통합SC";
+                			return "03.점포경영시스템 장애";
                 			break;       	
                 		case "4":
-                			return "04.통신장애";
+                			return "04.통신 장애";
                 			break;       	
                 		case "5":
-                			return "05.전산장애";
+                			return "05.전산 장애";
                 			break;       	
                 		case "6":
-                			return "06.신용카드";
+                			return "06.신용카드 장애";
                 			break;       	
                 		case "7":
-                			return "07.점포경영시스템장애";
+                			return "07.점포경영시스템 작업";
                 			break;   
                 		case "8":
-                			return "08.작업후 재고불일치";
+                			return "08.점포경영시스템 재고반영";
                 			break;  
                 		case "9":
-                			return "09.SC작업";
+                			return "09.코로나확진자 발생";
+                			break;  
+                		case "10":
+                			return "10.택배기기 장애";
+                			break;  
+                		case "11":
+                			return "11.기상악화(폭우,폭설)";
                 			break;  
                 		default :
                 			return '<span style="color: red;">선택</span>';
