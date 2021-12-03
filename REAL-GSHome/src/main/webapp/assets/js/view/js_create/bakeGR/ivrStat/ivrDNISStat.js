@@ -685,6 +685,41 @@ function time_set(){
 		}
 	}
 
+	$("[data-ax5select='startTime']").ax5select({
+	    theme: 'primary',
+	    options: opt_time,
+	    onChange: function () {
+	    	var stime = $("[data-ax5select='startTime']").ax5select("getValue")[0].value;
+	    	var etime = $("[data-ax5select='endTime']").ax5select("getValue")[0].value;
+	    	
+        	var starttime = stime.substring(0,2)+stime.substring(3,5);
+        	var endtime = etime.substring(0,2)+etime.substring(3,5);
+        	
+        	if(starttime > endtime)
+        	{
+        		$("[data-ax5select='endTime']").ax5select("setValue",stime); 
+        	}
+	    }
+	});
+	
+	$("[data-ax5select='endTime']").ax5select({
+	    theme: 'primary',
+	    options: opt_time,
+	    onChange: function () {
+	    	var stime = $("[data-ax5select='startTime']").ax5select("getValue")[0].value;
+	    	var etime = $("[data-ax5select='endTime']").ax5select("getValue")[0].value;
+	    	
+        	var starttime = stime.substring(0,2)+stime.substring(3,5);
+        	var endtime = etime.substring(0,2)+etime.substring(3,5);
+        	
+        	if(starttime > endtime)
+        	{
+        		$("[data-ax5select='startTime']").ax5select("setValue",etime); 
+        	}
+        	
+	    }
+	});
+
 	axboot.ajax({
 		type: "GET",
 		url: "/api/statLstMng/historytimeget",
