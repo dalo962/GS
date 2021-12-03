@@ -384,12 +384,33 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 	if (key == "holiday") {
                 		var date = this.item[key].replaceAll(/[-\/]/g,'');	// 입력된 날짜에서 -, / 제외
 	                    var index = this.item.__index;					// 변경될 index
-                		var regex = /\d{8}/g;							// 날짜 (YYYYMMDD) => 숫자 8자리
+                		var regex = /^([1-2]\d{3})([0][1-9]|1[0-2])(\d{2})$/g;// 날짜 (YYYYMMDD) => 숫자 8자리
                 		var matcher = regex.exec(date);					// 입력된 날짜와 정규식의 매칭 결과
 
             			if(date != "" && !matcher) {	// 입력된 날짜가 정규식과 다른 경우
-            				alert("올바른 형식으로 입력하시기 바랍니다."); // alert 띄우고
+            				alert("올바른 날짜 형식으로 입력하시기 바랍니다."); // alert 띄우고
             	    		date = "";	// 입력된 값을 빈칸으로
+            				
+            			} else if(date != "" && matcher) {
+            				var year = matcher[1];
+            				var month = matcher[2];
+            				var day = matcher[3];
+            				
+            				var _d31 = ["01", "03", "05", "07", "08", "10", "12"];
+            				var _d30 = ["04", "06", "09", "11"];
+            				
+            				if(day < "01" || // day 가 1보다 작으면 (0, 음수)
+            						(_d31.find(function(m) { if(m == month) return m == month }) && day > "31") ||	// 최대 일이 31일 인것들
+            						(_d30.find(function(m) { if(m == month) return m == month }) && day > "30")) {	// 최대 일이 30일 인것들
+                				alert("올바른 날짜 형식으로 입력하시기 바랍니다."); // alert 띄우고
+                	    		date = "";	// 입력된 값을 빈칸으로
+            				} else if(month == "02") { // 2월 윤달 계산
+        						var isleap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+        						if(day > 29 || (day == 29 && !isleap)) {
+                    				alert("올바른 날짜 형식으로 입력하시기 바랍니다."); // alert 띄우고
+                    	    		date = "";	// 입력된 값을 빈칸으로
+        						}
+            				}
             			}
 	                    
 	                    this.self.setValue(index, key, date);

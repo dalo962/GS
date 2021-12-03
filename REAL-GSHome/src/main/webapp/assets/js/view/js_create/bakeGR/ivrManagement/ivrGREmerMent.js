@@ -670,7 +670,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		var matcher = regex.exec(date);					// 입력된 날짜와 정규식의 매칭 결과
 
             			if(date != "" && !matcher) {	// 입력된 날짜가 정규식과 다른 경우
-            				alert("올바른 형식으로 입력하시기 바랍니다."); // alert 띄우고
+            				alert("올바른 날짜 형식으로 입력하시기 바랍니다."); // alert 띄우고
             	    		date = "";	// 입력된 값을 빈칸으로
             				
             			} else if(date != "" && matcher) {
