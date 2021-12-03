@@ -29,6 +29,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var reqExp = /^[0-9]*$/;
     	var hlholiday = 0;
     	var hluseyn = 0;
+    	var hldes = 0;
     	saveList.forEach(function (n){
     		if(n.holiday == null || n.holiday == "")
     		{
@@ -37,6 +38,9 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		if(n.hl_useyn == null || n.hl_useyn == "")
     		{
     			hluseyn = hluseyn + 1;
+    		}
+    		if(n.description == null || n.description == "") {
+    			hldes = hldes + 1;
     		}
     	});
     	if(hlholiday > 0) 
@@ -47,6 +51,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(hluseyn > 0) 
     	{ 
     		alert("휴일 사용유무를 선택하시기 바랍니다."); 
+    		return;
+    	}
+    	if(hldes > 0) {
+    		alert("휴일 사유를 입력하시기 바랍니다.");
     		return;
     	}
 
