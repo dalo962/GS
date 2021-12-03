@@ -33,6 +33,9 @@
         <ax:split-layout name="ax1" orientation="vertical">
             <ax:split-panel width="*" style="height:98%;">                
                 <div class="ax-button-group" data-fit-height-aside="grid-view-01">
+                	<div class="left">
+                		<h5><b>※ 추가 버튼 클릭 시 <span style="color: red;">붉은 글씨로 나오는 항목</span>은 필수 입력 항목입니다.</b></h5>
+               		</div>
                     <!--  
                     <div class="left">
                         <h2><i class="cqc-list"></i>근무시간 목록</h2>

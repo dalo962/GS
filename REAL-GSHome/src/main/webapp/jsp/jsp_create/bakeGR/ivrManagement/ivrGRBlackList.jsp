@@ -38,6 +38,9 @@
         <ax:split-layout name="ax1" orientation="vertical">
             <ax:split-panel width="*" style="height:98%;">    
                 <div class="ax-button-group" data-fit-height-aside="grid-view-01">
+                	<div class="left">
+                		<h5><b>※ 추가 버튼 클릭 시 <span style="color: red;">붉은 글씨로 나오는 항목</span>은 필수 입력 항목입니다.</b></h5>
+               		</div>
                     <div class="right">     
                     	<button type="button" class="btn btn-default" data-grid-view-01-btn="add"><i class="cqc-circle-with-plus"></i> <ax:lang id="ax.admin.add"/></button>                                                                 
                         <button type="button" class="btn btn-default" data-grid-view-01-btn="delete"><i class="cqc-circle-with-minus"></i> <ax:lang id="ax.admin.delete"/></button>

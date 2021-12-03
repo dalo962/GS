@@ -252,21 +252,38 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             showLineNumber:true,
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
-            	{key: "url_nm", label: "URL 명", width: 200, align: "center", sortable: true, editor: {
-            		type: "text", disabled:function(){
-        				var dis = "";
-        				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
-        				{
-        					dis = true
-        				}
-        				else
-        				{
-        					dis = false;
-        				}
-        				return dis;
-        			}
-            	}}, 
-                {key: "svr_ip", label: "서버IP", width: 200, align: "center", sortable: true, editor: "text"},                
+            	{key: "url_nm", label: "URL 명", width: 200, align: "center", sortable: true, 
+            		editor: {
+	            		type: "text", disabled:function(){
+	        				var dis = "";
+	        				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
+	        				{
+	        					dis = true
+	        				}
+	        				else
+	        				{
+	        					dis = false;
+	        				}
+	        				return dis;
+	        			}
+            		},
+            		formatter: function () {
+            			var url_nm = this.item.url_nm;
+            			if(url_nm == '' || url_nm == null) {
+            				return '<span style="color: red;">입력</span>';
+            			}
+            			return url_nm;
+            		}
+            	}, 
+                {key: "svr_ip", label: "서버IP", width: 200, align: "center", sortable: true, editor: "text",
+            		formatter: function () {
+            			var svr_ip = this.item.svr_ip;
+            			if(svr_ip == '' || svr_ip == null) {
+            				return '<span style="color: red;">입력</span>';
+            			}
+            			return svr_ip;
+            		}
+            	},                
                 {key: "crt_dt", label: "작성일자", width: 200, align: "center", sortable: true,
                 	formatter: function() {
                 		var crdt = "";

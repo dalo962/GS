@@ -47,6 +47,9 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var bletime = 0;
     	var blemertype = 0;
     	var blment = 0;
+    	var datedif = 0;
+    	var timedif = 0;
+    	
     	saveList.forEach(function (n){
     		if(n.dnis == null || n.dnis == "")
     		{
@@ -72,6 +75,14 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     				blment = blment + 1;
     			}
 			}
+    		if(n.sdate > n.edate) {	// 시작날짜가 종료날짜보다 큰 경우 (종료날짜가 시작날짜보다 작은 경우)
+    			datedif = datedif + 1;
+    		}
+    		if(n.sdate == n.edate) { // 날짜는 같은데 시작시간이 종료시간보다 큰 경우 (종료시간이 시작시간보다 작은 경우)
+    			if(n.stime > n.etime) {
+    				timedif = timedif + 1;
+    			}
+    		}
     	});
     	if(bldnis > 0) 
     	{ 
@@ -96,6 +107,14 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(blment > 0)
     	{
     		alert("적용하려는 멘트내용이 없습니다.");
+    		return;
+    	}
+    	if(datedif > 0) {
+    		alert("시작날짜가 종료날짜보다 클 수 없습니다.");
+    		return;
+    	}
+    	if(timedif > 0) {
+    		alert("시작시간이 종료시간보다 클 수 없습니다.");
     		return;
     	}
 
@@ -432,9 +451,12 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		options: dnis_options
                 	}
                 }, formatter: function() {
-	                	if(this.item.dnis == 'ALL'){
+                		if(this.item.dnis == '' || this.item.dnis == null) {
+                			return '<span style="color: red;">선택</span>';
+                		}
+	                	if(this.item.dnis == 'ALL') {
 	                		return "전체";
-	                	}else{
+	                	} else {
 	                		return this.item.dnis;
 	                	}
                 	}
@@ -442,6 +464,10 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "sdate", label: "시작날짜", width: 100, align: "center", sortable: true, editor:"text",
                 	formatter: function() {
                 		var sdate = "";
+                		if(this.item.sdate == '' || this.item.sdate == null) {
+                			return '<span style="color: red;">YYYYMMDD</span>';
+                		}
+                		
                 		if(this.item.sdate != null && this.item.sdate != '')
                 		{
                 			sdate = this.item.sdate.substr(0,4) + "-" + this.item.sdate.substr(4,2) + "-" + this.item.sdate.substr(6,2);
@@ -451,6 +477,10 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "stime", label: "시작시각", width: 100, align: "center", sortable: true, editor:"text",
                 	formatter: function() {
                 		var stime = "";
+                		if(this.item.stime == '' || this.item.stime == null) {
+                			return '<span style="color: red;">HHMMSS</span>';
+                		}
+                		
                 		if(this.item.stime != null && this.item.stime != '')
                 		{
                 			stime = this.item.stime.substr(0,2) + ":" + this.item.stime.substr(2,2) + ":" + this.item.stime.substr(4,2);
@@ -460,6 +490,10 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "edate", label: "종료날짜", width: 100, align: "center", sortable: true, editor:"text",
                 	formatter: function() {
                 		var edate = "";
+                		if(this.item.edate == '' || this.item.edate == null) {
+                			return '<span style="color: red;">YYYYMMDD</span>';
+                		}
+                		
                 		if(this.item.edate != null && this.item.edate != '')
                 		{
                 			edate = this.item.edate.substr(0,4) + "-" + this.item.edate.substr(4,2) + "-" + this.item.edate.substr(6,2);
@@ -469,6 +503,10 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "etime", label: "종료시각", width: 100, align: "center", sortable: true, editor:"text",
                 	formatter: function() {
                 		var etime = "";
+                		if(this.item.etime == '' || this.item.etime == null) {
+                			return '<span style="color: red;">HHMMSS</span>';
+                		}
+                		
                 		if(this.item.etime != null && this.item.etime != '')
                 		{
                 			etime = this.item.etime.substr(0,2) + ":" + this.item.etime.substr(2,2) + ":" + this.item.etime.substr(4,2);
@@ -526,7 +564,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			return "09.SC작업";
                 			break;  
                 		default :
-                			return "선택";
+                			return '<span style="color: red;">선택</span>';
                 			break;
                 	}
                 }},    
@@ -599,8 +637,8 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     this.self.select(this.dindex, {selectedClear: true});
                 },
                 onDataChanged: function () {
-                	// 변경된 것이 emer_type 일 때
-                	if(this.key == "emer_type") {
+                	var key = this.key;
+                	if(key == "emer_type") { // 변경된 것이 emer_type 일 때
                 		var type = this.item.emer_type;		// emer_type의 value
 	                    var index = this.item.__index;	// 변경될 index
 	                    var ment = "";	// 변경될 ment 값 ( default = "" )
@@ -616,7 +654,55 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                    }
 	                    
 	                    this.self.setValue(index, "ment", ment);
-                	} // emer_type 종료
+	                    
+                	} else if (key == "sdate" || key == "edate") {		// 날짜인경우
+                		var date = this.item[key].replaceAll(/[-\/]/g,'');	// 입력된 날짜에서 -, / 제외
+	                    var index = this.item.__index;					// 변경될 index
+                		var regex = /^([1-2]\d{3})([01-12]{2})(\d{2})$/g;							// 날짜 (YYYYMMDD) => 숫자 8자리
+                		var matcher = regex.exec(date);					// 입력된 날짜와 정규식의 매칭 결과
+
+            			if(date != "" && !matcher) {	// 입력된 날짜가 정규식과 다른 경우
+            				alert("올바른 형식으로 입력하시기 바랍니다."); // alert 띄우고
+            	    		date = "";	// 입력된 값을 빈칸으로
+            				
+            			} else if(date != "" && matcher) {
+            				var year = matcher[1];
+            				var month = matcher[2];
+            				var day = matcher[3];
+            				
+            				var _d31 = ["01", "03", "05", "07", "08", "10", "12"];
+            				var _d30 = ["04", "06", "09", "11"];
+            				
+            				if(day < "01" || // day 가 1보다 작으면 (0, 음수)
+            						(_d31.find(function(m) { if(m == month) return m == month }) && day > "31") ||	// 최대 일이 31일 인것들
+            						(_d30.find(function(m) { if(m == month) return m == month }) && day > "30")) {	// 최대 일이 30일 인것들
+                				alert("올바른 날짜 형식으로 입력하시기 바랍니다."); // alert 띄우고
+                	    		date = "";	// 입력된 값을 빈칸으로
+            				} else if(month == "02") { // 2월 윤달 계산
+        						var isleap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+        						if(day > 29 || (day == 29 && !isleap)) {
+                    				alert("올바른 날짜 형식으로 입력하시기 바랍니다."); // alert 띄우고
+                    	    		date = "";	// 입력된 값을 빈칸으로
+        						}
+            				}
+            			}
+	                    
+	                    this.self.setValue(index, key, date);
+	                    
+                	} else if (key == "stime" || key == "etime") {		// 시간인경우
+                		var time = this.item[key].replaceAll(':','');	// 입력된 시간에서 : 제외
+	                    var index = this.item.__index;					// 변경될 index
+                		var regex = /^([01][0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$/g;	// 시간 (HHMMSS) => 숫자 6자리
+                		var matcher = regex.exec(time);					// 입력된 시간과 정규식의 매칭 결과
+
+            			if(time != "" && !matcher) {	// 입력된 시간이 정규식과 다른 경우
+            				alert("올바른 시간 형식으로 입력하시기 바랍니다."); // alert 띄우고
+            	    		time = "";	// 입력된 값을 빈칸으로
+            			}
+	                    
+	                    this.self.setValue(index, key, time);
+	                    
+                	}                	
                 }
             }
         });

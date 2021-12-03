@@ -323,23 +323,48 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             showLineNumber:true,
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
-            	{key: "dnis", label: "대표번호", width: 200, align: "center", sortable: true, editor: {
-            		type: "text", disabled:function(){
-        				var dis = "";
-        				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
-        				{
-        					dis = true
-        				}
-        				else
-        				{
-        					dis = false;
-        				}
-        				return dis;
-        			}
-            	}},
-            	{key: "dnis_group", label: "그룹", width: 140, align: "center", editor:"text"},
+            	{key: "dnis", label: "대표번호", width: 200, align: "center", sortable: true, 
+            		editor: {
+	            		type: "text", disabled:function(){
+	        				var dis = "";
+	        				if(typeof this.item["crt_dt"] != null && this.item["crt_dt"] != "" && this.item["crt_dt"] != undefined)
+	        				{
+	        					dis = true
+	        				}
+	        				else
+	        				{
+	        					dis = false;
+	        				}
+	        				return dis;
+	        			}
+            		},
+            		formatter: function () {
+            			var dnis = this.item.dnis;
+            			if(dnis == '' || dnis == null) {
+            				return '<span style="color: red;">입력</span>';
+            			}
+            			return dnis;
+            		}
+            	},
+            	{key: "dnis_group", label: "그룹", width: 140, align: "center", editor:"text",
+            		formatter: function () {
+            			var dnis_group = this.item.dnis_group;
+            			if(dnis_group == '' || dnis_group == null) {
+            				return '<span style="color: red;">입력</span>';
+            			}
+            			return dnis_group;
+            		}
+            	},
             	{key: "dnis_group_eng", label: "그룹(영문)", width: 140, align: "center", editor:"text"},
-            	{key: "dnis_media", label: "매체", width: 140, align: "center", editor:"text"},
+            	{key: "dnis_media", label: "매체", width: 140, align: "center", editor:"text",
+            		formatter: function () {
+            			var dnis_media = this.item.dnis_media;
+            			if(dnis_media == '' || dnis_media == null) {
+            				return '<span style="color: red;">입력</span>';
+            			}
+            			return dnis_media;
+            		}
+            	},
             	{key: "dnis_name", label: "명칭", width: 140, align: "center", editor:"text"},
                 {key: "dnis_useyn", label: "사용유무", width: 120, align: "center", sortable: true, editor: {
                 	type: "select", config: {
@@ -360,7 +385,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			return "미사용";
                 			break;                    		
                 		default :
-                			return "선택";
+                			return '<span style="color: red;">선택</span>';
                 			break;
                 	}
                 }},      

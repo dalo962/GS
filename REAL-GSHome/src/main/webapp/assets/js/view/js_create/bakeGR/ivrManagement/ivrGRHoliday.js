@@ -318,6 +318,9 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             			}
             	},	formatter: function() {
 	            		var crdt = "";
+	            		if(this.item.holiday == '' || this.item.holiday == null) {
+                			return '<span style="color: red;">YYYYMMDD</span>';
+	            		}
 	            		if(this.item.holiday != null && this.item.holiday != '')
 	            		{
 	            			crdt = this.item.holiday.substr(0,4) + "-" + this.item.holiday.substr(4,2) + "-" + this.item.holiday.substr(6,2);
@@ -344,7 +347,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			return "미사용";
                 			break;                    		
                 		default :
-                			return "선택";
+                			return '<span style="color: red;">선택</span>';
                 			break;
                 	}
                 }},      
@@ -375,6 +378,23 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             body: {
                 onClick: function () {
                     this.self.select(this.dindex, {selectedClear: true});
+                },
+                onDataChanged: function () {
+                	var key = this.key;
+                	if (key == "holiday") {
+                		var date = this.item[key].replaceAll(/[-\/]/g,'');	// 입력된 날짜에서 -, / 제외
+	                    var index = this.item.__index;					// 변경될 index
+                		var regex = /\d{8}/g;							// 날짜 (YYYYMMDD) => 숫자 8자리
+                		var matcher = regex.exec(date);					// 입력된 날짜와 정규식의 매칭 결과
+
+            			if(date != "" && !matcher) {	// 입력된 날짜가 정규식과 다른 경우
+            				alert("올바른 형식으로 입력하시기 바랍니다."); // alert 띄우고
+            	    		date = "";	// 입력된 값을 빈칸으로
+            			}
+	                    
+	                    this.self.setValue(index, key, date);
+	                    
+                	}               	
                 }
             }
         });

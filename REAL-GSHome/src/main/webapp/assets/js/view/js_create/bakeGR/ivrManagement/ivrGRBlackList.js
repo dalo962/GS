@@ -362,20 +362,19 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "ani", label: "이슈고객 번호", width: 150, align: "center", sortable: true,
             		formatter: function () {
             			var ani = this.item.ani;
-            			console.log(ani)
-            			if(ani != "" && ani != null) {
-            				var len = ani.length;
-                			// 자리수 체크
-                	        if(len == 11) { // 010****1234
-                	        	return ani.substr(0, 3) + "****" + ani.substr(7, 4);
-                	        } else if(len == 10) { // 02****1234
-                	        	return ani.substr(0, 2) + "****" + ani.substr(6, 4);
-                	        } else if(len == 9) { // 02***1234
-                	        	return ani.substr(0, 2) + "***" + ani.substr(5, 4);
-                	        } else {
-                	        	return "****";
-                	        }
+            			if(ani == '' || ani == null) {
+            				return '<span style="color: red; font-size: 0.5rem;">"-" 제외한 전화번호 입력</span>';
             			}
+            			var result_ani = ani;
+            			var regex = /(\d{2,3})(\d{3,4})(\d{4})/g;
+            			var matcher = regex.exec(result_ani);
+            			
+            			if(matcher) {
+            				var middle_number = matcher[2];
+            				return matcher[1]+middle_number.split('').fill('*',0,middle_number.length).join('')+matcher[3];
+            			}
+            			
+            			return result_ani;
             		},
             		editor: {
 	            		type: "text", disabled:function(){
@@ -411,7 +410,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			return "미사용";
                 			break;                    		
                 		default :
-                			return "선택";
+                			return '<span style="color: red;">선택</span>';
                 			break;
                 	}
                 }}, 
@@ -434,7 +433,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			return "2";
                 			break;                    		
                 		default :
-                			return "선택";
+                			return '<span style="color: red;">선택</span>';
                 			break;
                 	}
                 }}, 
@@ -485,6 +484,23 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     		ACTIONS.dispatch(ACTIONS.GET_REC);
                     	}
                     }  
+                },
+                onDataChanged: function () {
+                	var key = this.key;
+                	// 전화번호 형식 //
+                	if(key == "ani") {
+                		var ani = this.item.ani.replaceAll('-', '');		// 현재 입력된 ani에서 - 제외
+	                    var index = this.item.__index;						// 현재 입력된 ani의 위치
+	                    var regex = /^(\d{2,3})(\d{3,4})(\d{4})$/g;			// 전화번호 형식 정규식
+            			var matcher = regex.exec(ani);						// 입력된 ani와 정규식의 매칭 결과
+
+            			if(ani != "" && !matcher) {	// 입력된 ani가 전화번호 형식과 다른 경우
+            				alert("전화번호를 올바르게 입력하시기 바랍니다."); // alert 띄우고
+            	    		ani = "";	// 입력된 값을 빈칸으로
+            			}
+	                    
+	                    this.self.setValue(index, key, ani);
+                	}
                 }
             }
         });
