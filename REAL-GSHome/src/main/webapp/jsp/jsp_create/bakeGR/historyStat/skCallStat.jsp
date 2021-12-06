@@ -28,6 +28,11 @@
 								<div data-ax5select="comSelect" data-ax5select-config="{}"></div>					
 							</div>	
                     	</ax:td>
+                    	<ax:td label='매체' width="25%">
+                        	<div class="form-group">
+								<div id="selChannel" name="selChannel" data-ax5select="selChannel" data-ax5select-config="{}"></div>
+							</div>	
+                        </ax:td>
                     	<ax:td label='스킬' width="25%" labelWidth="100px">
 							<div class="form-group">
 								<div data-ax5select="skSelect" data-ax5select-config="{}"></div>
