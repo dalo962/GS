@@ -117,8 +117,17 @@ public class ivrDNISStatController extends commController{
 				String eetime = ""; // stime 앞시간 + 1시간 24시는 00시로 처리
 				String etime = ""; // stime의 뒷시간 60분은 00분으로 처리
 				
+				String mday = ""; // 월별 2021-11 이런식이면 엑셀 익스포트시 깨짐
+				
 				for(int i = 0; i < search.size(); i++)
 				{
+					if("month".equals(params.get("interval")))
+					{
+						mday = "'" + search.get(i).get("ROW_DATE").toString();
+						
+						search.get(i).put("ROW_DATE", mday); 
+					}
+					
 					if(search.get(i).get("STARTTIME") != null && !"".equals(search.get(i).get("STARTTIME")))
 					{
 						if("5m".equals(params.get("interval")))
