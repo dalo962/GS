@@ -926,8 +926,8 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         			return "";
         		}
         	},
-        	startdate : this.sDate.val().replaceAll('-',''),
-        	enddate : this.eDate.val().replaceAll('-',''),
+        	startdate : this.sDate.val(),
+        	enddate : this.eDate.val(),
         	interval: this.interval.ax5select("getValue")[0].value,
         	starttime : this.sTime.ax5select("getValue")[0].value.replaceAll(':',''),
         	endtime : this.eTime.ax5select("getValue")[0].value.replaceAll(':','')
@@ -950,28 +950,15 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 
         var weeks = ["일", "월", "화", "수", "목", "금", "토"];
         
-        var row_date = {key: "ROW_DATE", label: "날짜", width: 200, align: "center", sortable: true,
-	        	formatter: function() {
-	        		var dt = "";
-	        		if(this.item.ROW_DATE != null)
-	        		{
-	        			if(select == "month") {
-	        				dt = this.item.ROW_DATE.substr(0,4) + "-" + this.item.ROW_DATE.substr(4,2);
-	        			} else {
-	        				dt = this.item.ROW_DATE.substr(0,4) + "-" + this.item.ROW_DATE.substr(4,2) + "-" + this.item.ROW_DATE.substr(6,2);
-	                	}
-	        		}
-	        		return dt;
-	        	}
-	        };
+        var row_date = {key: "ROW_DATE", label: "날짜", width: 150, align: "center", sortable: true};
         var weekday = {key: "weekday", label: "요일", width: 80, align: "center", sortable: true,
 	        	formatter: function() {
-	        		var date = new Date(this.item.ROW_DATE.substr(0,4) + "-" + this.item.ROW_DATE.substr(4,2) + "-" + this.item.ROW_DATE.substr(6,2));
+	        		var date = new Date(this.item.ROW_DATE);
 	        		return weeks[date.getDay()];
 	        	}
 	        };
-        var starttime = {key: "STARTTIME", label: "시간", width: 200, align: "center", sortable: true};
-        var comp_cd = {key: "COMP_CD", label: "센터", width: 200, align: "center", sortable: true,
+        var starttime = {key: "STARTTIME", label: "시간", width: 150, align: "center", sortable: true};
+        var comp_cd = {key: "COMP_CD", label: "센터", width: 150, align: "center", sortable: true,
         		formatter: function() {
         			switch(this.item.COMP_CD) {
         			case "RETAIL": return "GS리테일";
