@@ -79,6 +79,7 @@
                 </ax:tbl>
             </ax:form>
             <div class="H10"></div>
+            	<b>※</b><b style="color:#FF0000">빨간색</b><b>으로 표기된 항목은 수정할 수 없습니다.</b>
         </div>
 
         <ax:split-layout name="ax1" orientation="vertical">

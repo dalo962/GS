@@ -366,7 +366,6 @@ fnObj.pageStart = function () {
 		    		info.teamcd = n.team_cd;
 		    		info.chncd = n.chn_cd;
 		    	});
-
 		    	
 		    	axboot.ajax({
 	    	    	 type: "POST",
@@ -374,25 +373,34 @@ fnObj.pageStart = function () {
 	    	    	 cache : false,
 	    	    	 data: JSON.stringify($.extend({}, info)),
 	    	    	 callback: function (res) {
-	    	    		 var resultSet = [];
-			    			res.list.forEach(function (n) {
-			    				if(n.id == '75')
-			    	        	{
-			    					resultSet.push({
-			    						value: n.id, text: n.name,
-			    					});
-			    	        	}
-			    			});
-			    			$("[data-ax5select='comSelect']").ax5select({
-			    				theme: 'primary',
-			    				onStateChanged: function () {
-			    					_this.searchView.skillSearch();
-			    				},
-			    				options: resultSet,
-			    			});
-	    	    		_this.searchView.channelSearch();
-	    	    		//_this.searchView.skillSearch();
-	    	    		ok();
+	    	    		var resultSet = [];
+			    		res.list.forEach(function (n) {
+			    			if(info.grpcd == 'S0001')
+			    			{
+			    				resultSet.push({
+			    					value: n.id, text: n.name,
+			    				});
+			    			}
+			    			else
+			    			{
+			    				if(n.id == info.comcd)
+				    	        {
+				    				resultSet.push({
+				    					value: n.id, text: n.name,
+				    				});
+				    	        }
+			    			}
+			    		});
+			    		$("[data-ax5select='comSelect']").ax5select({
+			    			theme: 'primary',
+			    			onStateChanged: function () {
+			    				_this.searchView.chnSearch();
+			    			},
+			    			options: resultSet,
+			    		});
+	    	    	_this.searchView.chnSearch();
+	    	    	//_this.searchView.skillSearch();
+	    	    	ok();
 	    	    	 }
 		    	});
 		    }
@@ -1201,7 +1209,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 	        	date_set();
 	        	time_set();
 	        }		
-    });
+		});
 		date_set();
 		time_set();
     },
@@ -1226,6 +1234,8 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	}
     	
         return {
+        	comSelect: $("[data-ax5select='comSelect']").ax5select("getValue")[0].value,
+        	deptSelect: $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value,
         	skSelect: aglist,     
         	interval: $("[data-ax5select='interval']").ax5select("getValue")[0].value,    
         	startDate: this.startDate.val(),
@@ -1250,32 +1260,34 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         	check: chk
         }
     },
-    channelSearch: function() {
+    chnSearch: function(){
+    	//console.log("compId : " + $("[data-ax5select='comSelect']").ax5select("getValue")[0].value);
         var data = {}; 
         data.grpcd = info.grpcd;
+        data.chncd = "";
         data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
-        
 	    axboot.ajax({
             type: "POST",
             url: "/api/mng/searchCondition/channel",
             cache : false,
             data: JSON.stringify($.extend({}, data)),
             callback: function (res) {
-                var resultSet = [{value:"", text:"전체", sel:"1"}];
+            	var resultSet = [{value:"", text:"전체"}];
+            	
                 res.list.forEach(function (n) {
                 	resultSet.push({
-                        value: n.id, text: n.name, sel:"0"
+                        value: n.id, text: n.name,
                     });
                 });
-                $("[data-ax5select='selChannel']").ax5select({
+                $("[data-ax5select='deptSelect']").ax5select({
         	        theme: 'primary',
-        	        multiple: false,
+    		        onStateChanged: function () {
+    		        	fnObj.searchView.skillSearch();
+    		        },
         	        options: resultSet,
-        	        onChange: function() {
-        	        	fnObj.searchView.skillSearch();
-        	        }
                 });
-        		fnObj.searchView.skillSearch();
+            	$('[data-ax5select="deptSelect"]').ax5select("setValue", info.chncd);
+                fnObj.searchView.skillSearch();
             }
         });
     },
@@ -1284,7 +1296,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	//console.log("chnId : " + $("[data-ax5select='chanSelect']").ax5select("getValue")[0].value);
         var data = {}; 
         data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
-        data.chnId = $("[data-ax5select='selChannel']").ax5select("getValue")[0].value;
+        data.chnId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
         //data.compId = 75; //리테일
         //data.chnId = "";
         data.skId = "";

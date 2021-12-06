@@ -25,6 +25,12 @@
 		and 	<if test="hdtday != '' and hdtday != null"> ( </if> TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') in (#{hdt}) 
 				<if test="hdtday != '' and hdtday != null"> OR row_date in (${hdtday})) </if>
 		</if>
+		<if test="comId != '' and comId != null">
+		and		comp_dbid = #{comId}
+		</if>
+		<if test="chnId != '' and chnId != null">
+		and		chn_dbid = #{chnId}
+		</if>
 		<if test="skId != '' and skId != null">
 		and		skill_dbid in (${skId})
 		</if>
@@ -56,6 +62,12 @@
 		<if test="hdt != '' and hdt != null">
 		and 	<if test="hdtday != '' and hdtday != null"> ( </if> TO_CHAR(to_date(row_date,'YYYY-MM-DD') ,'d') in (#{hdt}) 
 				<if test="hdtday != '' and hdtday != null"> OR row_date in (${hdtday})) </if>
+		</if>
+		<if test="comId != '' and comId != null">
+		and		comp_dbid = #{comId}
+		</if>
+		<if test="chnId != '' and chnId != null">
+		and		chn_dbid = #{chnId}
 		</if>
 		<if test="skId != '' and skId != null">
 		and		skill_dbid in (${skId})

@@ -384,13 +384,30 @@ public class skWaitStatController extends commController{
 			// FROM 절 생성 끝
 			
 			// WHERE 절 생성
+			if("".equals(params.get("comSelect")))
+			{
+				map.put("comId", "");
+			}
+			else
+			{
+				map.put("comId", params.get("comSelect"));
+			}
+			
+			if("".equals(params.get("deptSelect")))
+			{
+				map.put("chnId", "");
+			}
+			else
+			{
+				map.put("chnId", params.get("deptSelect"));
+			}
+			
 			if("".equals(params.get("skSelect")))
 			{
 				map.put("skId", "");
 			}
 			else
-			{			
-				SqlSafeUtil.getSqlInjectionSafe(params.get("skSelect").toString());
+			{
 				sklst = params.get("skSelect").toString().split(";");
 				for(int j = 0; j < sklst.length; j ++)
 				{
