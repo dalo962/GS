@@ -59,7 +59,8 @@ public class AXBootSecurityConfig extends WebSecurityConfigurerAdapter {
             "/h2-console/**",
             "/health",
             "/api/v1/aes/**",
-            "/jsp/exit.jsp"
+            "/jsp/exit.jsp",
+            "/gr/api/ivr/ivrBlackList/FromIVR**"
     };
 
     @Inject
