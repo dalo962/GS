@@ -285,7 +285,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            		var dnis = this.item.dnis;
 	            		// dnis 값이 빈칸이거나 null이면 "선택" 출력 //
 	            		if(dnis == '' || dnis == null) {
-	            			return '선택';
+                			return '<span style="color: red;">선택</span>';
 	            		} else {
 	            			return dnis;
 	            		}
@@ -322,12 +322,12 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			return "월-일(휴일포함)";
                 			break;   
                 		default :
-                			return "선택";
+                			return '<span style="color: red;">선택</span>';
                 			break;
                 	}
                 }},
-                {key: "wr_stime", label: "평일근무 시작시간", width: 140, align: "center", sortable: true, editor:"text"},
-                {key: "wr_etime", label: "평일근무 종료시간", width: 140, align: "center", sortable: true, editor:"text"}, 
+                {key: "wr_stime", label: "평일근무 시작시간", width: 140, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
+                {key: "wr_etime", label: "평일근무 종료시간", width: 140, align: "center", sortable: true, editor:"text", formatter:"hour_colon"}, 
                 {key: "ov_useyn", label: "초과근무 사용유무", width: 140, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
@@ -359,12 +359,12 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             			return "월-일(휴일포함)";
             			break;                 		
             		default :
-            			return "선택";
+            			return '<span style="color: red;">선택</span>';
             			break;
             	}
                 }},
-                {key: "ov_stime", label: "초과근무 시작시간", width: 150, align: "center", sortable: true, editor:"text"},
-                {key: "ov_etime", label: "초과근무 종료시간", width: 150, align: "center", sortable: true, editor:"text"},  
+                {key: "ov_stime", label: "초과근무 시작시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
+                {key: "ov_etime", label: "초과근무 종료시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},  
                 {key: "lc_useyn", label: "점심시간 사용유무", width: 140, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
@@ -396,16 +396,16 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            			return "월-일(휴일포함)";
 	            			break;                 		
                 		default :
-                			return "선택";
+                			return '<span style="color: red;">선택</span>';
                 			break;
                 	}
                 }},
-                {key: "lc_stime", label: "점심 시작시간", width: 140, align: "center", sortable: true, editor:"text"},
-                {key: "lc_etime", label: "점심 종료시간", width: 140, align: "center", sortable: true, editor:"text"},                
-                {key: "sat_stime", label: "토요일근무 시작시간", width: 150, align: "center", sortable: true, editor:"text"},
-                {key: "sat_etime", label: "토요일근무 종료시간", width: 150, align: "center", sortable: true, editor:"text"},                
-                {key: "sun_stime", label: "일요일근무 시작시간", width: 150, align: "center", sortable: true, editor:"text"},
-                {key: "sun_etime", label: "일요일근무 종료시간", width: 150, align: "center", sortable: true, editor:"text"},
+                {key: "lc_stime", label: "점심 시작시간", width: 140, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
+                {key: "lc_etime", label: "점심 종료시간", width: 140, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},                
+                {key: "sat_stime", label: "토요일근무 시작시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
+                {key: "sat_etime", label: "토요일근무 종료시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},                
+                {key: "sun_stime", label: "일요일근무 시작시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
+                {key: "sun_etime", label: "일요일근무 종료시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
                 {key: "hl_useyn", label: "휴일근무 사용유무", width: 140, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
@@ -425,12 +425,12 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	        				return "사용";
 	        				break;              		
                 		default :
-                			return "선택";
+                			return '<span style="color: red;">선택</span>';
                 			break;
                 	}
                 }},
-                {key: "hl_stime", label: "휴일근무 시작시간", width: 150, align: "center", sortable: true, editor:"text"},
-                {key: "hl_etime", label: "휴일근무 종료시간", width: 150, align: "center", sortable: true, editor:"text"},
+                {key: "hl_stime", label: "휴일근무 시작시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
+                {key: "hl_etime", label: "휴일근무 종료시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
                 {key: "crt_dt", label: "작성일자", width: 180, align: "center", sortable: true,
                 	formatter: function() {
                 		var crdt = "";
@@ -457,6 +457,23 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             body: {
                 onClick: function () {
                     this.self.select(this.dindex, {selectedClear: true});
+                },
+                onDataChanged: function () {
+                	var key = this.key;
+                	if (key.indexOf("time") != -1) {
+                		var time = this.item[key].replaceAll(':','');	// 입력된 시간에서 : 제외
+	                    var index = this.item.__index;					// 변경될 index
+                		var regex = /^([01][0-9]|2[0-3])([0-5][0-9])([0-5][0-9])$/g;	// 시간 (HHMMSS) => 숫자 6자리
+                		var matcher = regex.exec(time);					// 입력된 시간과 정규식의 매칭 결과
+
+            			if(time != "" && !matcher) {	// 입력된 시간이 정규식과 다른 경우
+            				alert("올바른 시간 형식으로 입력하시기 바랍니다."); // alert 띄우고
+            	    		time = "";	// 입력된 값을 빈칸으로
+            			}
+	                    
+	                    this.self.setValue(index, key, time);
+	                    
+                	}                	
                 }
             }
         });

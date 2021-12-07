@@ -29,6 +29,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var reqExp = /^[0-9]*$/;
     	var hlholiday = 0;
     	var hluseyn = 0;
+    	var hldes = 0;
     	saveList.forEach(function (n){
     		if(n.holiday == null || n.holiday == "")
     		{
@@ -37,6 +38,9 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		if(n.hl_useyn == null || n.hl_useyn == "")
     		{
     			hluseyn = hluseyn + 1;
+    		}
+    		if(n.description == null || n.description == "") {
+    			hldes = hldes + 1;
     		}
     	});
     	if(hlholiday > 0) 
@@ -47,6 +51,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(hluseyn > 0) 
     	{ 
     		alert("휴일 사용유무를 선택하시기 바랍니다."); 
+    		return;
+    	}
+    	if(hldes > 0) {
+    		alert("휴일 사유를 입력하시기 바랍니다.");
     		return;
     	}
 
@@ -318,6 +326,9 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             			}
             	},	formatter: function() {
 	            		var crdt = "";
+	            		if(this.item.holiday == '' || this.item.holiday == null) {
+                			return '<span style="color: red;">YYYYMMDD</span>';
+	            		}
 	            		if(this.item.holiday != null && this.item.holiday != '')
 	            		{
 	            			crdt = this.item.holiday.substr(0,4) + "-" + this.item.holiday.substr(4,2) + "-" + this.item.holiday.substr(6,2);
@@ -344,11 +355,20 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			return "미사용";
                 			break;                    		
                 		default :
-                			return "선택";
+                			return '<span style="color: red;">선택</span>';
                 			break;
                 	}
                 }},      
-                {key: "description", label: "사유", width: 140, align: "center", editor:"text"},
+                {key: "description", label: "사유", width: 140, align: "center", editor:"text",	
+                	formatter: function() {
+	            		var description = this.item.description;
+	            		if(description == '' || description == null) {
+	            			return '<span style="color: red;">입력</span>';
+	            		}
+
+	            		return description;
+	        		}
+                },
                 {key: "crt_dt", label: "작성일자", width: 200, align: "center", sortable: true,
                 	formatter: function() {
                 		var crdt = "";
@@ -375,6 +395,44 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             body: {
                 onClick: function () {
                     this.self.select(this.dindex, {selectedClear: true});
+                },
+                onDataChanged: function () {
+                	var key = this.key;
+                	if (key == "holiday") {
+                		var date = this.item[key].replaceAll(/[-\/]/g,'');	// 입력된 날짜에서 -, / 제외
+	                    var index = this.item.__index;					// 변경될 index
+                		var regex = /^([1-2]\d{3})([0][1-9]|1[0-2])(\d{2})$/g;// 날짜 (YYYYMMDD) => 숫자 8자리
+                		var matcher = regex.exec(date);					// 입력된 날짜와 정규식의 매칭 결과
+
+            			if(date != "" && !matcher) {	// 입력된 날짜가 정규식과 다른 경우
+            				alert("올바른 날짜 형식으로 입력하시기 바랍니다."); // alert 띄우고
+            	    		date = "";	// 입력된 값을 빈칸으로
+            				
+            			} else if(date != "" && matcher) {
+            				var year = matcher[1];
+            				var month = matcher[2];
+            				var day = matcher[3];
+            				
+            				var _d31 = ["01", "03", "05", "07", "08", "10", "12"];
+            				var _d30 = ["04", "06", "09", "11"];
+            				
+            				if(day < "01" || // day 가 1보다 작으면 (0, 음수)
+            						(_d31.find(function(m) { if(m == month) return m == month }) && day > "31") ||	// 최대 일이 31일 인것들
+            						(_d30.find(function(m) { if(m == month) return m == month }) && day > "30")) {	// 최대 일이 30일 인것들
+                				alert("올바른 날짜 형식으로 입력하시기 바랍니다."); // alert 띄우고
+                	    		date = "";	// 입력된 값을 빈칸으로
+            				} else if(month == "02") { // 2월 윤달 계산
+        						var isleap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+        						if(day > 29 || (day == 29 && !isleap)) {
+                    				alert("올바른 날짜 형식으로 입력하시기 바랍니다."); // alert 띄우고
+                    	    		date = "";	// 입력된 값을 빈칸으로
+        						}
+            				}
+            			}
+	                    
+	                    this.self.setValue(index, key, date);
+	                    
+                	}               	
                 }
             }
         });

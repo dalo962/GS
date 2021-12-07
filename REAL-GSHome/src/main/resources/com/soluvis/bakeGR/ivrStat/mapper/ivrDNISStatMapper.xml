@@ -10,10 +10,10 @@
 				comp_cd as comp_cd,
 				did as did,
 				dnis as dnis,
-				n_incall as n_incall,
-				n_agentreq as n_agentreq,
-				n_privacy as n_privacy,
-				n_blackconsumer as n_blackconsumer
+				nvl(n_incall,0) as n_incall,
+				nvl(n_agentreq,0) as n_agentreq,
+				nvl(n_privacy,0) as n_privacy,
+				nvl(n_blackconsumer,0) as n_blackconsumer
 		FROM	${table}
 		WHERE	row_date <![CDATA[>=]]> #{startdate}
 		AND		row_date <![CDATA[<=]]> #{enddate}

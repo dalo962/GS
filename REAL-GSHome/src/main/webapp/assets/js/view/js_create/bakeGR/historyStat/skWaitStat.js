@@ -373,16 +373,34 @@ fnObj.pageStart = function () {
 	    	    	 cache : false,
 	    	    	 data: JSON.stringify($.extend({}, info)),
 	    	    	 callback: function (res) {
-	    	    		/*
 	    	    		var resultSet = [];
-	    	    		res.list.forEach(function (n) {
-	    	    			 resultSet.push({
-	    	    				 value: n.id, text: n.name,
-	    	    			});
-	    	    		});
-						*/
-	    	    		_this.searchView.skillSearch();
-	    	    		ok();
+			    		res.list.forEach(function (n) {
+			    			if(info.grpcd == 'S0001')
+			    			{
+			    				resultSet.push({
+			    					value: n.id, text: n.name,
+			    				});
+			    			}
+			    			else
+			    			{
+			    				if(n.id == info.comcd)
+				    	        {
+				    				resultSet.push({
+				    					value: n.id, text: n.name,
+				    				});
+				    	        }
+			    			}
+			    		});
+			    		$("[data-ax5select='comSelect']").ax5select({
+			    			theme: 'primary',
+			    			onStateChanged: function () {
+			    				_this.searchView.chnSearch();
+			    			},
+			    			options: resultSet,
+			    		});
+	    	    	_this.searchView.chnSearch();
+	    	    	//_this.searchView.skillSearch();
+	    	    	ok();
 	    	    	 }
 		    	});
 		    }
@@ -405,6 +423,9 @@ fnObj.pageStart = function () {
         _this.gridView01.initView(rowCenlist);
         
         ACTIONS.dispatch(ACTIONS.DATA_SETTING);
+   }).catch(function(e) {
+	   // 가끔가다가 순서가 뒤엉켰을 때 나오는 에러 잡기 //
+	   console.log(e);
    });
 
 };
@@ -1188,7 +1209,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 	        	date_set();
 	        	time_set();
 	        }		
-    });
+		});
 		date_set();
 		time_set();
     },
@@ -1213,6 +1234,8 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	}
     	
         return {
+        	comSelect: $("[data-ax5select='comSelect']").ax5select("getValue")[0].value,
+        	deptSelect: $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value,
         	skSelect: aglist,     
         	interval: $("[data-ax5select='interval']").ax5select("getValue")[0].value,    
         	startDate: this.startDate.val(),
@@ -1237,14 +1260,45 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         	check: chk
         }
     },
-    skillSearch: function(){
+    chnSearch: function(){
+    	//console.log("compId : " + $("[data-ax5select='comSelect']").ax5select("getValue")[0].value);
+        var data = {}; 
+        data.grpcd = info.grpcd;
+        data.chncd = "";
+        data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
+	    axboot.ajax({
+            type: "POST",
+            url: "/api/mng/searchCondition/channel",
+            cache : false,
+            data: JSON.stringify($.extend({}, data)),
+            callback: function (res) {
+            	var resultSet = [{value:"", text:"전체"}];
+            	
+                res.list.forEach(function (n) {
+                	resultSet.push({
+                        value: n.id, text: n.name,
+                    });
+                });
+                $("[data-ax5select='deptSelect']").ax5select({
+        	        theme: 'primary',
+    		        onStateChanged: function () {
+    		        	fnObj.searchView.skillSearch();
+    		        },
+        	        options: resultSet,
+                });
+            	$('[data-ax5select="deptSelect"]').ax5select("setValue", info.chncd);
+                fnObj.searchView.skillSearch();
+            }
+        });
+    },
+    skillSearch: function() {
     	//console.log("compId : " + $("[data-ax5select='comSelect']").ax5select("getValue")[0].value);
     	//console.log("chnId : " + $("[data-ax5select='chanSelect']").ax5select("getValue")[0].value);
         var data = {}; 
-        //data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
-        //data.chnId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
-        data.compId = 75; //리테일
-        data.chnId = "";    	
+        data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
+        data.chnId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
+        //data.compId = 75; //리테일
+        //data.chnId = "";
         data.skId = "";
 	    axboot.ajax({
             type: "POST",

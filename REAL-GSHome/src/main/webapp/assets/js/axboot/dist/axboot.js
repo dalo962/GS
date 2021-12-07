@@ -1709,6 +1709,12 @@ ax5.ui.grid.formatter["hour"] = function () {
 	}
 };
 
+// 시분초 포멧터 :: DB에 이미 :이 찍혀있는경우
+ax5.ui.grid.formatter["hour_colon"] = function () {
+	var time = this.value.replaceAll(':','');
+	return time.substr(0,2) + ':' + time.substr(2,2) + ':' + time.substr(4,2);
+}
+
 //분초 포멧터
 ax5.ui.grid.formatter["min"] = function () {
 	if(typeof this.value !== "undefined") {
