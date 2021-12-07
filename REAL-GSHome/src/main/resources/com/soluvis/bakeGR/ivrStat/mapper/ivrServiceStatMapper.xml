@@ -10,8 +10,8 @@
 				comp_cd as comp_cd,
 				did as did,
 				service as service,
-				n_incall as n_incall,
-				n_agentreq as n_agentreq
+				nvl(n_incall,0) as n_incall,
+				nvl(n_agentreq,0) as n_agentreq
 		FROM 	${table}
 		WHERE	row_date <![CDATA[>=]]> #{startdate}
 		AND		row_date <![CDATA[<=]]> #{enddate}
