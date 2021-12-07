@@ -60,7 +60,7 @@ public class AXBootSecurityConfig extends WebSecurityConfigurerAdapter {
             "/health",
             "/api/v1/aes/**",
             "/jsp/exit.jsp",
-            "/gr/api/ivr/ivrBlackList/FromIVR**"
+            "/gr/api/ivr/ivrBlackList/FromIVR**",
     };
 
     @Inject
