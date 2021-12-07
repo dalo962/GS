@@ -199,7 +199,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		    return "\uFEFF\n{{#tables}}{{{body}}}{{/tables}}\n";
 		};
 		var table = [excelTable.join('')];
-		var fileName = "call Trace_" + dateString + ".xls";
+		var fileName = "Call Trace_" + dateString + ".xls";
 		
 		var link = void 0,
 		    a = void 0,
