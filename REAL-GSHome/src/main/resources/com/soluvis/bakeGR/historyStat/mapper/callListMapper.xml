@@ -49,7 +49,7 @@
 		<if test="ticket_num != '' and ticket_num != null">
 		AND		TICKET_NUM in (${ticket_num})
 		</if>
-		ORDER BY STIMETS ASC
+		ORDER BY STIMETS DESC
     </select>
 
 </mapper>
