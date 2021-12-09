@@ -89,7 +89,7 @@ public class skillLvlChnXlsController extends commController {
 				agchk = skillLvlChnXlsService.selectAgCheck(map);
 				agchksize = agchk.size();
 				
-				if(agchksize > 0)
+				if(agchksize > 0 && "GS홈쇼핑".equals(agchk.get(0).getName()))
 				{
 					if("X".equals(agchk.get(0).getProtect_skill()))
 					{

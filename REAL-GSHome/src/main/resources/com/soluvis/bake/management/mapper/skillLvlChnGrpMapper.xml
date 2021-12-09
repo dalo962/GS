@@ -216,6 +216,7 @@
                     and     t7.parent_id = t8.id
                     and     t6.org_type = 12
                     and     t6.deleted_at is null
+                    and		t8.id = #{compId}
                     <if test="protect != '' and protect != null">
                     and 	t1.protect_skill = #{protect}
                     </if>
