@@ -40,7 +40,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	
     	saveList = saveList.concat(caller.gridView01.getData("deleted"));
     	
-    	
     	var reqExp = /^[0-9]*$/;
     	var bldnis = 0;
     	var blstime = 0;
@@ -49,8 +48,33 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var blment = 0;
     	var datedif = 0;
     	var timedif = 0;
+    	var prtime = 0;
     	
     	saveList.forEach(function (n){
+    		var sd = n.sdate+n.stime;
+    		var ed = n.edate+n.etime;
+    		
+    		var r = saveList.find(function (s) {
+        		var ssd = s.sdate+s.stime;
+        		var sed = s.edate+s.etime;
+        		// 자기자신이 아니면서 dnis가 같음 //
+    			if(s.seq != n.seq && s.dnis == n.dnis) {
+    				if(sd >= ssd && ed <= sed) {
+    					// 1. 시작시간과 종료시간이 안에 존재 //
+    					return s.dnis;
+    				} else if(sd <= ssd && ed >= sed) {
+    					// 2. 시작시간과 종료시간이 포함 //
+    					return s.dnis;
+    				} else if(sd >= ssd && sd <= sed) {
+    					// 3. 시작시간이 시작 종료 사이에 있음 //
+    					return s.dnis;
+    				} else if(ed >= ssd && ed <= sed) {
+    					// 4. 종료시간이 시작 종료 사이에 있음 //
+    					return s.dnis;
+    				}
+    			}
+    		});
+    		
     		if(n.dnis == null || n.dnis == "")
     		{
     			bldnis = bldnis + 1;
@@ -83,6 +107,9 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     				timedif = timedif + 1;
     			}
     		}
+    		if(r != null && r != '') { // dnis가 같으면서 시간이 겹치는 경우
+    			prtime = prtime + 1;
+    		}
     	});
     	if(bldnis > 0) 
     	{ 
@@ -99,6 +126,18 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		alert("종료시간을 입력하시기 바랍니다."); 
     		return;
     	}
+    	if(datedif > 0) {
+    		alert("시작날짜가 종료날짜보다 클 수 없습니다.");
+    		return;
+    	}
+    	if(timedif > 0) {
+    		alert("시작시간이 종료시간보다 클 수 없습니다.");
+    		return;
+    	}
+    	if(prtime > 0) { 
+    		alert("중복되는 기간이 있습니다. 기간을 확인해주세요."); 
+    		return;
+    	}
     	if(blemertype > 0) 
     	{ 
     		alert("유형을 선택하시기 바랍니다."); 
@@ -107,14 +146,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(blment > 0)
     	{
     		alert("적용하려는 멘트내용이 없습니다.");
-    		return;
-    	}
-    	if(datedif > 0) {
-    		alert("시작날짜가 종료날짜보다 클 수 없습니다.");
-    		return;
-    	}
-    	if(timedif > 0) {
-    		alert("시작시간이 종료시간보다 클 수 없습니다.");
     		return;
     	}
 

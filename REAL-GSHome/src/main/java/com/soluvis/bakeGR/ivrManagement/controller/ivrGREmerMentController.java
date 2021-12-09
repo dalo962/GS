@@ -106,38 +106,26 @@ public class ivrGREmerMentController extends commController{
 		{
 			for (ivrGREmerMent em : emerment)
 			{
+				// 현재 입력 or 수정된 값 //
 				map.put("comp_cd", "RETAIL");
-				if(!em.getDnis().equals("ALL")){
-					map.put("dnis", em.getDnis());
-				}				
+				map.put("seq", em.getSeq());
+				map.put("dnis", em.getDnis());
 				map.put("sdate", em.getSdate());
 				map.put("stime", em.getStime());
 				map.put("edate", em.getEdate());
 				map.put("etime", em.getEtime());
-								
+				map.put("emer_type", em.getEmer_type());
+				map.put("ment", em.getMent());
+							
 				if(AXBootTypes.DataStatus.CREATED.equals(em.getDataStatus()))
-				{		
-					logger.info("ivrGREmerMentService.EmerMentExist Query Start...");
-					search = ivrGREmerMentService.EmerMentExist(map);
-					int searchSize = search.size();
+				{	
+					// 새로 만들어질 때 작성일자, 작성자  //
+					map.put("crt_dt", sdf.format(new Date()));
+					map.put("crt_by", cid);
 					
-					if(searchSize == 0)
-					{		
-						if(em.getDnis().equals("ALL")){
-							map.put("dnis", em.getDnis());
-						}
-						map.put("emer_type", em.getEmer_type());
-						map.put("ment", em.getMent());
-						map.put("crt_dt", sdf.format(new Date()));
-						map.put("crt_by", cid);
-						
-						logger.info("ivrGREmerMentService.EmerMentIst Query Start...");
-						sqlrst = ivrGREmerMentService.EmerMentIst(map);
-					}else{
-						msg = "중복되는 기간이 있습니다. 기간을 확인해주세요.";
-						return ok(msg);
-					}
-					
+					logger.info("ivrGREmerMentService.EmerMentIst Query Start...");
+					sqlrst = ivrGREmerMentService.EmerMentIst(map);
+
 					if(sqlrst == 0)
 					{
 						result++;
@@ -145,37 +133,21 @@ public class ivrGREmerMentController extends commController{
 				}
 				else if(AXBootTypes.DataStatus.MODIFIED.equals(em.getDataStatus()))
 				{
-					map.put("seq", em.getSeq());
-					map.put("dnis", em.getDnis());
-					map.put("sdate", em.getSdate());
-					map.put("stime", em.getStime());
-					map.put("edate", em.getEdate());
-					map.put("etime", em.getEtime());
-					map.put("emer_type", em.getEmer_type());
-					map.put("ment", em.getMent());
+					// 수정될 때 수정일자, 수정자  //
 					map.put("upt_dt", sdf.format(new Date()));
 					map.put("upt_by", cid);
+
+					logger.info("ivrGREmerMentService.EmerMentUdt Query Start...");
+					sqlrst = ivrGREmerMentService.EmerMentUdt(map);
 					
-					logger.info("ivrGREmerMentService.EmerMentExist Query Start...");
-					search = ivrGREmerMentService.EmerMentExist(map);
-					
-					int searchSize = search.size();
-					
-					if(searchSize == 0){
-						logger.info("ivrGREmerMentService.EmerMentUdt Query Start...");
-						sqlrst = ivrGREmerMentService.EmerMentUdt(map);
-						
-						if(sqlrst == 0)
-						{
-							result++;
-						}
-					}else{
-						msg = "중복되는 기간이 있습니다. 기간을 확인해주세요.";
-						return ok(msg);
-					}					
+					if(sqlrst == 0)
+					{
+						result++;
+					}				
 				}
 				else if(AXBootTypes.DataStatus.DELETED.equals(em.getDataStatus()))
 				{
+					// 삭제될 때 삭제할 번호 //
 					map.put("seq", em.getSeq());
 					
 					logger.info("ivrGREmerMentService.EmerMentDel Query Start...");
