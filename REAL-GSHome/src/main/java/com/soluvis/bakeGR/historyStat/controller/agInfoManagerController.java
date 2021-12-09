@@ -45,7 +45,7 @@ public class agInfoManagerController extends commController{
 	MDCLoginUser loginUser;
 	
 	/** 
-	 * @desc 상담사 정보를 조회한다
+	 * @desc 직책 정보를 조회한다
 	 */ 
 	@RequestMapping(value="/agInfoDepSel", method = RequestMethod.GET, produces = APPLICATION_JSON)
 	public @ResponseBody List<agInfoManager> agInfoDepSel(@Valid @SQLInjectionSafe HttpServletRequest request) throws Exception {
@@ -53,6 +53,16 @@ public class agInfoManagerController extends commController{
 		
 		return search;
 	}
+	/** 
+	 * @desc 스킬 정보를 조회한다
+	 */ 
+	@RequestMapping(value="/skInfoDepSel", method = RequestMethod.GET, produces = APPLICATION_JSON)
+	public @ResponseBody List<agInfoManager> skInfoDepSel(@Valid @SQLInjectionSafe HttpServletRequest request) throws Exception {
+		List<agInfoManager> search = agInfoManagerService.skInfoDepSel();
+		
+		return search;
+	}
+	
 	/** 
 	 * @desc 상담사 정보를 조회한다
 	 */ 
@@ -173,6 +183,10 @@ public class agInfoManagerController extends commController{
 				if(io.getWork() == null || "".equals(io.getWork())) 
 				{ params.put("work", ""); } 
 				else { params.put("work", io.getWork()); };
+				
+				if(io.getSkill_name() == null || "".equals(io.getSkill_name())) 
+				{ params.put("skill_name", ""); } 
+				else { params.put("skill_name", io.getSkill_name()); };
 				
 				if(io.getAge() == null || "".equals(io.getAge())) 
 				{ params.put("age", ""); } 

@@ -779,7 +779,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            columns: [
 	            	{key: "ROW_DATE", label: "날짜", width: 150, align: "center", sortable: true},
 	            	{key: "COMPANY_NAME", label: "센터", width: 200, align: "center", sortable: true},
-	            	{key: "DEPT_NAME", label: "그룹", width: 200, align: "center", sortable: true},
+	            	{key: "DEPT_NAME", label: "브랜드", width: 200, align: "center", sortable: true},
 	            	{key: "TEAM_NAME", label: "팀", width: 200, align: "center", sortable: true},
 	            	{key: "AGENT_NAME", label: "상담사명", width: 150, align: "center", sortable: true},
 	                {key: "AGENT_ID", label: "상담사사번", width: 150, align: "center", sortable: true},

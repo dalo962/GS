@@ -12,7 +12,9 @@ import com.soluvis.bakeGR.historyStat.domain.agInfoManager;
 public interface agInfoManagerMapper extends MyBatisMapper{	
 
 	// 직책 리스트
-	List<agInfoManager> agInfoDepSel();	
+	List<agInfoManager> agInfoDepSel();
+	// 스킬 리스트
+	List<agInfoManager> skInfoDepSel();
 	// 상담사 정보 관리 조회
 	List<agInfoManager> agInfoSel(Map<String,Object> params);
 	// 상담사 정보 수정

@@ -32,7 +32,7 @@
 								<div data-ax5select="comSelect" data-ax5select-config="{}"></div>
 							</div>		
                     	</ax:td>
-                    	<ax:td label='그룹' width="25%" labelWidth="100px">
+                    	<ax:td label='브랜드' width="25%" labelWidth="100px">
 							<div class="form-group">
 								<div data-ax5select="deptSelect" data-ax5select-config="{}"></div>
 							</div>		
@@ -54,7 +54,7 @@
 								<div data-ax5select="depSelect" data-ax5select-config="{}"></div>
 							</div>		
                     	</ax:td>
-                    	<ax:td label='스킬' width="25%" labelWidth="100px">
+                    	<ax:td label='상담스킬그룹' width="25%" labelWidth="100px">
 							<div class="form-group">
 								<div data-ax5select="skSelect" data-ax5select-config="{}"></div>
 							</div>		

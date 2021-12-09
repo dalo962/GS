@@ -769,7 +769,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         var _this = this;
         var columns = [
         	{key: "EMPLOYEEID", label: "상담사사번", width: 100, align: "center", sortable: true},
-        	{key: "DEPT_NAME", label: "그룹", width: 100, align: "center", sortable: true},
+        	{key: "DEPT_NAME", label: "브랜드", width: 100, align: "center", sortable: true},
         	{key: "TEAM_NAME", label: "팀", width: 100, align: "center", sortable: true},
         	{key: "AGENT_NAME", label: "상담사명", width: 100, align: "center", sortable: true},
         	{key: "STIMETS", label: "상담일시", width: 200, align: "center", sortable: true},

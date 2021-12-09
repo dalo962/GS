@@ -261,7 +261,7 @@ fnObj.pageStart = function () {
 	    	        });
 	    	        $('[data-ax5select="comSelect"]').ax5select("setValue", info.comcd);
 	    	        _this.searchView.partSearch();
-	    	        _this.searchView.skillSearch();
+	    	        //_this.searchView.skillSearch();
 	    	    }
 	    	});
 	    }
@@ -717,6 +717,32 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 			}
 		});
 		
+		var skp = [];
+		skp.push({value: "", text: "전체" });
+		
+		axboot.ajax({
+			type:"GET",
+			url:"/gr/api/hist/agInfo/skInfoDepSel",
+			cache : false,
+			data: "",
+			callback:function(res)
+			{
+				res.forEach(function (n) {
+					skp.push({
+                        value: n.skill_name, text: n.skill_name,
+                    });
+                });
+				
+				$("[data-ax5select='skSelect']").ax5select({
+			        theme: 'primary',
+			        options: skp,
+			        onChange: function () {
+			        	
+			        }
+				});
+			}
+		});
+		
 		var join = [];
 		join.push({value: "", text: "전체" });
 		join.push({value: "1", text: "재직" });
@@ -810,6 +836,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
             }
         });
     },
+    /*
     skillSearch: function(){
     	//console.log("compId : " + $("[data-ax5select='comSelect']").ax5select("getValue")[0].value);
     	//console.log("chnId : " + $("[data-ax5select='chanSelect']").ax5select("getValue")[0].value);
@@ -845,7 +872,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
                 $('[data-ax5select="skSelect"]').ax5select("setValue",[""]);
             }
         });
-    }
+    }*/
 });
 
 /**
@@ -863,14 +890,14 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            target: $('[data-ax5grid="grid-view-01"]'),
 	            columns: [
 	            	{key: "company_name", label: '<span style="font-weight:bold;color:#FF0000">' + "센터" + '</span>', width: 90, align: "center", sortable: true},
-	            	{key: "dept_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "그룹"+ '</span>', width: 90, align: "center", sortable: true},
+	            	{key: "dept_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "브랜드"+ '</span>', width: 90, align: "center", sortable: true},
 	            	{key: "team_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "팀" + '</span>', width: 90, align: "center", sortable: true},
 	            	{key: "dep_nm", label: "직책", width: 90, align: "center", sortable: true, editor:"text"},
 	                {key: "agent_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "상담사명" + '</span>', width: 90, align: "center", sortable: true},
 	                {key: "join_date", label: "입사일", width: 90, align: "center", sortable: true, editor:"text"},
 	                {key: "work_time", label: "근무시간", width: 90, align: "center", sortable: true, editor:"text"},
 	                {key: "work", label: "업무", width: 90, align: "center", sortable: true, editor:"text"},
-	                {key: "skill_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "스킬" + '</span>', width: 450, align: "left", sortable: true, multiLine:true},
+	                {key: "skill_name", label: "상담스킬그룹(대표번호)", width: 450, align: "center", sortable: true, editor:"text", multiLine:true},
 	                {key: "age", label: "연령대", width: 80, align: "center", sortable: true, editor: {
                     	type: "select", config: {
                     		columnKeys: {
@@ -1048,7 +1075,7 @@ function getCsvToJson($csv){
     var startRow = 2;
     var csvSP = $csv.split( "|" );
     var csvRow = [], csvCell = [];
-    var cellName = ["agent_id", "dep_nm", "join_date", "work_time", "work", "age", "mey_yn", "gender", "work_yn" ,"leave_date"];
+    var cellName = ["agent_id", "dep_nm", "join_date", "work_time", "work", "skill_name", "age", "mey_yn", "gender", "work_yn" ,"leave_date"];
     csvSP.forEach(function(item, index, array){
  
         var patt = new RegExp(":"); 
@@ -1150,6 +1177,7 @@ function handleFile(e) {
 	 								n.join_date = getCsvToJson(csv)[i].join_date;
 	 								n.work_time = getCsvToJson(csv)[i].work_time;
 	 								n.work = getCsvToJson(csv)[i].work;
+	 								n.skill_name = getCsvToJson(csv)[i].skill_name;
 	 								n.age = getCsvToJson(csv)[i].age;
 	 								n.mey_yn = getCsvToJson(csv)[i].mey_yn;
 	 								n.gender = getCsvToJson(csv)[i].gender;

@@ -9,6 +9,8 @@ public interface agInfoManagerService {
 		
 	public List<agInfoManager> agInfoDepSel();	
 	
+	public List<agInfoManager> skInfoDepSel();
+	
 	public List<agInfoManager> agInfoSel(Map<String,Object> params);
 	
 	public int agInfoUdt(Map<String,Object> params);

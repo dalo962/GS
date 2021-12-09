@@ -8,9 +8,69 @@
         WHERE 	DEP_NM IS NOT NULL
     	ORDER BY DEP_NM
     </select>
+    
+    <select id="skInfoDepSel" parameterType="hashmap" resultType="agInfoMng" fetchSize="1000">
+    	Select 	DISTINCT Regexp_Substr(SKILL_NAME,'[^,]+', 1, Level) as skill_name
+		From 	WDM.AX_A_PRECORD
+		WHERE 	SKILL_NAME IS NOT NULL
+				Connect By Regexp_Substr(SKILL_NAME, '[^,]+', 1, Level) Is Not Null
+		ORDER BY skill_name
+    </select>
 	
 	
 	<select id="agInfoSel" parameterType="hashmap" resultType="agInfoMng" fetchSize="1000">
+    	SELECT *
+    	FROM	(SELECT AAS.AGENT_ID as agent_id,
+    					AAS.COMPANY_CD as company_cd,
+    					AAS.DEPT_CD as dept_cd,
+    					AAS.TEAM_CD as team_cd,
+				        AAS.COMPANY_NAME as company_name,
+				        AAS.DEPT_NAME as dept_name,
+				        AAS.TEAM_NAME as team_name,
+				        APS.DEP_NM as dep_nm,
+				        AAS.AGENT_NAME as agent_name,
+				        APS.JOIN_DATE as join_date,
+				        APS.WORK_TIME as work_time,
+				        APS.WORK as work,
+				        APS.SKILL_NAME AS skill_name,
+				        APS.AGE as age,
+				        APS.MEY_YN as mey_yn,
+				        APS.GENDER as gender,
+				        APS.WORK_YN as work_yn,
+				        APS.LEAVE_DATE as leave_date
+				FROM    WDM.AX_A_STRUCT AAS, WDM.AX_A_PRECORD APS
+				WHERE   AAS.AGENT_ID = APS.AGENT_ID(+)
+				)
+		WHERE 	1=1
+		<if test="compid != '' and compid != null">
+		AND		COMPANY_CD = #{compid}
+		</if>
+		<if test="deptid != '' and deptid != null">
+		AND		DEPT_CD = #{deptid}
+		</if>
+		<if test="teamid != '' and teamid != null">
+		AND		TEAM_CD = #{teamid}
+		</if>		
+		<if test="agent_name != '' and agent_name != null">
+		AND		agent_name IN (${agent_name})
+		</if>
+		<if test="dep != '' and dep != null">
+		AND		DEP_NM = #{dep}
+		</if>
+		<if test="sk != '' and sk != null">
+		AND		SKILL_NAME like '%' || #{sk} || '%'
+		</if>
+		<if test="workyn != '' and workyn != null">
+		AND		work_yn = #{workyn}
+		</if>
+		<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
+		AND		JOIN_DATE BETWEEN #{s_day} AND #{e_day}
+		</if>
+		ORDER BY AGENT_NAME, AGENT_ID
+    </select>
+    
+    
+    <select id="agInfoSelasis" parameterType="hashmap" resultType="agInfoMng" fetchSize="1000">
     	SELECT *
     	FROM	(SELECT AAS.AGENT_ID as agent_id,
     					AAS.COMPANY_CD as company_cd,
@@ -77,6 +137,7 @@
 					join_date = #{join_date},
 					work_time = #{work_time},
 					work = #{work},
+					skill_name = #{skill_name},
 					age = #{age},
 					mey_yn = #{mey_yn},  
 					gender = #{gender},
@@ -89,6 +150,7 @@
 					join_date,
 					work_time,
 					work,
+					skill_name,
 					age,
 					mey_yn,
 					gender,
@@ -100,6 +162,7 @@
 				    #{join_date},
 				    #{work_time},
 				    #{work},
+				    #{skill_name},
 				    #{age},
 				    #{mey_yn},
 				    #{gender},

@@ -24,7 +24,7 @@
 								<div data-ax5select="comSelect" data-ax5select-config="{}"></div>
 							</div>		
                     	</ax:td>
-                    	<ax:td label='그룹' width="28%" labelWidth="100px">
+                    	<ax:td label='브랜드' width="28%" labelWidth="100px">
 							<div class="form-group">
 								<div data-ax5select="deptSelect" data-ax5select-config="{}"></div>
 							</div>		

@@ -23,6 +23,12 @@ public class agInfoManagerServiceImpl implements agInfoManagerService{
 	}
 	
 	@Override
+	public List<agInfoManager> skInfoDepSel()
+	{		
+		return agInfoManagerMapper.skInfoDepSel();
+	}
+	
+	@Override
 	public List<agInfoManager> agInfoSel(Map<String,Object> params)
 	{		
 		return agInfoManagerMapper.agInfoSel(params);

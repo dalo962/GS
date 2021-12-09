@@ -1102,7 +1102,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 		                	}
 	        		},	
 	        		{key: "COM_NAME", label: "센터", width: 130, align: "center", sortable: true},
-	            	{key: "DEPT_NAME", label: "그룹", width: 130, align: "center", sortable: true},
+	            	{key: "DEPT_NAME", label: "브랜드", width: 130, align: "center", sortable: true},
 	            	{key: "TEAM_NAME", label: "팀", width: 130, align: "center", sortable: true},
 	            	{key: "AGENT_ID", label: "최종상담사사번", width: 130, align: "center", sortable: true},
 	            	{key: "AGENT_NAME", label: "최종상담사명", width: 130, align: "center", sortable: true},
@@ -1172,7 +1172,7 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>고객/내선번호</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>대표번호</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>센터</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>그룹</th>";
+		detailHeadStr += "<th align='center' colspan=1 rowspan=1>브랜드</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>팀</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>최종상담사사번</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>최종상담사명</th>";
