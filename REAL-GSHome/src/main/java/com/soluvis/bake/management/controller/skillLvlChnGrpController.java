@@ -183,6 +183,38 @@ public class skillLvlChnGrpController extends commController {
 		
 		return Responses.ListResponse.of(search);
     }
+    
+    
+    // 2021-12-09 신규추가 조건 하나도 없이 확인해야함
+    @RequestMapping(value="/selectAgtSkillChk", method = RequestMethod.POST, produces = APPLICATION_JSON)
+    public @ResponseBody Responses.ListResponse selectAgtSkillChk(@Valid @RequestBody skillLvlChnGrp reqParam, HttpServletRequest request) throws Exception {    	
+		Map<String, Object> map = new HashMap<String, Object>(); 
+		map.put("compId", reqParam.getCompId());
+		map.put("partId", "");
+		map.put("teamId", "");
+		map.put("teamName", "");
+		
+		map.put("protect", "");
+		map.put("agtSelText", "");
+		
+		map.put("employeeid", "");
+		
+		map.put("defaultGrp", "");
+		map.put("applyGrp", "");
+		map.put("modifyGrp", "");
+		
+		String dispSkillId = reqParam.getDispSkillId();
+		map.put("dispSkillId", dispSkillId);
+		
+		map.put("defaultGrpName", "");
+		
+		map.put("loginCheck", 0);
+		
+		logger.info("skillLvlChnGrpService.selectAgtSkillChk Query Start...");
+		List<skillLvlChnGrp> search = skillLvlChnGrpService.selectAgtSkill(map);
+		
+		return Responses.ListResponse.of(search);
+    }
 
     
 	@RequestMapping(value = "/saveAgtSkill", method = RequestMethod.POST, produces = APPLICATION_JSON)

@@ -179,7 +179,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	            if (this.key == "ok") {
 	            	axboot.ajax({
 	                    type: "POST",
-	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkill",
+	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkillChk",
 	                    cache : false,
 	                    data: JSON.stringify(caller.searchView.getData()),
 	                    callback: function (res) {
@@ -452,7 +452,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	            if (this.key == "ok") {
 	            	axboot.ajax({
 	                    type: "POST",
-	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkill",
+	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkillChk",
 	                    cache : false,
 	                    data: JSON.stringify(caller.searchView.getData()),
 	                    callback: function (res) {
@@ -703,7 +703,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	            if (this.key == "ok") {
 	            	axboot.ajax({
 	                    type: "POST",
-	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkill",
+	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkillChk",
 	                    cache : false,
 	                    data: JSON.stringify(caller.searchView.getData()),
 	                    callback: function (res) {
@@ -959,7 +959,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	            if (this.key == "ok") {
 	            	axboot.ajax({
 	                    type: "POST",
-	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkill",
+	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkillChk",
 	                    cache : false,
 	                    data: JSON.stringify(caller.searchView.getData()),
 	                    callback: function (res) {
@@ -1210,7 +1210,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	            if (this.key == "ok") {
 	            	axboot.ajax({
 	                    type: "POST",
-	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkill",
+	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkillChk",
 	                    cache : false,
 	                    data: JSON.stringify(caller.searchView.getData()),
 	                    callback: function (res) {
