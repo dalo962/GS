@@ -209,11 +209,9 @@ fnObj.pageStart = function () {
 	                //resultSet = [{value:"", text:"전체"}];
 
     		        res.list.forEach(function (n) {
-    		        	if(n.id != '2') {	// GS홈쇼핑 제외
-    		        		resultSet.push({
-    		                	value: n.id, text: n.name,
-    		            	});
-	    	        	}
+    		        	resultSet.push({
+    		               	value: n.id, text: n.name,
+    		            });	    	        	
     		        });
     		        $("[data-ax5select='comSelect']").ax5select({
     			        theme: 'primary',
