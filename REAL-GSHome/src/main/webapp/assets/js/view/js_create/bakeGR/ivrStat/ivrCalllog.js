@@ -649,7 +649,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         			return "";
         		}
         	},
-        	ani : this.did.val(),
+        	ani : this.ani.val(),
         	startdate : this.sDate.val().replaceAll('-',''),
         	enddate : this.eDate.val().replaceAll('-',''),
         	starttime : this.sTime.ax5select("getValue")[0].value.replaceAll(':','')+"00",
