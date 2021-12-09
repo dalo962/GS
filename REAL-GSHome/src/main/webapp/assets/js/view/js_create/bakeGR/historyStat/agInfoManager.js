@@ -1090,7 +1090,7 @@ function getCsvToJson($csv){
         var row = item.split(":");
         var obj = {};
         row.forEach(function(item, index, array){
-        	if(index == 5)
+        	if(index == 6)
         	{
         		if(item == "20대") { item = "20age"}
 				else if(item == "30대") { item = "30age" }
@@ -1099,19 +1099,19 @@ function getCsvToJson($csv){
 				else if(item == "60대") { item = "60age" }
 				else { gitem = null}
         	}
-        	else if(index == 6)
+        	else if(index == 7)
         	{
         		if(item == "미혼") { item = "0"}
 				else if(item == "기혼") { item = "1" }
 				else { item = null}
 			}
-        	else if(index == 7)
+        	else if(index == 8)
         	{
         		if(item == "남자") { item = "1"}
 				else if(item == "여자") { item = "2" }
 				else { item = null}
         	}
-        	else if(index == 8)
+        	else if(index == 9)
         	{
         		if(item == "재직") { item = "1"}
 				else if(item == "퇴사") { item = "0" }

@@ -1354,7 +1354,14 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     },
     agentSearch: function(){
     	var data = {}; 
-    	data.interval = $("[data-ax5select='interval']").ax5select("getValue")[0].value;
+    	
+    	var inter = "day";
+    	if($("[data-ax5select='interval']").ax5select("getValue")[0].value != undefined)
+    	{
+    		inter = $("[data-ax5select='interval']").ax5select("getValue")[0].value;
+    	}
+    	
+    	data.interval = inter;
     	data.create_at = $("#startDate").val();
         data.delete_at = $("#endDate").val(); 
         data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;

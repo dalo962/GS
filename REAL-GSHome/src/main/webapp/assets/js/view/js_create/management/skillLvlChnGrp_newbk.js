@@ -99,15 +99,13 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	caller.gridViewSkillGrp.exportExcel();
     },
     GRP_ADD: function (caller, act, data){
-    	if (ws.wWebSocket != null && ws.wWebSocket.readyState == WebSocket.OPEN)
+    	if (ws.wWebSocket != null && ws.wWebSocket.readyState == WebSocket.OPEN) 
 		{
 	    	var agList = [].concat(caller.gridViewAgtGrp.getData("selected"));
 	    	var skList = [].concat(caller.gridViewSkillGrp.getData("selected"));
 	    	var compId = $("[data-ax5select='selCompany']").ax5select("getValue")[0].value;
 	    	var remark = $("#selTextRemark").val();
 	    	var data = [];
-	    	
-	    	var agskList = [];
 	    	
 	    	if(agList.length == 0)
 	    	{
@@ -178,179 +176,161 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	        }, function () {
 	            if (this.key == "ok") {
 	            	axboot.ajax({
-	                    type: "POST",
-	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkill",
-	                    cache : false,
-	                    data: JSON.stringify(caller.searchView.getData()),
-	                    callback: function (res) {
-	                    	agList.forEach(function(a){
-	                    		res.list.forEach(function(s) {
-	                    			if(a.AGTDBID == s.AGTDBID)
-	                    			{
-	                    				agskList.push(s);
-	                    			}
-	                    		});
-	                    	});
-			            	axboot.ajax({
-					            type: "POST",
-					            cache: false,
-					            url: "/api/mng/skillLvlChnGrp/skillGrpAddCheck",
-					            data: JSON.stringify($.extend({}, data)),
-					            callback: function (res) {
-					            	if(res.list.length > 0)
+			            type: "POST",
+			            cache: false,
+			            url: "/api/mng/skillLvlChnGrp/skillGrpAddCheck",
+			            data: JSON.stringify($.extend({}, data)),
+			            callback: function (res) {
+			            	if(res.list.length > 0)
+			            	{
+			            		data = res.list;
+			            		
+			            		axMask.open();
+			            		revCnt = agList.length;
+			            		resCnt = 0;
+			            		refCnt = 0;
+					            reqData = [];
+					            revData = [];
+					            hisUrl = "/api/mng/skillLvlChnGrp/saveAgtSkill";  	                	
+					            
+					            agList.forEach(function(n){
+					            	
+					            	regGb = '대표그룹등록';
+
+					            	var sklastindex = defaultDisp.length - 1;
+					            	var del_dbid = "";
+					            	
+					            	// 1.갖고 있는 스킬 다 지워버림					            						            	
+					            	defaultDisp.forEach(function(m, index)
 					            	{
-					            		data = res.list;
-					            		
-					            		axMask.open();
-					            		//revCnt = agList.length;
-					            		revCnt = agskList.length;
-					            		resCnt = 0;
-					            		refCnt = 0;
-							            reqData = [];
-							            revData = [];
-							            hisUrl = "/api/mng/skillLvlChnGrp/saveAgtSkill";  	                	
-							            
-							            //agList.forEach(function(n){
-							            agskList.forEach(function(n){
-							            	
-							            	regGb = '대표그룹등록';
-		
-							            	var sklastindex = defaultDisp.length - 1;
-							            	var del_dbid = "";
-							            	
-							            	// 1.갖고 있는 스킬 다 지워버림					            						            	
-							            	defaultDisp.forEach(function(m, index)
-							            	{
-							            		if(n.AGTDBID != undefined)// && n[m.skillId] != undefined)
-							            		{			
-							            			if(n[m.skillId] != undefined)
-						            				{
-						            					del_dbid += m.skillDbid + ",";
-						            				}
-							            			
-							            			if(sklastindex == index)
-							            			{
-							            				del_dbid = del_dbid.substring(0,del_dbid.length-1);
-								            			
-							            				//refid = ws.wDeleteSkill(n.AGTDBID, m.skillDbid);
-								            			refid = ws.wDeleteSkillMulti(n.AGTDBID, del_dbid);
-								            			
-								            			if(refid == -1 && refid == "undefined")
-									            		{
-									            			alert("[대표그룹등록]\n스킬 삭제 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
-									            			return;
-									            		}
-							            			}
+					            		if(n.AGTDBID != undefined)// && n[m.skillId] != undefined)
+					            		{			
+					            			if(n[m.skillId] != undefined)
+				            				{
+				            					del_dbid += m.skillDbid + ",";
+				            				}
+					            			
+					            			if(sklastindex == index)
+					            			{
+					            				del_dbid = del_dbid.substring(0,del_dbid.length-1);
+						            			
+					            				//refid = ws.wDeleteSkill(n.AGTDBID, m.skillDbid);
+						            			refid = ws.wDeleteSkillMulti(n.AGTDBID, del_dbid);
+						            			
+						            			if(refid == -1 && refid == "undefined")
+							            		{
+							            			alert("[대표그룹등록]\n스킬 삭제 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
+							            			return;
 							            		}
+					            			}
+					            		}
+					            		else
+					            		{
+					            			if(n.AGTDBID == undefined)
+					            			{
+					            				alert("[대표그룹등록]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}
+					            		}
+						    		});
+					            	
+					            	var aglastindex = data.length - 1;
+					            	var add_dbid = "";
+					            	var add_level = "";
+					            	
+					            	// 2.해당스킬그룹의 스킬로 다 넣음
+					            	data.forEach(function(d, index)
+					            	{
+					            		if(n.AGTDBID != undefined && d.skillDbid != undefined && d.skillLevel != undefined)
+					            		{
+					            			add_dbid += d.skillDbid + ",";
+				            				add_level += d.skillLevel + ",";
+					            			
+					            			if(aglastindex == index)
+					            			{
+					            				add_dbid = add_dbid.substring(0,add_dbid.length-1);
+						            			add_level = add_level.substring(0,add_level.length-1);		
+						            			
+					            				//refid = ws.wAddSkill(n.AGTDBID, d.skillDbid, d.skillLevel);
+						            			refid = ws.wAddSkillMulti(n.AGTDBID, add_dbid, add_level);
+					            			
+						            			if(refid != -1 && refid != "undefined")
+							            		{
+						            				reqData[refid] = 
+									               	{
+									            		compId : compId,
+							        					partName : n.AGTGRPNAME,
+				        	        					teamName : n.AGTTEAMNAME,
+				        	        					agtLogId : n.AGTLOGID,
+				        	        					employeeid : n.AGTID,
+								        				agtDbid : n.AGTDBID,
+								        				agtName : n.AGTNAME,
+								        				defaultGrp : n.DEFAULT_GROUP_NM,
+								        				applyGrp : n.APPLY_GROUP_NM,
+								        				skillId : d.id,
+								        				skillDbid : d.skillDbid,  
+								        				skillLevel : d.skillLevel, 
+								        				grpname : d.name,
+								        				grpid : d.id,							        				
+								        				workRemark : remark,
+								        				regGb : regGb,
+							        					suss : "작업중"
+									               	};
+							    	            }
 							            		else
 							            		{
-							            			if(n.AGTDBID == undefined)
-							            			{
-							            				alert("[대표그룹등록]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}
+							            			alert("[대표그룹등록]\n스킬 추가 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
+							            			return;
 							            		}
-								    		});
-							            	
-							            	var aglastindex = data.length - 1;
-							            	var add_dbid = "";
-							            	var add_level = "";
-							            	
-							            	// 2.해당스킬그룹의 스킬로 다 넣음
-							            	data.forEach(function(d, index)
-							            	{
-							            		if(n.AGTDBID != undefined && d.skillDbid != undefined && d.skillLevel != undefined)
-							            		{
-							            			add_dbid += d.skillDbid + ",";
-						            				add_level += d.skillLevel + ",";
-							            			
-							            			if(aglastindex == index)
-							            			{
-							            				add_dbid = add_dbid.substring(0,add_dbid.length-1);
-								            			add_level = add_level.substring(0,add_level.length-1);		
-								            			
-							            				//refid = ws.wAddSkill(n.AGTDBID, d.skillDbid, d.skillLevel);
-								            			refid = ws.wAddSkillMulti(n.AGTDBID, add_dbid, add_level);
-							            			
-								            			if(refid != -1 && refid != "undefined")
-									            		{
-								            				reqData[refid] = 
-											               	{
-											            		compId : compId,
-									        					partName : n.AGTGRPNAME,
-						        	        					teamName : n.AGTTEAMNAME,
-						        	        					agtLogId : n.AGTLOGID,
-						        	        					employeeid : n.AGTID,
-										        				agtDbid : n.AGTDBID,
-										        				agtName : n.AGTNAME,
-										        				defaultGrp : n.DEFAULT_GROUP_NM,
-										        				applyGrp : n.APPLY_GROUP_NM,
-										        				skillId : d.id,
-										        				skillDbid : d.skillDbid,  
-										        				skillLevel : d.skillLevel, 
-										        				grpname : d.name,
-										        				grpid : d.id,							        				
-										        				workRemark : remark,
-										        				regGb : regGb,
-									        					suss : "작업중"
-											               	};
-									    	            }
-									            		else
-									            		{
-									            			alert("[대표그룹등록]\n스킬 추가 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
-									            			return;
-									            		}
-							            			}
-							            		}
-							            		else
-							            		{
-							            			if(n.AGTDBID == undefined)
-								            		{
-							            				alert("[대표그룹등록]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-								            		}
-							            			else if(d.skillDbid == undefined)
-							            			{
-							            				alert("[대표그룹등록]\n스킬 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}			
-							            			else if(d.skillLevel == undefined)
-							            			{
-							            				alert("[대표그룹등록]\n스킬 레벨이 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}
-							            		}
-							            	});
-							            	
-							            	if(refid != -1 && refid != "undefined")
+					            			}
+					            		}
+					            		else
+					            		{
+					            			if(n.AGTDBID == undefined)
 						            		{
-							            		//resCnt++;					            		
-						    	            	//revData.push(reqData[refid]);
+					            				alert("[대표그룹등록]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
 						            		}
-							            	else
-							            	{
-							            		//refCnt++;
-							            	}
-							            });							            					           
-							            $("#selTextRemark").val("");					            
-					            	}
+					            			else if(d.skillDbid == undefined)
+					            			{
+					            				alert("[대표그룹등록]\n스킬 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}			
+					            			else if(d.skillLevel == undefined)
+					            			{
+					            				alert("[대표그룹등록]\n스킬 레벨이 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}
+					            		}
+					            	});
+					            	
+					            	if(refid != -1 && refid != "undefined")
+				            		{
+					            		//resCnt++;					            		
+				    	            	//revData.push(reqData[refid]);
+				            		}
 					            	else
 					            	{
-					            		alert("[대표그룹등록]\n해당 스킬그룹에 스킬이 없습니다.\n스킬을 등록해 주시기 바랍니다.");
-					            		return;
+					            		//refCnt++;
 					            	}
-					            },
-					            options: {
-					                onError: function (err) 
-					                {
-					                    alert("[대표그룹등록]\n스킬그룹 조회 작업에 실패하였습니다.");
-					                    return;
-					                    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-					                }
-					            }
-			            	});
-	                    }
-	            	});
+					            });							            					           
+					            $("#selTextRemark").val("");					            
+			            	}
+			            	else
+			            	{
+			            		alert("[대표그룹등록]\n해당 스킬그룹에 스킬이 없습니다.\n스킬을 등록해 주시기 바랍니다.");
+			            		return;
+			            	}
+			            },
+			            options: {
+			                onError: function (err) 
+			                {
+			                    alert("[대표그룹등록]\n스킬그룹 조회 작업에 실패하였습니다.");
+			                    return;
+			                    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+			                }
+			            }
+			        });
 	            }
 	        });  
 		}
@@ -368,8 +348,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	    	var compId = $("[data-ax5select='selCompany']").ax5select("getValue")[0].value;
 	    	var remark = $("#selTextRemark").val();
 	    	var data = [];
-	    	
-	    	var agskList = [];
 	    	
 	    	if(agList.length == 0)
 	    	{
@@ -451,179 +429,161 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	        }, function () {
 	            if (this.key == "ok") {
 	            	axboot.ajax({
-	                    type: "POST",
-	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkill",
-	                    cache : false,
-	                    data: JSON.stringify(caller.searchView.getData()),
-	                    callback: function (res) {
-	                    	agList.forEach(function(a){
-	                    		res.list.forEach(function(s) {
-	                    			if(a.AGTDBID == s.AGTDBID)
-	                    			{
-	                    				agskList.push(s);
-	                    			}
-	                    		});
-	                    	});
-			            	axboot.ajax({
-					            type: "POST",
-					            cache: false,
-					            url: "/api/mng/skillLvlChnGrp/skillGrpAddCheck",
-					            data: JSON.stringify($.extend({}, data)),
-					            callback: function (res) {
-					            	if(res.list.length > 0)
+			            type: "POST",
+			            cache: false,
+			            url: "/api/mng/skillLvlChnGrp/skillGrpAddCheck",
+			            data: JSON.stringify($.extend({}, data)),
+			            callback: function (res) {
+			            	if(res.list.length > 0)
+			            	{
+			            		data = res.list;
+			            		
+			            		axMask.open();
+			            		revCnt = agList.length;
+			            		resCnt = 0;
+			            		refCnt = 0;
+					            reqData = [];
+					            revData = [];
+					            hisUrl = "/api/mng/skillLvlChnGrp/saveAgtSkill";
+					            
+					            agList.forEach(function(n){
+					            	
+					            	regGb = '스킬변경';
+							        
+					            	var sklastindex = defaultDisp.length - 1;
+					            	var del_dbid = "";
+					            	
+					            	// 1.갖고 있는 스킬 다 지워버림
+					            	defaultDisp.forEach(function(m, index)
 					            	{
-					            		data = res.list;
-					            		
-					            		axMask.open();
-					            		//revCnt = agList.length;
-					            		revCnt = agskList.length;
-					            		resCnt = 0;
-					            		refCnt = 0;
-							            reqData = [];
-							            revData = [];
-							            hisUrl = "/api/mng/skillLvlChnGrp/saveAgtSkill";
-							            
-							            //agList.forEach(function(n){
-							            agskList.forEach(function(n){
-							            	
-							            	regGb = '스킬변경';
-									        
-							            	var sklastindex = defaultDisp.length - 1;
-							            	var del_dbid = "";
-							            	
-							            	// 1.갖고 있는 스킬 다 지워버림
-							            	defaultDisp.forEach(function(m, index)
-							            	{
-							            		if(n.AGTDBID != undefined)// && n[m.skillId] != undefined)
+					            		if(n.AGTDBID != undefined)// && n[m.skillId] != undefined)
+					            		{
+					            			if(n[m.skillId] != undefined)
+				            				{
+				            					del_dbid += m.skillDbid + ",";
+				            				}
+					            			
+					            			if(sklastindex == index)
+					            			{						            			
+						            			del_dbid = del_dbid.substring(0,del_dbid.length-1);
+		            							
+						            			//refid = ws.wDeleteSkill(n.AGTDBID, m.skillDbid);
+		            							refid = ws.wDeleteSkillMulti(n.AGTDBID, del_dbid);		            							
+		            							
+						            			if(refid == -1 && refid == "undefined")
 							            		{
-							            			if(n[m.skillId] != undefined)
-						            				{
-						            					del_dbid += m.skillDbid + ",";
-						            				}
-							            			
-							            			if(sklastindex == index)
-							            			{						            			
-								            			del_dbid = del_dbid.substring(0,del_dbid.length-1);
-				            							
-								            			//refid = ws.wDeleteSkill(n.AGTDBID, m.skillDbid);
-				            							refid = ws.wDeleteSkillMulti(n.AGTDBID, del_dbid);		            							
-				            							
-								            			if(refid == -1 && refid == "undefined")
-									            		{
-									            			alert("[스킬변경]\n스킬 삭제 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
-									            			return;
-									            		}
-							            			}
+							            			alert("[스킬변경]\n스킬 삭제 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
+							            			return;
 							            		}
+					            			}
+					            		}
+					            		else
+					            		{
+					            			if(n.AGTDBID == undefined)
+					            			{
+					            				alert("[스킬변경]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}
+					            		}
+						    		});
+					            	
+					            	var aglastindex = data.length - 1;
+				            		var add_dbid = "";
+					            	var add_level = "";
+					            	
+					            	// 2.해당스킬그룹의 스킬로 다 넣음
+					            	data.forEach(function(d, index)
+					            	{
+					            		if(n.AGTDBID != undefined && d.skillDbid != undefined && d.skillLevel != undefined)
+					            		{	
+					            			add_dbid += d.skillDbid + ",";
+				            				add_level += d.skillLevel + ",";
+					            			
+					            			if(aglastindex == index)
+					            			{
+					            				add_dbid = add_dbid.substring(0,add_dbid.length-1);
+						            			add_level = add_level.substring(0,add_level.length-1);		
+						            			
+						            			//refid = ws.wAddSkill(n.AGTDBID, d.skillDbid, d.skillLevel);
+						            			refid = ws.wAddSkillMulti(n.AGTDBID, add_dbid, add_level);						            				
+						            			
+						            			if(refid != -1 && refid != "undefined")
+							            		{
+							            			reqData[refid] = 
+									               	{
+									            		compId : compId,
+							        					partName : n.AGTGRPNAME,
+				        	        					teamName : n.AGTTEAMNAME,
+				        	        					agtLogId : n.AGTLOGID,
+				        	        					employeeid : n.AGTID,
+								        				agtDbid : n.AGTDBID,
+								        				agtName : n.AGTNAME,
+								        				defaultGrp : n.DEFAULT_GROUP_NM,
+								        				applyGrp : n.APPLY_GROUP_NM,
+								        				skillId : d.id,
+								        				skillDbid : d.skillDbid,  
+								        				skillLevel : d.skillLevel, 
+								        				grpname : d.name,
+								        				grpid : d.id,							        				
+								        				workRemark : remark,
+								        				regGb : regGb,
+							        					suss : "작업중"
+									               	};
+							    	            }
 							            		else
 							            		{
-							            			if(n.AGTDBID == undefined)
-							            			{
-							            				alert("[스킬변경]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}
+							            			alert("[스킬변경]\n스킬 추가 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
+							            			return;
 							            		}
-								    		});
-							            	
-							            	var aglastindex = data.length - 1;
-						            		var add_dbid = "";
-							            	var add_level = "";
-							            	
-							            	// 2.해당스킬그룹의 스킬로 다 넣음
-							            	data.forEach(function(d, index)
-							            	{
-							            		if(n.AGTDBID != undefined && d.skillDbid != undefined && d.skillLevel != undefined)
-							            		{	
-							            			add_dbid += d.skillDbid + ",";
-						            				add_level += d.skillLevel + ",";
-							            			
-							            			if(aglastindex == index)
-							            			{
-							            				add_dbid = add_dbid.substring(0,add_dbid.length-1);
-								            			add_level = add_level.substring(0,add_level.length-1);		
-								            			
-								            			//refid = ws.wAddSkill(n.AGTDBID, d.skillDbid, d.skillLevel);
-								            			refid = ws.wAddSkillMulti(n.AGTDBID, add_dbid, add_level);						            				
-								            			
-								            			if(refid != -1 && refid != "undefined")
-									            		{
-									            			reqData[refid] = 
-											               	{
-											            		compId : compId,
-									        					partName : n.AGTGRPNAME,
-						        	        					teamName : n.AGTTEAMNAME,
-						        	        					agtLogId : n.AGTLOGID,
-						        	        					employeeid : n.AGTID,
-										        				agtDbid : n.AGTDBID,
-										        				agtName : n.AGTNAME,
-										        				defaultGrp : n.DEFAULT_GROUP_NM,
-										        				applyGrp : n.APPLY_GROUP_NM,
-										        				skillId : d.id,
-										        				skillDbid : d.skillDbid,  
-										        				skillLevel : d.skillLevel, 
-										        				grpname : d.name,
-										        				grpid : d.id,							        				
-										        				workRemark : remark,
-										        				regGb : regGb,
-									        					suss : "작업중"
-											               	};
-									    	            }
-									            		else
-									            		{
-									            			alert("[스킬변경]\n스킬 추가 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
-									            			return;
-									            		}
-							            			}
-							            		}
-							            		else
-							            		{
-							            			if(n.AGTDBID == undefined)
-								            		{
-							            				alert("[스킬변경]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-								            		}
-							            			else if(d.skillDbid == undefined)
-							            			{
-							            				alert("[스킬변경]\n스킬 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}			
-							            			else if(d.skillLevel == undefined)
-							            			{
-							            				alert("[스킬변경]\n스킬 레벨이 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}
-							            		}
-							            	});
-							            	
-							            	if(refid != -1 && refid != "undefined")
+					            			}
+					            		}
+					            		else
+					            		{
+					            			if(n.AGTDBID == undefined)
 						            		{
-							            		//resCnt++;					            		
-						    	            	//revData.push(reqData[refid]);
+					            				alert("[스킬변경]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
 						            		}
-							            	else
-							            	{
-							            		//refCnt++;
-							            	}
-							            });		
-							            $("#selTextRemark").val("");
-					            	}
+					            			else if(d.skillDbid == undefined)
+					            			{
+					            				alert("[스킬변경]\n스킬 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}			
+					            			else if(d.skillLevel == undefined)
+					            			{
+					            				alert("[스킬변경]\n스킬 레벨이 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}
+					            		}
+					            	});
+					            	
+					            	if(refid != -1 && refid != "undefined")
+				            		{
+					            		//resCnt++;					            		
+				    	            	//revData.push(reqData[refid]);
+				            		}
 					            	else
 					            	{
-					            		alert("[스킬변경]\n해당 스킬그룹에 스킬이 없습니다.\n스킬을 등록해 주시기 바랍니다.");
-					            		return;
+					            		//refCnt++;
 					            	}
-					            },
-					            options: {
-					                onError: function (err) 
-					                {
-					                    alert("[스킬변경]\n스킬그룹 조회 작업에 실패하였습니다.");
-					                    return;
-					                    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-					                }
-					            }
-					        });
-	                    }
-	            	});
+					            });		
+					            $("#selTextRemark").val("");
+			            	}
+			            	else
+			            	{
+			            		alert("[스킬변경]\n해당 스킬그룹에 스킬이 없습니다.\n스킬을 등록해 주시기 바랍니다.");
+			            		return;
+			            	}
+			            },
+			            options: {
+			                onError: function (err) 
+			                {
+			                    alert("[스킬변경]\n스킬그룹 조회 작업에 실패하였습니다.");
+			                    return;
+			                    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+			                }
+			            }
+			        });
 	            }
 	        });
 		}
@@ -640,8 +600,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	    	var compId = $("[data-ax5select='selCompany']").ax5select("getValue")[0].value;
 	    	var remark = $("#selTextRemark").val();
 	    	var data = [];
-	    	
-	    	var agskList = [];
 	    	
 	    	if(agList.length == 0)
 	    	{
@@ -702,185 +660,167 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	        }, function () {
 	            if (this.key == "ok") {
 	            	axboot.ajax({
-	                    type: "POST",
-	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkill",
-	                    cache : false,
-	                    data: JSON.stringify(caller.searchView.getData()),
-	                    callback: function (res) {
-	                    	agList.forEach(function(a){
-	                    		res.list.forEach(function(s) {
-	                    			if(a.AGTDBID == s.AGTDBID)
-	                    			{
-	                    				agskList.push(s);
-	                    			}
-	                    		});
-	                    	});
-			            	axboot.ajax({
-					            type: "POST",
-					            cache: false,
-					            url: "/api/mng/skillLvlChnGrp/skillGrpAddCheck",
-					            data: JSON.stringify($.extend({}, data)),
-					            callback: function (res) {
-					            	if(res.list.length > 0)
-					            	{			
-					            		axMask.open();
-					            		//revCnt = agList.length;
-					            		revCnt = agskList.length;
-					            		resCnt = 0;
-					            		refCnt = 0;
-							            reqData = [];
-							            revData = [];
-							            hisUrl = "/api/mng/skillLvlChnGrp/saveAgtSkill";
-							            
-							            //agList.forEach(function(n){
-							            agskList.forEach(function(n){
-							            	data = [];
-							            						            	
-							            	res.list.forEach(function(r){
-						            			if(n.DEFAULT_GROUP == r.id)
-						            			{
-						            				data.push(r);
-						            			}
-						            		});	
-							            	
-							            	regGb = '스킬원복';
-									        
-							            	var sklastindex = defaultDisp.length - 1;
-							            	var del_dbid = "";
-							            	
-							            	// 1.갖고 있는 스킬 다 지워버림
-							            	defaultDisp.forEach(function(m, index)
-							            	{
-							            		if(n.AGTDBID != undefined)// && n[m.skillId] != undefined)
+			            type: "POST",
+			            cache: false,
+			            url: "/api/mng/skillLvlChnGrp/skillGrpAddCheck",
+			            data: JSON.stringify($.extend({}, data)),
+			            callback: function (res) {
+			            	if(res.list.length > 0)
+			            	{			
+			            		axMask.open();
+			            		revCnt = agList.length;
+			            		resCnt = 0;
+			            		refCnt = 0;
+					            reqData = [];
+					            revData = [];
+					            hisUrl = "/api/mng/skillLvlChnGrp/saveAgtSkill";
+					            
+					            agList.forEach(function(n){
+					            	data = [];
+					            						            	
+					            	res.list.forEach(function(r){
+				            			if(n.DEFAULT_GROUP == r.id)
+				            			{
+				            				data.push(r);
+				            			}
+				            		});	
+					            	
+					            	regGb = '스킬원복';
+							        
+					            	var sklastindex = defaultDisp.length - 1;
+					            	var del_dbid = "";
+					            	
+					            	// 1.갖고 있는 스킬 다 지워버림
+					            	defaultDisp.forEach(function(m, index)
+					            	{
+					            		if(n.AGTDBID != undefined)// && n[m.skillId] != undefined)
+					            		{
+					            			if(n[m.skillId] != undefined)
+				            				{
+				            					del_dbid += m.skillDbid + ",";
+				            				}
+					            			
+					            			if(sklastindex == index)
+					            			{
+					            				del_dbid = del_dbid.substring(0,del_dbid.length-1);
+					            				
+						            			//refid = ws.wDeleteSkill(n.AGTDBID, m.skillDbid);
+					            				refid = ws.wDeleteSkillMulti(n.AGTDBID, del_dbid);
+						            			
+						            			if(refid == -1 && refid == "undefined")
 							            		{
-							            			if(n[m.skillId] != undefined)
-						            				{
-						            					del_dbid += m.skillDbid + ",";
-						            				}
-							            			
-							            			if(sklastindex == index)
-							            			{
-							            				del_dbid = del_dbid.substring(0,del_dbid.length-1);
-							            				
-								            			//refid = ws.wDeleteSkill(n.AGTDBID, m.skillDbid);
-							            				refid = ws.wDeleteSkillMulti(n.AGTDBID, del_dbid);
-								            			
-								            			if(refid == -1 && refid == "undefined")
-									            		{
-									            			alert("[스킬원복]\n스킬 삭제 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
-									            			return;
-									            		}
-							            			}
+							            			alert("[스킬원복]\n스킬 삭제 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
+							            			return;
 							            		}
+					            			}
+					            		}
+					            		else
+					            		{
+					            			if(n.AGTDBID == undefined)
+					            			{
+					            				alert("[스킬원복]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}
+					            		}
+						    		});
+					            	
+					            	var aglastindex = data.length - 1;
+					            	var add_dbid = "";
+					            	var add_level = "";
+					            	
+					            	// 2.해당스킬그룹의 스킬로 다 넣음
+					            	data.forEach(function(d, index)
+					            	{
+					            		if(n.AGTDBID != undefined && d.skillDbid != undefined && d.skillLevel != undefined)
+					            		{	
+					            			add_dbid += d.skillDbid + ",";
+				            				add_level += d.skillLevel + ",";
+					            			
+					            			if(aglastindex == index)
+					            			{
+					            				add_dbid = add_dbid.substring(0,add_dbid.length-1);
+						            			add_level = add_level.substring(0,add_level.length-1);	
+						            			
+						            			//refid = ws.wAddSkill(n.AGTDBID, d.skillDbid, d.skillLevel);
+						            			refid = ws.wAddSkillMulti(n.AGTDBID, add_dbid, add_level);	
+						            			
+						            			if(refid != -1 && refid != "undefined")
+							            		{
+							            			reqData[refid] = 
+									               	{
+									            		compId : compId,
+							        					partName : n.AGTGRPNAME,
+				        	        					teamName : n.AGTTEAMNAME,
+				        	        					agtLogId : n.AGTLOGID,
+				        	        					employeeid : n.AGTID,
+								        				agtDbid : n.AGTDBID,
+								        				agtName : n.AGTNAME,
+								        				defaultGrp : n.DEFAULT_GROUP_NM,
+								        				applyGrp : n.APPLY_GROUP_NM,
+								        				skillId : d.id,
+								        				skillDbid : d.skillDbid,  
+								        				skillLevel : d.skillLevel, 
+								        				grpname : d.name,
+								        				grpid : d.id,							        				
+								        				workRemark : remark,
+								        				regGb : regGb,
+							        					suss : "작업중"
+									               	};
+							    	            }
 							            		else
 							            		{
-							            			if(n.AGTDBID == undefined)
-							            			{
-							            				alert("[스킬원복]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}
+							            			alert("[스킬원복]\n스킬 추가 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
+							            			return;
 							            		}
-								    		});
-							            	
-							            	var aglastindex = data.length - 1;
-							            	var add_dbid = "";
-							            	var add_level = "";
-							            	
-							            	// 2.해당스킬그룹의 스킬로 다 넣음
-							            	data.forEach(function(d, index)
-							            	{
-							            		if(n.AGTDBID != undefined && d.skillDbid != undefined && d.skillLevel != undefined)
-							            		{	
-							            			add_dbid += d.skillDbid + ",";
-						            				add_level += d.skillLevel + ",";
-							            			
-							            			if(aglastindex == index)
-							            			{
-							            				add_dbid = add_dbid.substring(0,add_dbid.length-1);
-								            			add_level = add_level.substring(0,add_level.length-1);	
-								            			
-								            			//refid = ws.wAddSkill(n.AGTDBID, d.skillDbid, d.skillLevel);
-								            			refid = ws.wAddSkillMulti(n.AGTDBID, add_dbid, add_level);	
-								            			
-								            			if(refid != -1 && refid != "undefined")
-									            		{
-									            			reqData[refid] = 
-											               	{
-											            		compId : compId,
-									        					partName : n.AGTGRPNAME,
-						        	        					teamName : n.AGTTEAMNAME,
-						        	        					agtLogId : n.AGTLOGID,
-						        	        					employeeid : n.AGTID,
-										        				agtDbid : n.AGTDBID,
-										        				agtName : n.AGTNAME,
-										        				defaultGrp : n.DEFAULT_GROUP_NM,
-										        				applyGrp : n.APPLY_GROUP_NM,
-										        				skillId : d.id,
-										        				skillDbid : d.skillDbid,  
-										        				skillLevel : d.skillLevel, 
-										        				grpname : d.name,
-										        				grpid : d.id,							        				
-										        				workRemark : remark,
-										        				regGb : regGb,
-									        					suss : "작업중"
-											               	};
-									    	            }
-									            		else
-									            		{
-									            			alert("[스킬원복]\n스킬 추가 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
-									            			return;
-									            		}
-							            			}
-							            		}
-							            		else
-							            		{
-							            			if(n.AGTDBID == undefined)
-								            		{
-							            				alert("[스킬원복]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-								            		}
-							            			else if(d.skillDbid == undefined)
-							            			{
-							            				alert("[스킬원복]\n스킬 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}			
-							            			else if(d.skillLevel == undefined)
-							            			{
-							            				alert("[스킬원복]\n스킬 레벨이 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}
-							            		}
-							            	});
-							            	
-							            	if(refid != -1 && refid != "undefined")
+					            			}
+					            		}
+					            		else
+					            		{
+					            			if(n.AGTDBID == undefined)
 						            		{
-							            		//resCnt++;					            		
-						    	            	//revData.push(reqData[refid]);
+					            				alert("[스킬원복]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
 						            		}
-							            	else
-							            	{
-							            		//refCnt++;
-							            	}
-							            });		
-							            $("#selTextRemark").val("");
-					            	}
+					            			else if(d.skillDbid == undefined)
+					            			{
+					            				alert("[스킬원복]\n스킬 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}			
+					            			else if(d.skillLevel == undefined)
+					            			{
+					            				alert("[스킬원복]\n스킬 레벨이 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}
+					            		}
+					            	});
+					            	
+					            	if(refid != -1 && refid != "undefined")
+				            		{
+					            		//resCnt++;					            		
+				    	            	//revData.push(reqData[refid]);
+				            		}
 					            	else
 					            	{
-					            		alert("[스킬원복]\n해당 스킬그룹에 스킬이 없습니다.\n스킬을 등록해 주시기 바랍니다.");
-					            		return;
+					            		//refCnt++;
 					            	}
-					            },
-					            options: {
-					                onError: function (err) 
-					                {
-					                    alert("[스킬원복]\n스킬그룹 조회 작업에 실패하였습니다.");
-					                    return;
-					                    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-					                }
-					            }
-					        });
-	                    }
-	            	});
+					            });		
+					            $("#selTextRemark").val("");
+			            	}
+			            	else
+			            	{
+			            		alert("[스킬원복]\n해당 스킬그룹에 스킬이 없습니다.\n스킬을 등록해 주시기 바랍니다.");
+			            		return;
+			            	}
+			            },
+			            options: {
+			                onError: function (err) 
+			                {
+			                    alert("[스킬원복]\n스킬그룹 조회 작업에 실패하였습니다.");
+			                    return;
+			                    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+			                }
+			            }
+			        });
 	            }
 	        });
 		}
@@ -897,8 +837,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	    	var compId = $("[data-ax5select='selCompany']").ax5select("getValue")[0].value;
 	    	var remark = $("#selTextRemark").val();
 	    	var data = [];
-	    	
-	    	var agskList = [];
 	    	
 	    	if(agList.length == 0)
 	    	{
@@ -958,179 +896,161 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	        }, function () {
 	            if (this.key == "ok") {
 	            	axboot.ajax({
-	                    type: "POST",
-	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkill",
-	                    cache : false,
-	                    data: JSON.stringify(caller.searchView.getData()),
-	                    callback: function (res) {
-	                    	agList.forEach(function(a){
-	                    		res.list.forEach(function(s) {
-	                    			if(a.AGTDBID == s.AGTDBID)
-	                    			{
-	                    				agskList.push(s);
-	                    			}
-	                    		});
-	                    	});
-			            	axboot.ajax({
-					            type: "POST",
-					            cache: false,
-					            url: "/api/mng/skillLvlChnGrp/skillGrpAddCheck",
-					            data: JSON.stringify($.extend({}, data)),
-					            callback: function (res) {
-					            	if(res.list.length > 0)
+			            type: "POST",
+			            cache: false,
+			            url: "/api/mng/skillLvlChnGrp/skillGrpAddCheck",
+			            data: JSON.stringify($.extend({}, data)),
+			            callback: function (res) {
+			            	if(res.list.length > 0)
+			            	{
+			            		data = res.list;
+			            		
+			            		axMask.open();
+			            		revCnt = agList.length;
+			            		resCnt = 0;
+			            		refCnt = 0;
+					            reqData = [];
+					            revData = [];
+					            hisUrl = "/api/mng/skillLvlChnGrp/saveAgtSkill";
+					            
+					            agList.forEach(function(n){
+					            	
+					            	regGb = '자율부여';
+							        
+					            	var sklastindex = defaultDisp.length - 1;
+					            	var del_dbid = "";
+					            	
+					            	// 1.갖고 있는 스킬 다 지워버림
+					            	defaultDisp.forEach(function(m, index)
 					            	{
-					            		data = res.list;
-					            		
-					            		axMask.open();
-					            		//revCnt = agList.length;
-					            		revCnt = agskList.length;
-					            		resCnt = 0;
-					            		refCnt = 0;
-							            reqData = [];
-							            revData = [];
-							            hisUrl = "/api/mng/skillLvlChnGrp/saveAgtSkill";
-							            
-							            //agList.forEach(function(n){
-							            agskList.forEach(function(n){
-							            	
-							            	regGb = '자율부여';
-									        
-							            	var sklastindex = defaultDisp.length - 1;
-							            	var del_dbid = "";
-							            	
-							            	// 1.갖고 있는 스킬 다 지워버림
-							            	defaultDisp.forEach(function(m, index)
-							            	{
-							            		if(n.AGTDBID != undefined)// && n[m.skillId] != undefined)
+					            		if(n.AGTDBID != undefined)// && n[m.skillId] != undefined)
+					            		{
+					            			if(n[m.skillId] != undefined)
+				            				{
+				            					del_dbid += m.skillDbid + ",";
+				            				}
+					            			
+					            			if(sklastindex == index)
+					            			{
+					            				del_dbid = del_dbid.substring(0,del_dbid.length-1);
+					            				
+						            			//refid = ws.wDeleteSkill(n.AGTDBID, m.skillDbid);
+					            				refid = ws.wDeleteSkillMulti(n.AGTDBID, del_dbid);
+						            			
+						            			if(refid == -1 && refid == "undefined")
 							            		{
-							            			if(n[m.skillId] != undefined)
-						            				{
-						            					del_dbid += m.skillDbid + ",";
-						            				}
-							            			
-							            			if(sklastindex == index)
-							            			{
-							            				del_dbid = del_dbid.substring(0,del_dbid.length-1);
-							            				
-								            			//refid = ws.wDeleteSkill(n.AGTDBID, m.skillDbid);
-							            				refid = ws.wDeleteSkillMulti(n.AGTDBID, del_dbid);
-								            			
-								            			if(refid == -1 && refid == "undefined")
-									            		{
-									            			alert("[자율부여]\n스킬 삭제 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
-									            			return;
-									            		}
-							            			}
+							            			alert("[자율부여]\n스킬 삭제 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
+							            			return;
 							            		}
+					            			}
+					            		}
+					            		else
+					            		{
+					            			if(n.AGTDBID == undefined)
+					            			{
+					            				alert("[자율부여]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}
+					            		}
+						    		});
+					            	
+					            	var aglastindex = data.length - 1;
+					            	var add_dbid = "";
+					            	var add_level = "";
+					            	
+					            	// 2.해당스킬그룹의 스킬로 다 넣음
+					            	data.forEach(function(d, index)
+					            	{
+					            		if(n.AGTDBID != undefined && d.skillDbid != undefined && d.skillLevel != undefined)
+					            		{	
+					            			add_dbid += d.skillDbid + ",";
+					            			add_level += d.skillLevel + ",";
+					            			
+					            			if(aglastindex == index)
+					            			{
+					            				add_dbid = add_dbid.substring(0,add_dbid.length-1);
+						            			add_level = add_level.substring(0,add_level.length-1);	
+						            			
+						            			//refid = ws.wAddSkill(n.AGTDBID, d.skillDbid, d.skillLevel);	
+						            			refid = ws.wAddSkillMulti(n.AGTDBID, add_dbid, add_level);
+						            			
+						            			if(refid != -1 && refid != "undefined")
+							            		{
+							            			reqData[refid] = 
+									               	{
+									            		compId : compId,
+							        					partName : n.AGTGRPNAME,
+				        	        					teamName : n.AGTTEAMNAME,
+				        	        					agtLogId : n.AGTLOGID,
+				        	        					employeeid : n.AGTID,
+								        				agtDbid : n.AGTDBID,
+								        				agtName : n.AGTNAME,
+								        				defaultGrp : n.DEFAULT_GROUP_NM,
+								        				applyGrp : n.APPLY_GROUP_NM,
+								        				skillId : d.id,
+								        				skillDbid : d.skillDbid,  
+								        				skillLevel : d.skillLevel, 
+								        				grpname : d.name,
+								        				grpid : d.id,							        				
+								        				workRemark : remark,
+								        				regGb : regGb,
+							        					suss : "작업중"
+									               	};
+							    	            }
 							            		else
 							            		{
-							            			if(n.AGTDBID == undefined)
-							            			{
-							            				alert("[자율부여]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}
+							            			alert("[자율부여]\n스킬 추가 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
+							            			return;
 							            		}
-								    		});
-							            	
-							            	var aglastindex = data.length - 1;
-							            	var add_dbid = "";
-							            	var add_level = "";
-							            	
-							            	// 2.해당스킬그룹의 스킬로 다 넣음
-							            	data.forEach(function(d, index)
-							            	{
-							            		if(n.AGTDBID != undefined && d.skillDbid != undefined && d.skillLevel != undefined)
-							            		{	
-							            			add_dbid += d.skillDbid + ",";
-							            			add_level += d.skillLevel + ",";
-							            			
-							            			if(aglastindex == index)
-							            			{
-							            				add_dbid = add_dbid.substring(0,add_dbid.length-1);
-								            			add_level = add_level.substring(0,add_level.length-1);	
-								            			
-								            			//refid = ws.wAddSkill(n.AGTDBID, d.skillDbid, d.skillLevel);	
-								            			refid = ws.wAddSkillMulti(n.AGTDBID, add_dbid, add_level);
-								            			
-								            			if(refid != -1 && refid != "undefined")
-									            		{
-									            			reqData[refid] = 
-											               	{
-											            		compId : compId,
-									        					partName : n.AGTGRPNAME,
-						        	        					teamName : n.AGTTEAMNAME,
-						        	        					agtLogId : n.AGTLOGID,
-						        	        					employeeid : n.AGTID,
-										        				agtDbid : n.AGTDBID,
-										        				agtName : n.AGTNAME,
-										        				defaultGrp : n.DEFAULT_GROUP_NM,
-										        				applyGrp : n.APPLY_GROUP_NM,
-										        				skillId : d.id,
-										        				skillDbid : d.skillDbid,  
-										        				skillLevel : d.skillLevel, 
-										        				grpname : d.name,
-										        				grpid : d.id,							        				
-										        				workRemark : remark,
-										        				regGb : regGb,
-									        					suss : "작업중"
-											               	};
-									    	            }
-									            		else
-									            		{
-									            			alert("[자율부여]\n스킬 추가 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
-									            			return;
-									            		}
-							            			}
-							            		}
-							            		else
-							            		{
-							            			if(n.AGTDBID == undefined)
-								            		{
-							            				alert("[자율부여]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-								            		}
-							            			else if(d.skillDbid == undefined)
-							            			{
-							            				alert("[자율부여]\n스킬 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}			
-							            			else if(d.skillLevel == undefined)
-							            			{
-							            				alert("[자율부여]\n스킬 레벨이 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}
-							            		}
-							            	});
-							            	
-							            	if(refid != -1 && refid != "undefined")
-							            	{
-								            	//resCnt++;					            		
-							    	           	//revData.push(reqData[refid]);
-							            	}
-								            else
-								            {
-								            	//refCnt++;
-								            }
-							            });		
-							            $("#selTextRemark").val("");
-					            	}
-					            	else
+					            			}
+					            		}
+					            		else
+					            		{
+					            			if(n.AGTDBID == undefined)
+						            		{
+					            				alert("[자율부여]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+						            		}
+					            			else if(d.skillDbid == undefined)
+					            			{
+					            				alert("[자율부여]\n스킬 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}			
+					            			else if(d.skillLevel == undefined)
+					            			{
+					            				alert("[자율부여]\n스킬 레벨이 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}
+					            		}
+					            	});
+					            	
+					            	if(refid != -1 && refid != "undefined")
 					            	{
-					            		alert("[자율부여]\n해당 스킬그룹에 스킬이 없습니다.\n스킬을 등록해 주시기 바랍니다.");
-					            		return;
+						            	//resCnt++;					            		
+					    	           	//revData.push(reqData[refid]);
 					            	}
-					            },
-					            options: {
-					                onError: function (err) 
-					                {
-					                    alert("[자율부여]\n스킬그룹 조회 작업에 실패하였습니다.");
-					                    return;
-					                    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-					                }
-					            }
-					        });
-	                    }
-	            	});
+						            else
+						            {
+						            	//refCnt++;
+						            }
+					            });		
+					            $("#selTextRemark").val("");
+			            	}
+			            	else
+			            	{
+			            		alert("[자율부여]\n해당 스킬그룹에 스킬이 없습니다.\n스킬을 등록해 주시기 바랍니다.");
+			            		return;
+			            	}
+			            },
+			            options: {
+			                onError: function (err) 
+			                {
+			                    alert("[자율부여]\n스킬그룹 조회 작업에 실패하였습니다.");
+			                    return;
+			                    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+			                }
+			            }
+			        });
 	            }
 	        });
 		}
@@ -1147,8 +1067,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	    	var compId = $("[data-ax5select='selCompany']").ax5select("getValue")[0].value;
 	    	var remark = $("#selTextRemark").val();
 	    	var data = [];
-	    	
-	    	var agskList = [];
 	    	
 	    	if(agList.length == 0)
 	    	{
@@ -1209,185 +1127,167 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	        }, function () {
 	            if (this.key == "ok") {
 	            	axboot.ajax({
-	                    type: "POST",
-	                    url: "/api/mng/skillLvlChnGrp/selectAgtSkill",
-	                    cache : false,
-	                    data: JSON.stringify(caller.searchView.getData()),
-	                    callback: function (res) {
-	                    	agList.forEach(function(a){
-	                    		res.list.forEach(function(s) {
-	                    			if(a.AGTDBID == s.AGTDBID)
-	                    			{
-	                    				agskList.push(s);
-	                    			}
-	                    		});
-	                    	});
-			            	axboot.ajax({
-					            type: "POST",
-					            cache: false,
-					            url: "/api/mng/skillLvlChnGrp/skillGrpAddCheck",
-					            data: JSON.stringify($.extend({}, data)),
-					            callback: function (res) {
-					            	if(res.list.length > 0)
+			            type: "POST",
+			            cache: false,
+			            url: "/api/mng/skillLvlChnGrp/skillGrpAddCheck",
+			            data: JSON.stringify($.extend({}, data)),
+			            callback: function (res) {
+			            	if(res.list.length > 0)
+			            	{
+			            		axMask.open();
+			            		revCnt = agList.length;
+			            		resCnt = 0;
+			            		refCnt = 0;
+					            reqData = [];
+					            revData = [];
+					            hisUrl = "/api/mng/skillLvlChnGrp/saveAgtSkill";
+					            
+					            agList.forEach(function(n){
+					            	data = [];
+					            	
+					            	res.list.forEach(function(r){
+				            			if(n.DEFAULT_GROUP == r.id)
+				            			{
+				            				data.push(r);
+				            			}
+				            		});	
+					            	
+					            	regGb = '자율원복';
+
+					            	var sklastindex = defaultDisp.length - 1;
+					            	var del_dbid = "";
+					            	
+					            	// 1.갖고 있는 스킬 다 지워버림
+					            	defaultDisp.forEach(function(m, index)
 					            	{
-					            		axMask.open();
-					            		//revCnt = agList.length;
-					            		revCnt = agskList.length;
-					            		resCnt = 0;
-					            		refCnt = 0;
-							            reqData = [];
-							            revData = [];
-							            hisUrl = "/api/mng/skillLvlChnGrp/saveAgtSkill";
-							            
-							            //agList.forEach(function(n){
-							            agskList.forEach(function(n){
-							            	data = [];
-							            	
-							            	res.list.forEach(function(r){
-						            			if(n.DEFAULT_GROUP == r.id)
-						            			{
-						            				data.push(r);
-						            			}
-						            		});	
-							            	
-							            	regGb = '자율원복';
-		
-							            	var sklastindex = defaultDisp.length - 1;
-							            	var del_dbid = "";
-							            	
-							            	// 1.갖고 있는 스킬 다 지워버림
-							            	defaultDisp.forEach(function(m, index)
-							            	{
-							            		if(n.AGTDBID != undefined)// && n[m.skillId] != undefined)
+					            		if(n.AGTDBID != undefined)// && n[m.skillId] != undefined)
+					            		{
+					            			if(n[m.skillId] != undefined)
+				            				{
+				            					del_dbid += m.skillDbid + ",";
+				            				}
+					            			
+					            			if(sklastindex == index)
+					            			{
+					            				del_dbid = del_dbid.substring(0,del_dbid.length-1);
+					            				
+						            			//refid = ws.wDeleteSkill(n.AGTDBID, m.skillDbid);
+					            				refid = ws.wDeleteSkillMulti(n.AGTDBID, del_dbid);
+						            			
+						            			if(refid == -1 && refid == "undefined")
 							            		{
-							            			if(n[m.skillId] != undefined)
-						            				{
-						            					del_dbid += m.skillDbid + ",";
-						            				}
-							            			
-							            			if(sklastindex == index)
-							            			{
-							            				del_dbid = del_dbid.substring(0,del_dbid.length-1);
-							            				
-								            			//refid = ws.wDeleteSkill(n.AGTDBID, m.skillDbid);
-							            				refid = ws.wDeleteSkillMulti(n.AGTDBID, del_dbid);
-								            			
-								            			if(refid == -1 && refid == "undefined")
-									            		{
-									            			alert("[자율원복]\n스킬 삭제 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
-									            			return;
-									            		}
-							            			}
+							            			alert("[자율원복]\n스킬 삭제 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
+							            			return;
 							            		}
+					            			}
+					            		}
+					            		else
+					            		{
+					            			if(n.AGTDBID == undefined)
+					            			{
+					            				alert("[자율원복]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}
+					            		}
+						    		});
+					            	
+					            	var aglastindex = data.length - 1;
+					            	var add_dbid = "";
+					            	var add_level = "";
+					            	
+					            	// 2.해당스킬그룹의 스킬로 다 넣음
+					            	data.forEach(function(d, index)
+					            	{
+					            		if(n.AGTDBID != undefined && d.skillDbid != undefined && d.skillLevel != undefined)
+					            		{
+					            			add_dbid += d.skillDbid + ",";
+					            			add_level += d.skillLevel + ",";	
+					            			
+					            			if(aglastindex == index)
+					            			{
+					            				add_dbid = add_dbid.substring(0,add_dbid.length-1);
+						            			add_level = add_level.substring(0,add_level.length-1);		
+						            		
+						            			//refid = ws.wAddSkill(n.AGTDBID, d.skillDbid, d.skillLevel);	
+						            			refid = ws.wAddSkillMulti(n.AGTDBID, add_dbid, add_level);
+						            			
+						            			if(refid != -1 && refid != "undefined")
+							            		{
+							            			reqData[refid] = 
+									               	{
+									            		compId : compId,
+							        					partName : n.AGTGRPNAME,
+				        	        					teamName : n.AGTTEAMNAME,
+				        	        					agtLogId : n.AGTLOGID,
+				        	        					employeeid : n.AGTID,
+								        				agtDbid : n.AGTDBID,
+								        				agtName : n.AGTNAME,
+								        				defaultGrp : n.DEFAULT_GROUP_NM,
+								        				applyGrp : n.APPLY_GROUP_NM,
+								        				skillId : d.id,
+								        				skillDbid : d.skillDbid,  
+								        				skillLevel : d.skillLevel, 
+								        				grpname : d.name,
+								        				grpid : d.id,							        				
+								        				workRemark : remark,
+								        				regGb : regGb,
+							        					suss : "작업중"
+									               	};
+							    	            }
 							            		else
 							            		{
-							            			if(n.AGTDBID == undefined)
-							            			{
-							            				alert("[자율원복]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}
+							            			alert("[자율원복]\n스킬 추가 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
+							            			return;
 							            		}
-								    		});
-							            	
-							            	var aglastindex = data.length - 1;
-							            	var add_dbid = "";
-							            	var add_level = "";
-							            	
-							            	// 2.해당스킬그룹의 스킬로 다 넣음
-							            	data.forEach(function(d, index)
-							            	{
-							            		if(n.AGTDBID != undefined && d.skillDbid != undefined && d.skillLevel != undefined)
-							            		{
-							            			add_dbid += d.skillDbid + ",";
-							            			add_level += d.skillLevel + ",";	
-							            			
-							            			if(aglastindex == index)
-							            			{
-							            				add_dbid = add_dbid.substring(0,add_dbid.length-1);
-								            			add_level = add_level.substring(0,add_level.length-1);		
-								            		
-								            			//refid = ws.wAddSkill(n.AGTDBID, d.skillDbid, d.skillLevel);	
-								            			refid = ws.wAddSkillMulti(n.AGTDBID, add_dbid, add_level);
-								            			
-								            			if(refid != -1 && refid != "undefined")
-									            		{
-									            			reqData[refid] = 
-											               	{
-											            		compId : compId,
-									        					partName : n.AGTGRPNAME,
-						        	        					teamName : n.AGTTEAMNAME,
-						        	        					agtLogId : n.AGTLOGID,
-						        	        					employeeid : n.AGTID,
-										        				agtDbid : n.AGTDBID,
-										        				agtName : n.AGTNAME,
-										        				defaultGrp : n.DEFAULT_GROUP_NM,
-										        				applyGrp : n.APPLY_GROUP_NM,
-										        				skillId : d.id,
-										        				skillDbid : d.skillDbid,  
-										        				skillLevel : d.skillLevel, 
-										        				grpname : d.name,
-										        				grpid : d.id,							        				
-										        				workRemark : remark,
-										        				regGb : regGb,
-									        					suss : "작업중"
-											               	};
-									    	            }
-									            		else
-									            		{
-									            			alert("[자율원복]\n스킬 추가 중 CTI서버와 연결이 끊어졌습니다.\n화면을 새로고침 하세요.");
-									            			return;
-									            		}
-							            			}
-							            		}
-							            		else
-							            		{
-							            			if(n.AGTDBID == undefined)
-								            		{
-							            				alert("[자율원복]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-								            		}
-							            			else if(d.skillDbid == undefined)
-							            			{
-							            				alert("[자율원복]\n스킬 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}			
-							            			else if(d.skillLevel == undefined)
-							            			{
-							            				alert("[자율원복]\n스킬 레벨이 존재하지 않습니다.\n관리자에게 문의하세요.");
-							            				return;
-							            			}
-							            		}
-							            	});
-							            	
-							            	if(refid != -1 && refid != "undefined")
-							            	{
-								            	//resCnt++;					            		
-							    	           	//revData.push(reqData[refid]);
-							            	}
-								            else
-								            {
-								            	//refCnt++;
-								            }
-							            });		
-								        $("#selTextRemark").val("");
-					            	}
-					            	else
+					            			}
+					            		}
+					            		else
+					            		{
+					            			if(n.AGTDBID == undefined)
+						            		{
+					            				alert("[자율원복]\n상담사 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+						            		}
+					            			else if(d.skillDbid == undefined)
+					            			{
+					            				alert("[자율원복]\n스킬 정보가 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}			
+					            			else if(d.skillLevel == undefined)
+					            			{
+					            				alert("[자율원복]\n스킬 레벨이 존재하지 않습니다.\n관리자에게 문의하세요.");
+					            				return;
+					            			}
+					            		}
+					            	});
+					            	
+					            	if(refid != -1 && refid != "undefined")
 					            	{
-					            		alert("[자율원복]\n해당 스킬그룹에 스킬이 없습니다.\n스킬을 등록해 주시기 바랍니다.");
-					            		return;
+						            	//resCnt++;					            		
+					    	           	//revData.push(reqData[refid]);
 					            	}
-					            },
-					            options: {
-					                onError: function (err) 
-					                {
-					                    alert("[자율원복]\n스킬그룹 조회 작업에 실패하였습니다.");
-					                    return;
-					                    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-					                }
-					            }
-					        });
-	                    }
-	            	});
+						            else
+						            {
+						            	//refCnt++;
+						            }
+					            });		
+						        $("#selTextRemark").val("");
+			            	}
+			            	else
+			            	{
+			            		alert("[자율원복]\n해당 스킬그룹에 스킬이 없습니다.\n스킬을 등록해 주시기 바랍니다.");
+			            		return;
+			            	}
+			            },
+			            options: {
+			                onError: function (err) 
+			                {
+			                    alert("[자율원복]\n스킬그룹 조회 작업에 실패하였습니다.");
+			                    return;
+			                    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+			                }
+			            }
+			        });
 	            }
 	        });		
 		}
