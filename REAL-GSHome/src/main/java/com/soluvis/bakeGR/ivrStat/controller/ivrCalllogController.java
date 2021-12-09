@@ -5,10 +5,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -98,13 +101,44 @@ public class ivrCalllogController extends commController{
 			
 			logger.info("ivrCalllogService.CalllogGet Query Start...");			
 			search = ivrCalllogService.CalllogGet(map);
+			
+			// 고객번호 마스킹(****)
+			if(search.size() > 0) {
+				for(int i = 0; i < search.size(); i++) {
+					if(search.get(i).get("ANI") != null && !"".equals(search.get(i).get("ANI"))) {
+						String Ani = search.get(i).get("ANI").toString();
+						search.get(i).put("ANI", maskPhoneNumber(Ani)); 
+					}
+				}
+			}
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
 		}
 		
+		
+		
 		return search;
+	}
+	
+	// 전화번호 가운데자리 마스킹하는 메서드 //
+	private String maskPhoneNumber (String phoneNumber) {
+		String resultNumber = phoneNumber;
+		String regex = "(\\d{2,3})(\\d{3,4})(\\d{4})$";	// 전화번호 정규식
+		Matcher matcher = Pattern.compile(regex).matcher(resultNumber);
+		
+		if(matcher.find()) { // 입력받은 번호에서 정규식과 맞는 패턴을 찾는다.
+			String target = matcher.group(2); // 두 번째 그룹(중간번호 3~4자리)를 가져온다.
+			int length = target.length();
+			char[] c = new char[length];
+			Arrays.fill(c, '*'); // 중간번호 사이즈만큼 * 을 채운다.
+			
+			return resultNumber.replace(target, String.valueOf(c));
+		}
+
+		// 3자리로 나눠지지 않는 경우 (1자리 또는 2자리)
+		return resultNumber;
 	}
 }
 

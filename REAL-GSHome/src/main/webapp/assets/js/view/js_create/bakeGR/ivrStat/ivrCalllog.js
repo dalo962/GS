@@ -726,12 +726,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "DID", label: "대표번호", width: 200, align: "center", sortable: true},
             	{key: "ARSID", label: "ARSID", width: 300, align: "center", sortable: true},
             	{key: "MACHINE_CD", label: "인입장비", width: 150, align: "center", sortable: true},
-            	{key: "ANI", label: "고객번호", width: 150, align: "center", sortable: true,
-                	formatter: function() {
-                		var phone = this.item.ANI.substr(0,3) + "****" + this.item.ANI.substr(7,4);
-                		return phone;
-                	}
-            	},
+            	{key: "ANI", label: "고객번호", width: 150, align: "center", sortable: true},
             	{key: "LAST_CODE", label: "마지막메뉴", width: 150, align: "center", sortable: true}
             ],
             body: {
