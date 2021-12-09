@@ -179,12 +179,9 @@ fnObj.pageStart = function () {
 	    	    callback: function (res) {
 	    	        var resultSet = [];
 	    	        res.list.forEach(function (n) {
-	    	        	if(n.id == '75')
-	    	        	{
-	    	        		resultSet.push({
-	    	                	value: n.id, text: n.name,
-	    	            	});
-	    	        	}
+	    	        	resultSet.push({
+	    	               	value: n.id, text: n.name,
+	    	            });
 	    	        });
 	    	        $("[data-ax5select='comSelect']").ax5select({
 	    		        theme: 'primary',

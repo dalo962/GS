@@ -245,12 +245,9 @@ fnObj.pageStart = function () {
 	    	    callback: function (res) {
 	    	        var resultSet = [];
 	    	        res.list.forEach(function (n) {
-	    	        	if(n.id == '75')
-	    	        	{
-	    	        		resultSet.push({
-	    	                	value: n.id, text: n.name,
-	    	            	});
-	    	        	}
+	    	        	resultSet.push({
+	    	               	value: n.id, text: n.name,
+	    	            });
 	    	        });
 	    	        $("[data-ax5select='comSelect']").ax5select({
 	    		        theme: 'primary',
@@ -759,7 +756,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     },
     getData: function () {  
     	return {
-        	comSelect: 75,
+        	comSelect: $("[data-ax5select='comSelect']").ax5select("getValue")[0].value,
         	deptSelect: $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value,
         	teamSelect: $("[data-ax5select='teamSelect']").ax5select("getValue")[0].value,
         	selText: $("#selText").val(),

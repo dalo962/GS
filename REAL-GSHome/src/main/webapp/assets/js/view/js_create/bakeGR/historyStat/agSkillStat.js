@@ -1045,7 +1045,7 @@ function time_set(){
 		type:"GET",
 		url:"/api/statLstMng/historytimeget",
 		cache : false,
-		data:{comSelect:75, codeSelect: select + "_75"},
+		data:{comSelect:info.comcd, codeSelect: select + "_" + info.comcd},
 		callback:function(res)
 		{
 			var com_stime = "";
@@ -1464,7 +1464,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         var data = {}; 
         //data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
         //data.chnId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
-        data.compId = 75; //리테일
+        data.compId = info.comcd; //리테일
         data.chnId = "";    	
         data.skId = "";
 	    axboot.ajax({

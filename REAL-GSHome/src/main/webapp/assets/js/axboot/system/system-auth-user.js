@@ -92,7 +92,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		// 홈쇼핑
     		if(form.company_cd == "2")
     		{
-    			if(grpauth != "S0002" || grpauth != "S0003" || grpauth != "S0004")
+    			if(grpauth != "S0002" && grpauth != "S0003" && grpauth != "S0004")
     			{
     				alert("소속과 권한을 다르게 설정할 수 없습니다.");
     	    		return;
@@ -100,7 +100,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		}
     		else
     		{
-    			if(grpauth != "G0002" || grpauth != "G0003" || grpauth != "G0004")
+    			if(grpauth != "G0002" && grpauth != "G0003" && grpauth != "G0004")
     			{
     				alert("소속과 권한을 다르게 설정할 수 없습니다.");
     	    		return;
@@ -327,7 +327,11 @@ fnObj.pageStart = function () {
         	    data: JSON.stringify($.extend({}, info)),
         	    callback: function (res) {
         	        var resultSet = [];
-        	        var resultSetWhere = [{value : "", text:"전체"}];
+        	        var resultSetWhere = [];
+        	        if(info.grpcd == "S0001") 
+        	        {
+        	        	resultSetWhere = [{value : "", text:"전체"}];
+        	        }
 
         	        res.list.forEach(function (n) {
         	        	resultSet.push({
@@ -363,9 +367,33 @@ fnObj.pageStart = function () {
 	    callback: function (res) {
 	        authlst = [{value : "", text:"전체"}];
 	        res.list.forEach(function (n) {
-	        	authlst.push({
-	                value: n.code, text: n.name,
-	            });
+	        	if(info.grpcd != "S0001") 
+		        {
+	        		if(info.comcd == "2")
+	            	{
+	        			if(n.code == "S0001" || n.code == "S0002" || n.code == "S0003" || n.code == "S0004")
+	        			{
+	        				authlst.push({
+	        					value: n.code, text: n.name,
+	        				});
+	        			}
+	            	}
+	        		else
+	        		{
+	        			if(n.code == "S0001" || n.code == "G0002" || n.code == "G0003" || n.code == "G0004")
+	        			{
+	        				authlst.push({
+	        					value: n.code, text: n.name,
+	        				});
+	        			}
+	        		}
+		        }
+	        	else
+	        	{
+	        		authlst.push({
+		                value: n.code, text: n.name,
+		            });
+	        	}
 	        });
 	        $("[data-ax5select='gunhanSelectWhere']").ax5select({
 		        theme: 'primary',
@@ -376,6 +404,23 @@ fnObj.pageStart = function () {
         .done(function () {
 
             CODE = this; // this는 call을 통해 수집된 데이터들.
+            
+            if(info.grpcd != "S0001") 
+	        {
+            	$("#" + 1).attr('disabled', true);
+            	if(info.comcd == "2")
+            	{
+            		$("#" + 3).attr('disabled', true);
+            		$("#" + 5).attr('disabled', true);
+            		$("#" + 7).attr('disabled', true);
+            	}
+            	else
+            	{
+            		$("#" + 2).attr('disabled', true);
+            		$("#" + 4).attr('disabled', true);
+            		$("#" + 6).attr('disabled', true);
+            	}
+        	}
             
             _this.pageButtonView.initView();
             _this.searchView.initView();
@@ -440,6 +485,10 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	if($("[data-ax5select='comSelectWhere']").ax5select("getValue")[0].value === undefined)
     	{
     		comCd = "";
+    	}
+    	else
+    	{
+    		comCd = $("[data-ax5select='comSelectWhere']").ax5select("getValue")[0].value;    		
     	}
     	
         return {
