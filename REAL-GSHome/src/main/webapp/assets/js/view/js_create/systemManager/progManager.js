@@ -864,9 +864,9 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 		gubun.push({text:"1시간" ,value:"30(1HOUR)"});
 		gubun.push({text:"1일" ,value:"31(1DAY)"});
 		gubun.push({text:"1월" ,value:"50(1MONTH)"});
-		//gubun.push({text:"1일상세" ,value:"40(1DAY)"});
-		//gubun.push({text:"WINK2->WINK1" ,value:"WINK2->WINK1"});
+		//gubun.push({text:"1일상세" ,value:"40(1DAY)"});		
 		gubun.push({text:"상담사목록" ,value:"AX_A_STRUCT"});
+		gubun.push({text:"WINK2->WINK1" ,value:"WINK2->WINK1"});
 		$("[data-ax5select='gubun']").ax5select({
 	        theme: 'primary',
 	        options: gubun,
