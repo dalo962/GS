@@ -368,7 +368,8 @@ public class ivrGRBlackListController extends commController{
 			logger.info("ivrGRBlackListService.RecGet Query Start...");
 			search = ivrGRBlackListService.RecGet(map);
 			
-			if(search.size() > 0){
+			int searchSize = search.size();
+			if(searchSize > 0 && searchSize < 2){
 				for (ivrGRBlackList forEm : search){
 					recList.add(forEm);
 				}

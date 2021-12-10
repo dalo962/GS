@@ -56,6 +56,8 @@
 		SELECT  code            as code,
 				name            as name
 		FROM    ax_common_code_m
-		WHERE   group_cd = 'RECORD'		
+		WHERE   group_cd = 'RECORD'
+		AND     USE_YN = 'Y'
+		order by sort;
     </select>
 </mapper>
