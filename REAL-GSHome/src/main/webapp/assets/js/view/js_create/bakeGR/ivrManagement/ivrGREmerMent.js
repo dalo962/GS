@@ -39,6 +39,9 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var saveList = [].concat(caller.gridView01.getData());
     	
     	saveList = saveList.concat(caller.gridView01.getData("deleted"));
+
+    	console.log("saveList ",caller.gridView01.getData());
+    	console.log("created ",caller.gridView01.getData("__created__"));
     	
     	var reqExp = /^[0-9]*$/;
     	var bldnis = 0;
@@ -58,7 +61,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
         		var ssd = s.sdate+s.stime;
         		var sed = s.edate+s.etime;
         		// 자기자신이 아니면서 dnis가 같음 //
-    			if(s.seq != n.seq && s.dnis == n.dnis) {
+    			if(s.__index != n.__index && s.dnis == n.dnis) {
     				if(sd >= ssd && ed <= sed) {
     					// 1. 시작시간과 종료시간이 안에 존재 //
     					return s.dnis;
