@@ -216,7 +216,7 @@ fnObj.pageStart = function () {
     		        $("[data-ax5select='comSelect']").ax5select({
     			        theme: 'primary',
     			        onStateChanged: function () {
-    			        	_this.searchView.partSearch();
+			        		_this.searchView.partSearch();
     			        },
     			        options: resultSet,
     		        });
@@ -686,36 +686,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         	        multiple: multi,
         	        options: resultSet,
     		        onStateChanged: function () {
-    		        	/*
-    		        	if( this.item.selected.length  == 0 ) {
-        	            	$('[data-ax5select="deptSelect"]').ax5select("setValue",[0],true);
-        	            	this.item.options[0].sel = "1" ;
-        	            	$('[data-ax5select-option-group]').click();
-        	        	} else if( this.item.selected.length  == 1 ) {
-        	        		if ( this.item.selected[0].value == "" ) {
-        	        			this.item.options[0].sel = "1" ;
-        	        		} else {
-        	        			if ( this.item.options[0].sel != "0" ) {
-        	        				this.item.options[0].sel = "0" ;
-        	        				$('[data-ax5select="deptSelect"]').ax5select("setValue",[0],false);
-        	        	    	
-        	        				$('[data-ax5select-option-group]').click();
-        	        			} 
-        	        		}
-        	        	} else {
-        	        		if ( this.item.selected[0].value == "" ) {
-        	        			if ( this.item.options[0].sel == "1" ) {
-	        	        			$('[data-ax5select="deptSelect"]').ax5select("setValue",[0],false);
-	        	        			this.item.options[0].sel = "0" ;
-        	        			} else {
-        	        				this.item.options[0].sel = "1" ;
-            	        			for(var i = 1; i < this.item.options.length; i++) {
-            	        				$('[data-ax5select="deptSelect"]').ax5select("setValue",[this.item.options[i].value],false);
-            	        			}
-        	        			}
-        	        			$('[data-ax5select-option-group]').click();
-        	        		}
-        	        	}*/ 
+    	                fnObj.searchView.teamSearch();
     		        },     	       
                 });
                 $('[data-ax5select="deptSelect"]').ax5select("setValue",[""]);
