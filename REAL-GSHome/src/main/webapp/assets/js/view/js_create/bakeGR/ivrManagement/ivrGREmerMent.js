@@ -116,7 +116,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	});
     	if(bldnis > 0) 
     	{ 
-    		alert("대표번호를 입력하시기 바랍니다."); 
+    		alert("대표번호를 선택하시기 바랍니다."); 
     		return;
     	}
     	if(blstime > 0) 

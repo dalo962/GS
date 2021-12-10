@@ -78,7 +78,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	});
     	if(wkdnis > 0) 
     	{ 
-    		alert("대표번호를 입력하시기 바랍니다."); 
+    		alert("대표번호를 선택하시기 바랍니다."); 
     		return;
     	}
     	if(wkuseyn > 0) 
@@ -91,16 +91,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		alert("점심시간 사용유무를 선택하시기 바랍니다."); 
     		return;
     	}
-    	if(wknumber > 0) 
-    	{ 
-    		alert("대표번호는 숫자만 입력하시기 바랍니다."); 
-    		return;
-    	}
-    	if(wknumber2 > 0) 
-    	{ 
-    		alert("근무시간을 HH24MISS형식으로 입력하시기 바랍니다."); 
-    		return;
-    	}
     	if(wkhluseyn > 0) 
     	{ 
     		alert("휴일 사용유무를 선택하시기 바랍니다."); 
@@ -109,6 +99,16 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(wkovuseyn > 0) 
     	{ 
     		alert("초과근무 사용유무를 선택하시기 바랍니다."); 
+    		return;
+    	}
+    	if(wknumber > 0) 
+    	{ 
+    		alert("대표번호는 숫자만 입력하시기 바랍니다."); 
+    		return;
+    	}
+    	if(wknumber2 > 0) 
+    	{ 
+    		alert("근무시간을 HH24MISS형식으로 입력하시기 바랍니다."); 
     		return;
     	}
 
