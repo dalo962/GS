@@ -58,6 +58,6 @@
 		FROM    ax_common_code_m
 		WHERE   group_cd = 'RECORD'
 		AND     USE_YN = 'Y'
-		order by sort;
+		order by sort
     </select>
 </mapper>
