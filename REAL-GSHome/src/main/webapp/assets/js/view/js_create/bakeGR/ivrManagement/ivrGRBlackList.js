@@ -266,7 +266,7 @@ fnObj.pageStart = function () {
     _this.searchView.initView();
     _this.gridView01.initView();
 
-    ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+//  ACTIONS.dispatch(ACTIONS.PAGE_SEARCH); // searchView - comp_cd 불러온 이후로 위치변경
     ACTIONS.dispatch(ACTIONS.GET_RECURL);
 };
 
@@ -354,6 +354,9 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 		    			});
 		    			
 				        $("[data-ax5select='comSelect']").ax5select("setOptions", resultSet);
+				        
+				        // 센터 다 불러온 다음 검색 //
+				        ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
 		    		}
 		    	});
 		    	
