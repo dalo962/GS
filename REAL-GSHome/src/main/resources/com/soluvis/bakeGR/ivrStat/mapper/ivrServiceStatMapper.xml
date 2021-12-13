@@ -3,30 +3,30 @@
 
 <mapper namespace="com.soluvis.bakeGR.ivrStat.mapper.ivrServiceStatMapper">
    <select id="ServiceStatGet" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
-		SELECT	row_date as row_date,
+		SELECT	ist.row_date as row_date,
 				<if test="interval != 'day' and interval != 'month'">
-				starttime as starttime,
+				ist.starttime as starttime,
 				</if>
-				comp_cd as comp_cd,
-				did as did,
+				ist.comp_cd as comp_cd,
+				ist.did as did,
 				decode(acs.service_name, acs.service_name, ist.service) as service,
 				nvl(n_incall,0) as n_incall,
 				nvl(n_agentreq,0) as n_agentreq
 		FROM 	${table} ist, GSIVR.ARS_CODE_SERVICE acs
 		WHERE	ist.service = acs.service_code(+)
-		AND		row_date <![CDATA[>=]]> #{startdate}
-		AND		row_date <![CDATA[<=]]> #{enddate}
+		AND		ist.row_date <![CDATA[>=]]> #{startdate}
+		AND		ist.row_date <![CDATA[<=]]> #{enddate}
 		<if test="interval != 'day' and interval != 'month'">
-		AND		starttime <![CDATA[>=]]> #{starttime}
-		AND		starttime <![CDATA[<=]]> #{endtime}
+		AND		ist.starttime <![CDATA[>=]]> #{starttime}
+		AND		ist.starttime <![CDATA[<=]]> #{endtime}
 		</if>
 		<if test="comp_cd != '' and comp_cd != null">
-		AND		comp_cd = #{comp_cd}
+		AND		ist.comp_cd = #{comp_cd}
 		</if>
 		<if test="did != '' and did != null">
-		AND		did = #{did}
+		AND		ist.did = #{did}
 		</if>
-		ORDER BY row_date asc <if test="interval != 'day' and interval != 'month'">, starttime asc</if> , did asc
+		ORDER BY ist.row_date asc <if test="interval != 'day' and interval != 'month'">, ist.starttime asc</if> , ist.did asc
     </select>
 
 </mapper>
