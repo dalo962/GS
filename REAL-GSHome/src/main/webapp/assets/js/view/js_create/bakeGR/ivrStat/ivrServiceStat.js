@@ -1002,7 +1002,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         		}
         	};
         var did = {key: "DID", label: "대표번호", width: 200, align: "center", sortable: true};
-        var service = {key: "SERVICE", label: "서비스명", width: 100, align: "center", sortable: true};
+        var service = {key: "SERVICE", label: "서비스명", width: 200, align: "center", sortable: true};
         var n_incall = {key: "N_INCALL", label: "인입건수", width: 150, align: "center", sortable: true};
         var n_agentreq = {key: "N_AGENTREQ", label: "상담사요청건수", width: 150, align: "center", sortable: true};
         
