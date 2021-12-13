@@ -9,11 +9,12 @@
 				</if>
 				comp_cd as comp_cd,
 				did as did,
-				service as service,
+				decode(acs.service_name, acs.service_name, ist.service) as service,
 				nvl(n_incall,0) as n_incall,
 				nvl(n_agentreq,0) as n_agentreq
-		FROM 	${table}
-		WHERE	row_date <![CDATA[>=]]> #{startdate}
+		FROM 	${table} ist, GSIVR.ARS_CODE_SERVICE acs
+		WHERE	ist.service = acs.service_code(+)
+		AND		row_date <![CDATA[>=]]> #{startdate}
 		AND		row_date <![CDATA[<=]]> #{enddate}
 		<if test="interval != 'day' and interval != 'month'">
 		AND		starttime <![CDATA[>=]]> #{starttime}
