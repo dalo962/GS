@@ -856,17 +856,40 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 		    url: "/api/statLstMng/userAuthLst",
 		    data: "",
 		    callback: function (res) {
- 	    		var resultSet = [];
  	    		var grpcd = res[0].grp_auth_cd;
  	    		// 권한코드 :: 공통코드관리 => 권한그룹
  	    		
- 	    		if(grpcd == "S0001") { // 시스템 권한인 경우 "전체" 추가
- 	    			resultSet.push({value:"", text:"전체"});
- 	    		}
- 	    		
-    		    resultSet.push({value: "RETAIL", text: "GS리테일"});
-    		    
-		        $("[data-ax5select='comSelect']").ax5select("setOptions", resultSet);
+		    	axboot.ajax({
+		    		type: "POST",
+		    		url: "/api/mng/searchCondition/company",
+		    		cache : false,
+		    		data: JSON.stringify($.extend({}, info)),
+		    		callback: function (res) {
+		    			var resultSet = [];
+		 	    		
+//		 	    		if(grpcd == "S0001") { // 시스템 권한인 경우 "전체" 추가
+//		 	    			resultSet.push({value:"", text:"전체"});
+//		 	    		}
+		 	    		
+		    			res.list.forEach(function (n) {
+		    				if(grpcd == 'S0001') {
+			    				resultSet.push({
+			    					value: n.id, text: n.name,
+			    				});
+			    			} else {
+			    				if(n.id == info.comcd) {
+				    				resultSet.push({
+				    					value: n.id, text: n.name,
+				    				});
+				    	        }
+			    			}
+		    			});
+		    			
+				        $("[data-ax5select='comSelect']").ax5select("setOptions", resultSet);
+		    		}
+		    	});
+		    	
+//    		    resultSet.push({value: "RETAIL", text: "GS리테일"});
 		    }
 	    });
 		
