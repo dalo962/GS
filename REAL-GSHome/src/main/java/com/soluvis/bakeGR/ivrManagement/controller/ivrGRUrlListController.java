@@ -27,6 +27,7 @@ import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.commController;
+import com.soluvis.bake.common.utils.RequestUtil;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
 import com.soluvis.bake.system.utils.SessionUtils;
 import com.soluvis.bakeGR.ivrManagement.domain.ivrGRUrlList;
@@ -56,12 +57,13 @@ public class ivrGRUrlListController extends commController{
 	@RequestMapping(value="/UrlListSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
 	public @ResponseBody List<ivrGRUrlList> UrlListSearch(HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
+		Map<String,Object> params = RequestUtil.getParameterMap(request);
 		List<ivrGRUrlList> search = null;
 		
 		try
 		{	
 			logger.info("ivrGRUrlListService.UrlListGet Query Start...");
-			map.put("comp_cd", "RETAIL");
+			map.put("comp_cd", params.get("comp_cd"));
 			search = ivrGRUrlListService.UrlListGet(map);
 		}
 		catch(Exception e)
@@ -88,7 +90,7 @@ public class ivrGRUrlListController extends commController{
 		{
 			for (ivrGRUrlList ul : urlLst)
 			{
-				map.put("comp_cd", "RETAIL");
+				map.put("comp_cd", ul.getComp_cd());
 				map.put("url_nm", ul.getUrl_nm());
 								
 				if(AXBootTypes.DataStatus.CREATED.equals(ul.getDataStatus()))

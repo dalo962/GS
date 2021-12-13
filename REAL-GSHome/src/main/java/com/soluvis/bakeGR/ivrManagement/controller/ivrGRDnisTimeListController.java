@@ -27,6 +27,7 @@ import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.commController;
+import com.soluvis.bake.common.utils.RequestUtil;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
 import com.soluvis.bake.system.utils.SessionUtils;
 import com.soluvis.bakeGR.ivrManagement.domain.ivrGRDnisTimeList;
@@ -62,13 +63,14 @@ public class ivrGRDnisTimeListController extends commController{
 	@RequestMapping(value="/DnisListSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
 	public @ResponseBody List<ivrGRDnisTimeList> DnisListSearch(HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
+		Map<String,Object> params = RequestUtil.getParameterMap(request);
 		List<ivrGRDnisTimeList> search = null;
 		
 		try
 		{	
 			map.put("dnis", "");
 			map.put("delchk", "1");
-			map.put("comp_cd", "RETAIL");
+			map.put("comp_cd", params.get("comp_cd"));
 			
 			logger.info("ivrGRDnisListService.DnisListGet Query Start...");	
 			search = ivrGRDnisListService.DnisListGet(map);
@@ -109,7 +111,7 @@ public class ivrGRDnisTimeListController extends commController{
 			for (ivrGRDnisTimeList dtl : dtLst)
 			{
 				map.put("dnis", dtl.getDnis());
-				map.put("comp_cd", "RETAIL");
+				map.put("comp_cd", dtl.getComp_cd());
 								
 				// 평일근무시작시간
 				if("".equals(dtl.getWr_stime()) || dtl.getWr_stime() == null)

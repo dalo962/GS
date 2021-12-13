@@ -70,7 +70,7 @@ public class ivrGRBlackListController extends commController{
 		{	
 			
 			logger.info("ivrBlackListService.BlackListGet Query Start...");		
-			params.put("comp_cd", "RETAIL");
+			params.put("comp_cd", params.get("comp_cd"));
 			search = ivrGRBlackListService.BlackListGet(params);
 		}
 		catch(Exception e)
@@ -101,7 +101,7 @@ public class ivrGRBlackListController extends commController{
 		{
 			for (ivrGRBlackList bl : blackLst)
 			{
-				map.put("comp_cd", "RETAIL");
+				map.put("comp_cd", bl.getComp_cd());
 				if(AXBootTypes.DataStatus.CREATED.equals(bl.getDataStatus()))
 				{
 					map.put("ani", bl.getAni());

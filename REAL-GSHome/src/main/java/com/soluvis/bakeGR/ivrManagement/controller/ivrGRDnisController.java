@@ -27,6 +27,7 @@ import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.commController;
+import com.soluvis.bake.common.utils.RequestUtil;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
 import com.soluvis.bake.system.utils.SessionUtils;
 import com.soluvis.bakeGR.ivrManagement.domain.ivrGRDnis;
@@ -61,12 +62,13 @@ public class ivrGRDnisController extends commController{
 	@RequestMapping(value="/DnisSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
 	public @ResponseBody List<ivrGRDnis> DnisSearch(HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
+		Map<String,Object> params = RequestUtil.getParameterMap(request);
 		List<ivrGRDnis> search = null;		
 		
 		try
 		{
 			logger.info("ivrGRDnisService.DnisGet Query Start...");			
-			map.put("comp_cd", "RETAIL");
+			map.put("comp_cd", params.get("comp_cd"));
 			search = ivrGRDnisService.DnisGet(map);
 		}
 		catch(Exception e)
@@ -99,7 +101,7 @@ public class ivrGRDnisController extends commController{
 			for (ivrGRDnis hl : hlLst)
 			{
 				map.put("dnis", hl.getDnis());
-				map.put("comp_cd", "RETAIL");
+				map.put("comp_cd", hl.getComp_cd());
 								
 				if(AXBootTypes.DataStatus.CREATED.equals(hl.getDataStatus()))
 				{		

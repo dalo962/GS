@@ -27,6 +27,7 @@ import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.commController;
+import com.soluvis.bake.common.utils.RequestUtil;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
 import com.soluvis.bake.system.utils.SessionUtils;
 import com.soluvis.bakeGR.ivrManagement.domain.ivrGRHoliday;
@@ -61,11 +62,12 @@ public class ivrGRHolidayController extends commController{
 	@RequestMapping(value="/HolidaySearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
 	public @ResponseBody List<ivrGRHoliday> HolidaySearch(HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
+		Map<String,Object> params = RequestUtil.getParameterMap(request);
 		List<ivrGRHoliday> search = null;
 		
 		try
 		{
-			map.put("comp_cd", "RETAIL");
+			map.put("comp_cd", params.get("comp_cd"));
 			map.put("holiday", "");
 			map.put("hl_useyn", "");
 			
@@ -107,7 +109,7 @@ public class ivrGRHolidayController extends commController{
 		{
 			for (ivrGRHoliday hl : hlLst)
 			{
-				map.put("comp_cd", "RETAIL");
+				map.put("comp_cd", hl.getComp_cd());
 				map.put("holiday", hl.getHoliday().replaceAll("-", ""));
 								
 				if(AXBootTypes.DataStatus.CREATED.equals(hl.getDataStatus()))

@@ -63,12 +63,13 @@ public class ivrGREmerMentController extends commController{
 	@RequestMapping(value="/EmerMentSearch", method = RequestMethod.GET, produces = APPLICATION_JSON)
 	public @ResponseBody List<ivrGREmerMent> EmerMentSearch(HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
+		Map<String,Object> params = RequestUtil.getParameterMap(request);
 		List<ivrGREmerMent> search = null;
 		
 		try
 		{	
 			logger.info("ivrGREmerMentService.EmerMentGet Query Start...");		
-			map.put("comp_cd", "RETAIL");
+			map.put("comp_cd", params.get("comp_cd"));
 			search = ivrGREmerMentService.EmerMentGet(map);
 		}
 		catch(Exception e)
@@ -107,7 +108,7 @@ public class ivrGREmerMentController extends commController{
 			for (ivrGREmerMent em : emerment)
 			{
 				// 현재 입력 or 수정된 값 //
-				map.put("comp_cd", "RETAIL");
+				map.put("comp_cd", em.getComp_cd());
 				map.put("seq", em.getSeq());
 				map.put("dnis", em.getDnis());
 				map.put("sdate", em.getSdate());

@@ -857,6 +857,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 		    data: "",
 		    callback: function (res) {
  	    		var grpcd = res[0].grp_auth_cd;
+ 	    		var comcd = res[0].company_cd;
  	    		// 권한코드 :: 공통코드관리 => 권한그룹
  	    		
 		    	axboot.ajax({
@@ -873,14 +874,33 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 		 	    		
 		    			res.list.forEach(function (n) {
 		    				if(grpcd == 'S0001') {
-			    				resultSet.push({
-			    					value: n.id, text: n.name,
-			    				});
-			    			} else {
-			    				if(n.id == info.comcd) {
-				    				resultSet.push({
-				    					value: n.id, text: n.name,
+		    					if(n.name == "GS홈쇼핑")
+		    					{
+		    						resultSet.push({
+				    					value: "HOMESHOPING", text: n.name,
 				    				});
+		    					}	
+		    					else if(n.name == "GS리테일")
+		    					{
+		    						resultSet.push({
+				    					value: "RETAIL", text: n.name,
+				    				});
+		    					}
+			    				
+			    			} else {
+			    				if(n.id == comcd) {
+			    					if(n.name == "GS홈쇼핑")
+			    					{
+			    						resultSet.push({
+					    					value: "HOMESHOPING", text: n.name,
+					    				});
+			    					}
+			    					else if(n.name == "GS리테일")
+			    					{
+			    						resultSet.push({
+					    					value: "RETAIL", text: n.name,
+					    				});
+			    					}				    				
 				    	        }
 			    			}
 		    			});
