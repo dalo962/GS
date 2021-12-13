@@ -930,7 +930,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 		axboot.ajax({
             type: "GET",
             cache: false,
-            url: "/gr/api/ivr/ivrDnis/DnisSearch",
+            url: "/gr/api/ivr/ivrDnis/DnisSearchY",
             data: "",
             callback: function (res) {
         		var didlist = [{value: "ALL", text: "전체"}];
