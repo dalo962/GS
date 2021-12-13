@@ -84,11 +84,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
         var day = 1000 * 60 * 60 * 24;
         var month = day * 30;
         
-        if(parseInt(diff/day) > 32)
+        /*if(parseInt(diff/day) > 32)
         {
         	alert("조회기준일이 31일을 넘을 수 없습니다!");
         	return;
-        }
+        }*/
         
         if(selText.indexOf("'") != -1 || selText.indexOf("\"") != -1 || selText.indexOf("(") != -1 || selText.indexOf(")") != -1 || selText.indexOf("--") != -1 || selText.indexOf("#") != -1 || selText.indexOf("=") != -1 || selText.indexOf(",") != -1)
         {
