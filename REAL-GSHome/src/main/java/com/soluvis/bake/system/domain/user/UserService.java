@@ -150,6 +150,7 @@ public class UserService extends BaseService<User, String> {
 	            	}
 	            	else
 	            	{
+	            		map.put("user_cd", user.getUserCd());
 	            		statLstMngService.userFacIstSetting(map);
 	            	}
 	            }     
