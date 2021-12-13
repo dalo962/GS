@@ -101,7 +101,15 @@ public class ivrGRDnisController extends commController{
 			for (ivrGRDnis hl : hlLst)
 			{
 				map.put("dnis", hl.getDnis());
-				map.put("comp_cd", hl.getComp_cd());
+				
+				if(!"".equals(hl.getComp_cd()) && null != hl.getComp_cd())
+				{
+					map.put("comp_cd", hl.getComp_cd());
+				}
+				else
+				{
+					map.put("comp_cd", "RETAIL");
+				}
 								
 				if(AXBootTypes.DataStatus.CREATED.equals(hl.getDataStatus()))
 				{		

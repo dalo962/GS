@@ -4,7 +4,8 @@
 <mapper namespace="com.soluvis.bakeGR.ivrManagement.mapper.ivrGRUrlListMapper">
    <select id="UrlListGet" parameterType="hashmap" resultType="ivrGRUrl" fetchSize="1000">
 		SELECT	url_nm as url_nm, 
-				svr_ip as svr_ip, 
+				svr_ip as svr_ip,
+				comp_cd as comp_cd,
 				crt_dt as crt_dt, 
 				crt_by as crt_by, 
 				upt_dt as upt_dt, 

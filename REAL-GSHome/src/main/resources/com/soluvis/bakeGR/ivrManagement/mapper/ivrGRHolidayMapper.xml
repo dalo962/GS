@@ -5,7 +5,8 @@
    <select id="HolidayGet" parameterType="hashmap" resultType="ivrGRHoliday" fetchSize="1000">
 		SELECT	holiday 	as holiday, 
 				hl_useyn 	as hl_useyn,
-				description	as  description,
+				description	as description,
+				comp_cd		as comp_cd,
 				crt_dt 		as crt_dt, 
 				crt_by 		as crt_by, 
 				upt_dt 		as upt_dt, 

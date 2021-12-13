@@ -108,7 +108,14 @@ public class ivrGREmerMentController extends commController{
 			for (ivrGREmerMent em : emerment)
 			{
 				// 현재 입력 or 수정된 값 //
-				map.put("comp_cd", em.getComp_cd());
+				if(!"".equals(em.getComp_cd()) && null != em.getComp_cd())
+				{
+					map.put("comp_cd", em.getComp_cd());
+				}
+				else
+				{
+					map.put("comp_cd", "RETAIL");
+				}
 				map.put("seq", em.getSeq());
 				map.put("dnis", em.getDnis());
 				map.put("sdate", em.getSdate());

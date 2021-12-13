@@ -101,7 +101,15 @@ public class ivrGRBlackListController extends commController{
 		{
 			for (ivrGRBlackList bl : blackLst)
 			{
-				map.put("comp_cd", bl.getComp_cd());
+				if(!"".equals(bl.getComp_cd()) && null != bl.getComp_cd())
+				{
+					map.put("comp_cd", bl.getComp_cd());
+				}
+				else
+				{
+					map.put("comp_cd", "RETAIL");
+				}
+				
 				if(AXBootTypes.DataStatus.CREATED.equals(bl.getDataStatus()))
 				{
 					map.put("ani", bl.getAni());

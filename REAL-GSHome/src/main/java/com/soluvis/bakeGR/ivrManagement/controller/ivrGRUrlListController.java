@@ -90,7 +90,15 @@ public class ivrGRUrlListController extends commController{
 		{
 			for (ivrGRUrlList ul : urlLst)
 			{
-				map.put("comp_cd", ul.getComp_cd());
+				if(!"".equals(ul.getComp_cd()) && null != ul.getComp_cd())
+				{
+					map.put("comp_cd", ul.getComp_cd());
+				}
+				else
+				{
+					map.put("comp_cd", "RETAIL");
+				}
+				
 				map.put("url_nm", ul.getUrl_nm());
 								
 				if(AXBootTypes.DataStatus.CREATED.equals(ul.getDataStatus()))
