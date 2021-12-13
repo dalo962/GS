@@ -33,10 +33,10 @@
 		<if test='iotype.equals("")'>
 		AND		(IBANI in (${ani}) OR OBANI in (${ani}))
 		</if>
-		<if test='iotype.equals("I")'>
+		<if test='iotype.equals("IN")'>
 		AND		IBANI in (${ani})
 		</if>
-		<if test='iotype.equals("O")'>
+		<if test='iotype.equals("OUT")'>
 		AND		OBANI in (${ani})
 		</if>
 		</if>
