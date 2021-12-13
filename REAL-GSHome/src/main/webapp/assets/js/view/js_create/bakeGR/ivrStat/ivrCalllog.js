@@ -440,72 +440,104 @@ $("#endDate").on('focusout', function(){
 }); // date_set 종료
 
 function time_set(){
-	var opt_time = [];
 
-	for (var i = 0; i < 24; i++) 
-	{
-    	for (var j = 0; j < 60; j++) 
-    	{
+	var opt_time = [];
+	for (var i = 0; i < 25; i++) {
+    	for (var j = 0; j < 2; j++) {
 			var hour = "";
 			var min = "";
+			
 			if(i < 10) {
-				hour="0" + i;
+				hour = "0" + i;
 			} else {
 				hour = i;
 			}
 			
 			if(j == 0) {
-				min="00";
+				min = "00";
 			} else {
-				if(j < 10) {
-					min = "0" + j;  
-				}
-				else {
-					min = j;
-				}
+				min = (j * 30);
 			}
-			opt_time.push({value: hour+":"+min, text: hour+":"+min});
+			
+			if("" + hour + min != "2430") {	// 2430은 제외해야하기때문에!			
+				opt_time.push({value: hour + ":" + min, text: hour + ":" + min});
+			}
 		}
-	} 
+	}
+	
+	// 현재 시간에 맞게 시작 시간과 종료 시간 설정 //
+	var date = new Date();
+	var shour = (date.getHours()).toString(); 
+    var smin = (date.getMinutes()).toString();
 
+    var ehour = (date.getHours()).toString();    
+    var emin = (date.getMinutes()).toString();	   
+	
+    if(smin.length == 1) {
+    	smin = "0" + smin;
+    }
+	if(emin.length == 1) {
+		emin = "0" + emin;
+	}
+	
+	if(shour == "24") {
+		shour = "0";
+	}
+	
+	if(smin >= "00" && smin < "30") {
+		smin = "00";
+		emin = "30";
+	} else {
+		smin = "30";
+		ehour = (date.getHours() + 1).toString();   
+		if(ehour == "25") {
+			ehour = "1";
+		}
+		emin = "00";
+	}
+	
+	if(shour.length == 1) {
+		shour = "0"+shour;
+	}
+	if(ehour.length == 1) {
+		ehour = "0"+ehour;
+	}
+	
+	
 	$("[data-ax5select='startTime']").ax5select({
 	    theme: 'primary',
 	    options: opt_time,
 	    onChange: function () {
-	    	// startTime이 endTime보다 더 커지면 endTime을 startTime과 같게
 	    	var stime = $("[data-ax5select='startTime']").ax5select("getValue")[0].value;
 	    	var etime = $("[data-ax5select='endTime']").ax5select("getValue")[0].value;
 	    	
         	var starttime = stime.substring(0,2)+stime.substring(3,5);
         	var endtime = etime.substring(0,2)+etime.substring(3,5);
         	
-        	if(starttime > endtime)
-        	{
+        	if(starttime > endtime) {
         		$("[data-ax5select='endTime']").ax5select("setValue",stime); 
         	}
 	    }
 	});
+	$("[data-ax5select='startTime']").ax5select("setValue",shour + ":" + smin);
 	
 	$("[data-ax5select='endTime']").ax5select({
 	    theme: 'primary',
 	    options: opt_time,
 	    onChange: function () {
-	    	// endTime이 startTime보다 더 작아지면 startTime을 endTime과 같게
 	    	var stime = $("[data-ax5select='startTime']").ax5select("getValue")[0].value;
 	    	var etime = $("[data-ax5select='endTime']").ax5select("getValue")[0].value;
 	    	
-        	var starttime = stime.substring(0,2)+stime.substring(3,5);
-        	var endtime = etime.substring(0,2)+etime.substring(3,5);
+        	var starttime = stime.substring(0,2) + stime.substring(3,5);
+        	var endtime = etime.substring(0,2) + etime.substring(3,5);
         	
-        	if(starttime > endtime)
-        	{
+        	if(starttime > endtime) {
         		$("[data-ax5select='startTime']").ax5select("setValue",etime); 
         	}
+        	
 	    }
-	});
-
-	// 마지막 시간으로 설정!
-	$("#endTime").ax5select("setValue", "23:59");
+	});  
+	$("[data-ax5select='endTime']").ax5select("setValue",ehour + ":" + emin); 
 } // time_set() 종료
 
 // searchView 
@@ -633,6 +665,17 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     getData: function () {
     	var d = this.did;
     	var cc = this.compCd;
+
+    	var sti = this.sTime.ax5select("getValue")[0].value.replaceAll(':','');
+    	var eti = this.eTime.ax5select("getValue")[0].value.replaceAll(':','');
+    	
+    	if(sti == "2400") {
+    		sti = "2359";
+    	}
+    	if(eti == "2400") {
+    		eti = "2359";
+    	}
+    	
         return {
         	comp_cd: function() {
         		console.log(cc.ax5select("getValue")[0].value);
@@ -652,12 +695,10 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         	ani : this.ani.val(),
         	startdate : this.sDate.val().replaceAll('-',''),
         	enddate : this.eDate.val().replaceAll('-',''),
-        	starttime : this.sTime.ax5select("getValue")[0].value.replaceAll(':','')+"00",
-        	endtime : this.eTime.ax5select("getValue")[0].value.replaceAll(':','')+"59"
+        	starttime : sti+"00",
+        	endtime : eti+"59"
         }
     }
-    
-    
 }); // searchView 종료
 
 
