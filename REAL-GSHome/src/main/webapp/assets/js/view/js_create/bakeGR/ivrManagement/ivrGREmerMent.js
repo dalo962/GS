@@ -39,9 +39,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var saveList = [].concat(caller.gridView01.getData());
     	
     	saveList = saveList.concat(caller.gridView01.getData("deleted"));
-
-    	console.log("saveList ",caller.gridView01.getData());
-    	console.log("created ",caller.gridView01.getData("__created__"));
     	
     	var reqExp = /^[0-9]*$/;
     	var bldnis = 0;
