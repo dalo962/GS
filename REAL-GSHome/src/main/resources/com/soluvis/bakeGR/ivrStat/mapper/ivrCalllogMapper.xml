@@ -34,7 +34,7 @@
 		<if test="ani != '' and ani != null">
 		AND		ani in (${ani})
 		</if>
-		ORDER BY end_time asc
+		ORDER BY end_time desc
     </select>
 
 </mapper>
