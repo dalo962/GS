@@ -51,25 +51,26 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var prtime = 0;
     	
     	saveList.forEach(function (n){
-    		var sd = n.sdate+n.stime;
-    		var ed = n.edate+n.etime;
+    		var sd = n.sdate+n.stime;	// 나(n)의 시작시간
+    		var ed = n.edate+n.etime;	// 나(n)의 종료시간
     		
     		var r = saveList.find(function (s) {
-        		var ssd = s.sdate+s.stime;
-        		var sed = s.edate+s.etime;
-        		// 자기자신이 아니면서 dnis가 같음 //
+        		var ssd = s.sdate+s.stime;	// 비교대상(s)의 시작시간
+        		var sed = s.edate+s.etime;	// 비교대상(s)의 종료시간
+        		
+        		// 자기자신이 아니면서 dnis가 같은 경우 //
     			if(s.__index != n.__index && s.dnis == n.dnis) {
     				if(sd >= ssd && ed <= sed) {
-    					// 1. 시작시간과 종료시간이 안에 존재 //
+    					// 1. 입력된 시작/종료시간이 기존 시작/종료시간을 포함 //
     					return s.dnis;
     				} else if(sd <= ssd && ed >= sed) {
-    					// 2. 시작시간과 종료시간이 포함 //
+    					// 2. 입력된 시작/종료시간이 기존 시작/종료시간에 포함 //
     					return s.dnis;
     				} else if(sd >= ssd && sd <= sed) {
-    					// 3. 시작시간이 시작 종료 사이에 있음 //
+    					// 3. 입력된 시작시간이 기존 시작/종료시간 사이에 있음 //
     					return s.dnis;
     				} else if(ed >= ssd && ed <= sed) {
-    					// 4. 종료시간이 시작 종료 사이에 있음 //
+    					// 4. 입력된 종료시간이 시작/종료시간 사이에 있음 //
     					return s.dnis;
     				}
     			}

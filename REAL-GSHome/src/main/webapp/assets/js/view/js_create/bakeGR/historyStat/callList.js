@@ -169,7 +169,19 @@ var ACTIONS = axboot.actionExtend(fnObj, {
                 }
             }
         });
-    }
+    },
+    GET_REC: function (caller, act, data) {
+    	// 선택된 data의 cannid를 가져옴 //
+    	var connid = caller.gridView01.getData("selected")[0].CONNID;
+    	
+    	// window.open 시 필요한 값들 :: url, name, specs //
+    	var url = rec_url + "/recseePlayer/?SEQNO=" + connid;
+    	var name = "recPopup";
+    	var specs = "width=800,height=300,menubar=no,status=no";
+    	
+    	// 녹취 듣기 popup을 open! //
+    	var recPopup = window.open(url, name, specs);
+    },
 });
 
 var CODE = {};
@@ -738,10 +750,10 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         var _this = this;
         var columns = [
         	{key: "EMPLOYEEID", label: "상담사사번", width: 100, align: "center", sortable: true},
-        	{key: "DEPT_NAME", label: "브랜드", width: 100, align: "center", sortable: true},
-        	{key: "TEAM_NAME", label: "팀", width: 100, align: "center", sortable: true},
+        	{key: "DEPT_NAME", label: "브랜드", width: 150, align: "center", sortable: true},
+        	{key: "TEAM_NAME", label: "팀", width: 130, align: "center", sortable: true},
         	{key: "AGENT_NAME", label: "상담사명", width: 100, align: "center", sortable: true},
-        	{key: "STIMETS", label: "상담일시", width: 200, align: "center", sortable: true},
+        	{key: "STIMETS", label: "상담일시", width: 150, align: "center", sortable: true},
         	{key: "TTALK", label: "통화시간", width: 80, align: "center", sortable: true, formatter: "hour"},
         	{key: "IOTYPE", label: "IN/OUT", width: 80, align: "center", sortable: true},
         	{key: "IBANI", label: "IB전화번호", width: 120, align: "center", sortable: true},
@@ -749,23 +761,9 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         	{key: "EXTENSION", label: "내선번호", width: 80, align: "center", sortable: true},
         	{key: "TICKET_NUM", label: "티켓번호", width: 150, align: "center", sortable: true},
         	{key: "CONNID", label: "CONNID", width: 150, align: "center", sortable: true},
-        	{key: "record", label: "녹취", width: 100, align: "center",
+        	{key: "record", label: "녹취", width: 80, align: "center",
         		formatter: function () {
-        			// 청취 시 필요한 값 //
-        			var conn_id = this.item.CONNID;
-        			var extension = this.item.EXTENSION;
-        			var ani = this.item.IOTYPE == "IN"
-        				? this.item.IBANI
-						: this.item.OBANI;
-        			
-        			// 버튼 옵션 ( class, disable ) //
-        			var btn_option = "class='btn btn-default btn-xs'";
-        			if(conn_id == '' || conn_id == null) {
-        				btn_option += " disabled='disabled'";
-        			}
-
-        			return "<a href='#' onclick=\""
-        				+ "clickPlay('" + conn_id + "')\";>" 
+        			return "<a href='#'>"
         				+ "<img src='/assets/images/speaker.png' width='20' height='18' border='0'>"
         				+ "</a>";
         		}
@@ -780,14 +778,14 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: columns,
             body: {
-                onClick: function () {
+            	onClick: function () {
                     this.self.select(this.dindex, {selectedClear: true});
-                }
-            }
-        });
-        axboot.buttonClick(this, "data-grid-view-01-btn", {
-        	"play": function () {
-                console.log("녹취  play 버튼 클릭");
+                    
+                    // 녹취 버튼 클릭 시 //
+                    if (this.column.key == "record" && (this.item.CONNID != null && this.item.CONNID != '')) {
+                		ACTIONS.dispatch(ACTIONS.GET_REC);
+                    }  
+                },
             }
         });
     },
@@ -822,12 +820,3 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
     	this.target.exportExcel("콜 리스트_" + dateString + ".xls");
     }
 });
-
-// 녹취 플레이 버튼 클릭 시 connid를 받아 녹취 청취 화면을 open
-// TODO 녹취 url 수정 필요
-function clickPlay (connid) {
-	var url = rec_url + "/recseePlayer/?SEQNO=" + connid;
-	var name = "recPopup";
-	var specs = "width=500,height=200,menubar=no,status=no";
-	var recPopup = window.open(url, name, specs);
-}
