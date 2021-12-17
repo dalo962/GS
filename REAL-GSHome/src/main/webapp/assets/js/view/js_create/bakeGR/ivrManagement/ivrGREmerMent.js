@@ -322,15 +322,12 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     			ment : ttsList[0].ment,
     	};
     	
-    	console.log(params);
-    	
     	axboot.ajax({
             type: "GET",
     		cache: false,
             url: "/gr/api/ivr/ivrEmerMent/EmerMentTTS",
             data: params,
             callback: function (res) {
-            	console.log(res);
             	audio = new Audio(filePN);
             	audio.play();
             },

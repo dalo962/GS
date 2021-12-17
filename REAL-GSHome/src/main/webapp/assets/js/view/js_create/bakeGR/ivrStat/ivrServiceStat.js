@@ -952,7 +952,6 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	var cc = this.compCd;
         return {
         	comp_cd: function() {
-        		console.log(cc.ax5select("getValue")[0].value);
         		if(cc.ax5select("getValue").length != 0) {
         			return cc.ax5select("getValue")[0].value;
         		} else {
