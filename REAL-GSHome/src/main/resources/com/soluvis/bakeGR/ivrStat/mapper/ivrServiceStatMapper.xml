@@ -15,6 +15,33 @@
 		FROM 	${table} ist, GSIVR.ARS_CODE_SERVICE acs
 		WHERE	ist.service = acs.service_code(+)
         AND 	ist.did = acs.did(+)
+		AND		ist.row_date BETWEEN #{startdate} AND #{enddate}
+		<if test="interval != 'day' and interval != 'month'">
+		AND		ist.starttime BETWEEN #{starttime} AND #{endtime}
+		</if>
+		<if test="comp_cd != '' and comp_cd != null">
+		AND		ist.comp_cd = #{comp_cd}
+		</if>
+		<if test="did != '' and did != null">
+		AND		ist.did = #{did}
+		</if>
+		ORDER BY ist.row_date asc <if test="interval != 'day' and interval != 'month'">, ist.starttime asc</if> , ist.did asc
+    </select>
+    
+    
+    <select id="ServiceStatGetTest" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		SELECT	ist.row_date as row_date,
+				<if test="interval != 'day' and interval != 'month'">
+				ist.starttime as starttime,
+				</if>
+				ist.comp_cd as comp_cd,
+				ist.did as did,
+				nvl(acs.service_name, ist.service) as service,
+				nvl(n_incall,0) as n_incall,
+				nvl(n_agentreq,0) as n_agentreq
+		FROM 	${table} ist, GSIVR.ARS_CODE_SERVICE acs
+		WHERE	ist.service = acs.service_code(+)
+        AND 	ist.did = acs.did(+)
 		AND		ist.row_date <![CDATA[>=]]> #{startdate}
 		AND		ist.row_date <![CDATA[<=]]> #{enddate}
 		<if test="interval != 'day' and interval != 'month'">
