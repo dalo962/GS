@@ -15,6 +15,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
                 		setTimeout(function(){
                     		caller.gridView01.setData(res);
                             fnObj.excelgrid.initView();
+                            date_set();
                             fisrt_search_flag = false;
                     	}, 200);
                 	}else{
@@ -434,6 +435,8 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 	        }
 	    });
 	    
+//	    date_set();
+	    
 		axboot.ajax({
 	    	type: "POST",
 		    url: "/api/statLstMng/userAuthLst",
@@ -502,6 +505,9 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     },
     getData: function () {
     	var comp_cd = $("#comSel").ax5select("getValue");
+    	var startDate = $("#startDate").val().replaceAll('-','');
+        var endDate = $("#endDate").val().replaceAll('-','');
+        var selMent = $("#selMent").val();
         return {       
         	comp_cd: function() {
         		if(comp_cd.length > 0) {
@@ -509,7 +515,10 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         		} else {
             		return "";	
         		}
-        	}
+        	},
+        	sdate: startDate,
+        	edate: endDate,
+        	ment: selMent,
         }
     }
 });
@@ -1030,6 +1039,99 @@ function handleFile(e) {
 function getByteLength(s,b,i,c){
     for(b=i=0;c=s.charCodeAt(i++);b+=c>>11?3:c>>7?2:1);
     return b;
+}
+
+function date_set(){
+	var date = new Date();
+    var yyyy = date.getFullYear().toString();
+    var MM = (date.getMonth() + 1).toString();
+    if(MM.length == 1) MM = "0"+MM;
+    //var dd = (date.getDate() - 1).toString();
+    var dd = date.getDate().toString();
+    if(dd == "0" || dd == "00")
+    {    	
+    	MM = MM - 1;
+    	var len = MM.toString().length;
+    	if(len == 1) MM = "0" + MM;
+    	if(MM == "0" || MM == "00")
+    	{
+    		yyyy = yyyy - 1;
+    		MM = "12";
+    		dd = "31";
+    	}
+    	else if(MM == "01" || MM == "03" || MM == "05" || MM == "07" || MM == "08" || MM == "10" || MM == "12")
+    	{
+    		dd = "31";
+    	}
+    	else if(MM == "02")
+    	{
+    		if((yyyy%4 == 0 && yyyy%100 != 0) || yyyy%400 == 0) // 윤달계산
+    		{
+    			dd = "29";
+    		}
+    		else
+    		{
+    			dd = "28";
+    		}    		
+    	}
+    	else if(MM == "04" || MM == "06" || MM == "09" || MM == "11")
+    	{
+    		dd = "30";
+    	}
+    }
+    else
+    {
+    	if(dd.length == 1) dd = "0"+dd;
+    }
+    
+	if($("#startDate").val().length != 10 || $("#endDate").val().length != 10)
+	{
+		$("#startDate").val(yyyy+"-"+MM+"-"+dd);
+    	$("#endDate").val(yyyy+"-"+MM+"-"+dd);
+	}	
+	
+	$('[data-ax5picker="date"]').ax5picker({
+        direction: "auto", 
+        content: {
+            type: 'date',
+            config: {
+            	selectMode: "day", 
+            	control:{
+    				yearTmpl: "%s년",
+    				dayTmpl: "%s"
+    			},                
+            	lang: {
+                    yearTmpl: "%s년",
+                    months: ['01월', '02월', '03월', '04월', '05월', '06월', '07월', '08월', '09월', '10월', '11월', '12월'],
+                    dayTmpl: "%s"
+                },
+                marker: (function () {
+                    var marker = {};
+                    marker[ax5.util.date(new Date(), {'return': 'yyyy-MM-dd', 'add': {d: 0}})] = true;
+
+                    return marker;
+                })()
+            }
+        },            
+        btns: {
+            today: {
+                label: "Today", onClick: function () {
+                	var date = new Date();
+                    var yyyy = date.getFullYear().toString();
+                    var MM = (date.getMonth() + 1).toString();
+                    if(MM.length == 1) MM = "0"+MM;
+                    var dd = date.getDate().toString();
+                    if(dd.length == 1) dd = "0"+dd;
+                        this.self
+                            .setContentValue(this.item.id, 0, ax5.util.date(yyyy+MM+dd, {"return": "yyyy-MM-dd"}))
+                            .setContentValue(this.item.id, 1, ax5.util.date(yyyy+MM+dd, {"return": "yyyy-MM-dd"}))
+                            .close()
+                    ;
+                }
+            },
+            ok:{label:"Close", theme:"default"}
+        }
+    }); 
 }
 
 //var input_dom_element;
