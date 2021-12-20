@@ -70,6 +70,9 @@ public class ivrGREmerMentController extends commController{
 		{	
 			logger.info("ivrGREmerMentService.EmerMentGet Query Start...");		
 			map.put("comp_cd", params.get("comp_cd"));
+			map.put("sdate", params.get("sdate"));
+			map.put("edate", params.get("edate"));
+			map.put("ment", params.get("ment"));
 			search = ivrGREmerMentService.EmerMentGet(map);
 		}
 		catch(Exception e)
@@ -285,6 +288,7 @@ public class ivrGREmerMentController extends commController{
 		}
 		catch(Exception e)
 		{
+			msg = e.getMessage()+"\n 관리자에게 문의하세요.";
 			System.out.println(e.getStackTrace());
 			logger.error(e.toString());
 		}

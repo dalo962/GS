@@ -21,14 +21,14 @@
 		<if test="comp_cd != '' and comp_cd != null">
 		AND		comp_cd = #{comp_cd}
 		</if>
+		<if test="ment != '' and ment != null">
+		AND		ment LIKE '%' || #{ment} || '%'
+		</if>
 		<if test="dnis != '' and dnis != null">
 		AND	dnis 	= #{dnis}
 		</if>
-		<if test="sdate != '' and sdate != null">
-		AND	sdate 	= #{sdate}
-		</if>
-		<if test="stime != '' and stime != null">
-		AND	stime 	= #{stime}
+		<if test="sdate != '' and sdate != null and edate != '' and edate !=null">
+		AND	sdate 	BETWEEN #{sdate} AND #{edate}
 		</if>
 		ORDER BY stime asc, dnis asc
     </select>

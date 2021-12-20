@@ -30,7 +30,7 @@
 								<input type="text" id="selText" name="selText" class="form-control" placeholder="">	
 							</div>
                     	</ax:td>
-                    </ax:tr>                 	
+                    </ax:tr>
                 </ax:tbl>
             </ax:form>
         </div>

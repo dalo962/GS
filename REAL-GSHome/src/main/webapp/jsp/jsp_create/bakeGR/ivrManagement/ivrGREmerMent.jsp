@@ -25,7 +25,23 @@
 								<div id="comSel" data-ax5select="comSelect" data-ax5select-config="{}"></div>					
 							</div>	
                     	</ax:td>
-                	</ax:tr>        
+                    	<ax:td label='시작날짜' width="25%" labelWidth="100px">                    		
+							<div class="input-group" data-ax5picker="date">
+	                            <input type="text" name="startDate" id="startDate" class="form-control" placeholder="yyyy-mm-dd">
+	                        	<span class="input-group-addon"><i class="cqc-calendar"></i></span>
+		                        <span class="input-group-addon space_text">~</span>
+	                            <input type="text" name="endDate" id="endDate" class="form-control" placeholder="yyyy-mm-dd">
+	                            <span class="input-group-addon"><i class="cqc-calendar"></i></span>
+	                        </div>
+                        </ax:td>
+                	</ax:tr>
+                	<ax:tr>
+                    	<ax:td label='멘트' width="25%" labelWidth="100px">
+							<div class="form-group">			
+								<input type="text" id="selMent" name="selMent" class="form-control" placeholder="">	
+							</div>
+                    	</ax:td>
+                    </ax:tr>        
                 </ax:tbl>
             </ax:form>
             <!-- <div class="H10"></div> -->

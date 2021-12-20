@@ -175,6 +175,7 @@ public class ivrGRDnisController extends commController{
 		}
 		catch(Exception e)
 		{
+			msg = e.getMessage()+"\n 관리자에게 문의하세요.";
 			System.out.println(e.getStackTrace());
 			logger.error(e.toString());
 		}

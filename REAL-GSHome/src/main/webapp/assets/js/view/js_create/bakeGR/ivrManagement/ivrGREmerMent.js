@@ -49,6 +49,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var datedif = 0;
     	var timedif = 0;
     	var prtime = 0;
+    	var ovment = 0;
     	
     	saveList.forEach(function (n){
     		var sd = n.sdate+n.stime;	// 나(n)의 시작시간
@@ -111,6 +112,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		if(r != null && r != '') { // dnis가 같으면서 시간이 겹치는 경우
     			prtime = prtime + 1;
     		}
+    		if(n.ment != null && n.ment != ""){
+    			if(getByteLength((n.ment))> 300){
+            		ovment = ovment + 1;
+            	}
+    		}
     	});
     	if(bldnis > 0) 
     	{ 
@@ -147,6 +153,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(blment > 0)
     	{
     		alert("적용하려는 멘트내용이 없습니다.");
+    		return;
+    	}
+    	if(ovment > 0){
+    		alert("멘트가 100자를 넘습니다. 100자 이내로 작성해주세요.");
     		return;
     	}
 
@@ -1016,5 +1026,10 @@ function handleFile(e) {
  
     }//end. for
 }
- 
-var input_dom_element;
+
+function getByteLength(s,b,i,c){
+    for(b=i=0;c=s.charCodeAt(i++);b+=c>>11?3:c>>7?2:1);
+    return b;
+}
+
+//var input_dom_element;

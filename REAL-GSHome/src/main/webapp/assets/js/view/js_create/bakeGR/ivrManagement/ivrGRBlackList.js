@@ -29,6 +29,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var reqExp = /^[0-9]*$/;
     	var blani = 0;
     	var blnumber = 0;
+    	var ovdesc = 0;
     	saveList.forEach(function (n){
     		if(n.ani == null || n.ani == "")
     		{
@@ -41,6 +42,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     			blnumber = blnumber + 1;
     			}
     		}
+    		if(n.description != null && n.description != ""){
+    			if(getByteLength((n.description))> 3000){
+        			ovdesc = ovdesc + 1;
+            	}
+    		}
     	});
     	if(blani > 0) 
     	{ 
@@ -50,6 +56,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(blnumber > 0) 
     	{ 
     		alert("이슈고객 번호는 숫자만 입력하시기 바랍니다."); 
+    		return;
+    	}
+    	if(ovdesc > 0) 
+    	{ 
+    		alert("사유가 1000자를 넘습니다. 1000자 이내로 작성해주세요.");
     		return;
     	}
 
@@ -65,10 +76,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		            data: JSON.stringify(saveList),
 		            callback: function (res) {
 		            	alert(res.message);
-		            	if(res.message == 'success'){
+		            	if(res.message == "success"){
 		            		axToast.push("저장 되었습니다.");
 			            	ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-		            	}
+		            	}		            	
 		            },
 		            options: {
 		                onError: function (err) {
@@ -776,4 +787,9 @@ function handleFile(e) {
         else reader.readAsBinaryString(f); //reader.readAsArrayBuffer(f);
  
     }//end. for
+}
+
+function getByteLength(s,b,i,c){
+    for(b=i=0;c=s.charCodeAt(i++);b+=c>>11?3:c>>7?2:1);
+    return b;
 }
