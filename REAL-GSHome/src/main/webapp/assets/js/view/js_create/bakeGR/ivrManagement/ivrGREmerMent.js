@@ -192,104 +192,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	caller.gridView01.delRow("selected");
     },
     EXCEL_EXPORT: function (caller, act, data) {
-    	//caller.gridView01.exportExcel();
-    	var date = new Date();
-    	var dateString = "";
-    	dateString += date.getFullYear();
-    	if(date.getMonth()<10){
-    		dateString += "0"+(date.getMonth() + 1);
-    	}
-    	else{
-    		dateString += (date.getMonth() + 1);
-    	}
-    	
-    	if(date.getDate()<10){
-    		dateString += "0"+date.getDate();
-    	}
-    	else{
-    		dateString += date.getDate();
-    	}  	
-    	
-    	var base64 = function base64(s) {
-		    return window.btoa(unescape(encodeURIComponent(s)));
-		};
-		
-		var uri = "data:application/vnd.ms-excel;base64,";
-		
-		var getExcelTmpl = function getExcelTmpl() {
-		    return "\uFEFF\n{{#tables}}{{{body}}}{{/tables}}\n";
-		};
-		var table = [excelTable.join('')];
-		var fileName = "블랙컨슈머_목록.xls";
-		
-		var link = void 0,
-		    a = void 0,
-		    output = void 0,
-		    tables = [].concat(table);
-		
-		output = ax5.mustache.render(getExcelTmpl(), {
-		    worksheet: function () {
-		        var arr = [];
-		        tables.forEach(function (t, ti) {
-		            arr.push({ name: "Sheet" + (ti + 1) });
-		        });
-		        return arr;
-		    }(),
-		    tables: function () {
-		        var arr = [];
-		        tables.forEach(function (t, ti) {
-		            arr.push({ body: t });
-		        });
-		        return arr;
-		    }()
-		});
-		
-		var isChrome = navigator.userAgent.indexOf("Chrome") > -1,
-		    isSafari = !isChrome && navigator.userAgent.indexOf("Safari") > -1,
-		    isIE = false || !!document.documentMode; // this works with IE10 and IE11 both :)
-		
-		var blob1 = void 0,
-		    blankWindow = void 0,
-		    $iframe = void 0,
-		    iframe = void 0,
-		    anchor = void 0;
-		
-		if (navigator.msSaveOrOpenBlob) {
-		    blob1 = new Blob([output], { type: "text/html" });
-		    window.navigator.msSaveOrOpenBlob(blob1, fileName);
-		} else if (isSafari) {
-		    // 사파리는 지원이 안되므로 그냥 테이블을 클립보드에 복사처리
-		    //tables
-		    blankWindow = window.open('about:blank', this.id + '-excel-export', 'width=600,height=400');
-		    blankWindow.document.write(output);
-		    blankWindow = null;
-		} else {
-		    if (isIE && typeof Blob === "undefined") {
-		        //otherwise use the iframe and save
-		        //requires a blank iframe on page called txtArea1
-		        $iframe = jQuery('<iframe id="' + this.id + '-excel-export" style="display:none"></iframe>');
-		        jQuery(document.body).append($iframe);
-		
-		        iframe = window[this.id + '-excel-export'];
-		        iframe.document.open("text/html", "replace");
-		        iframe.document.write(output);
-		        iframe.document.close();
-		        iframe.focus();
-		        iframe.document.execCommand("SaveAs", true, fileName);
-		        $iframe.remove();
-		    } else {
-		        // Attempt to use an alternative method
-		        anchor = document.body.appendChild(document.createElement("a"));
-		
-		        // If the [download] attribute is supported, try to use it
-		        if ("download" in anchor) {
-		            anchor.download = fileName;
-		            anchor.href = URL.createObjectURL(new Blob([output], { type: 'text/csv' }));
-		            anchor.click();
-		            document.body.removeChild(anchor);
-		        }
-		    }
-		}
+    	caller.gridView01.exportExcel();
     },
     SET_DNIS: function (caller, act, data) {
     	axboot.ajax({
@@ -871,7 +774,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
     	else{
     		dateString += date.getDate();
     	}  	
-    	this.target.exportExcel("블랙컨슈머_목록.xls");
+    	this.target.exportExcel("비상멘트_목록_" + dateString + ".xls");
     }
 });
 

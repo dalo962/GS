@@ -572,6 +572,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
     	else{
     		dateString += date.getDate();
     	}  	
-    	this.target.exportExcel("근무시간_목록.xls");
+    	this.target.exportExcel("근무시간_목록_" + dateString + ".xls");
     }
 });
