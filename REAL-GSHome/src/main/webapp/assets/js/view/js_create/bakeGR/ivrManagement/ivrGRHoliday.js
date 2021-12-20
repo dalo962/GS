@@ -70,8 +70,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		            data: JSON.stringify(saveList),
 		            callback: function (res) {
 		            	alert(res.message);
-		            	axToast.push("저장 되었습니다.");
-		            	ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+		            	if(res.message == 'success'){
+		            		axToast.push("저장 되었습니다.");
+			            	ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+		            	}
 		            },
 		            options: {
 		                onError: function (err) {

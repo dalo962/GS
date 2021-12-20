@@ -73,8 +73,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		            url: "/gr/api/ivr/ivrUrlList/UrlListSave",
 		            data: JSON.stringify(saveList),
 		            callback: function (res) {
-		            	axToast.push("저장 되었습니다.");
-		            	ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+		            	alert(res.message);
+		            	if(res.message == 'success'){
+		            		axToast.push("저장 되었습니다.");
+			            	ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
+		            	}
 		            },
 		            options: {
 		                onError: function (err) {
