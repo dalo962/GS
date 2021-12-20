@@ -239,7 +239,8 @@ fnObj.pageStart = function () {
 	    	
 	    	axboot.ajax({
 	    	   	type: "POST",
-	    	    url: "/api/mng/searchCondition/company",
+	    	    //url: "/api/mng/searchCondition/company",
+	    	   	url: "/api/mng/searchCondition/companyRE",
 	    	    cache : false,
 	    	    data: JSON.stringify($.extend({}, info)),
 	    	    callback: function (res) {
@@ -294,7 +295,8 @@ fnObj.initsearch = function(){
 fnObj.initsearchView = axboot.viewExtend(axboot.searchView, {
     getData: function () {    	
         return {
-        	comSelect: 75,
+        	comSelect: 75, //개발
+        	//comSelect: 260, //운영
         	deptSelect: "",
         	teamSelect: "",
         	selText: "",

@@ -54,6 +54,26 @@ public class searchConditionController extends commController {
         return Responses.ListResponse.of(search);
     }
     
+    @RequestMapping(value="/companyHO", method = RequestMethod.POST, produces = APPLICATION_JSON)
+    public @ResponseBody Responses.ListResponse companyHO(@Valid @RequestBody searchCondition reqParam, HttpServletRequest request) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>(); 
+		
+		map.put("Id", "2"); //개발
+		//map.put("Id", "3"); //운영
+		List<searchCondition> search = searchConditionService.company(map);
+        return Responses.ListResponse.of(search);
+    }
+    
+    @RequestMapping(value="/companyRE", method = RequestMethod.POST, produces = APPLICATION_JSON)
+    public @ResponseBody Responses.ListResponse companyGr(@Valid @RequestBody searchCondition reqParam, HttpServletRequest request) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>(); 
+		
+		map.put("Id", "75"); //개발
+		//map.put("Id", "260"); //운영
+		List<searchCondition> search = searchConditionService.company(map);
+        return Responses.ListResponse.of(search);
+    }
+    
     @RequestMapping(value="/Allcompany", method = RequestMethod.POST, produces = APPLICATION_JSON)
     public @ResponseBody Responses.ListResponse Allcompany(@Valid @RequestBody searchCondition reqParam, HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 

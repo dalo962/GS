@@ -90,7 +90,8 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(grpauth != "S0001")
     	{
     		// 홈쇼핑
-    		if(form.company_cd == "2")
+    		if(form.company_cd == "2") //개발
+    		//if(form.company_cd == "3") //운영    		    		
     		{
     			if(grpauth != "S0002" && grpauth != "S0003" && grpauth != "S0004")
     			{
@@ -277,7 +278,7 @@ var CODE = {};
 var info = {};
 
 var uchk = {};
-
+var init = 0;
 // fnObj 기본 함수 스타트와 리사이즈
 fnObj.pageStart = function () {
     var _this = this;
@@ -320,9 +321,19 @@ fnObj.pageStart = function () {
 		    		info.usercd = n.user_cd;
 		    	});
     	
+            	var CompUrl = "";
+            	if(info.grpcd == "S0001")
+            	{
+            		CompUrl = "/api/mng/searchCondition/Allcompany"
+            	}
+            	else
+            	{
+            		CompUrl = "/api/mng/searchCondition/company";
+            	}
+            	
                 axboot.ajax({
             	type: "POST",
-        	    url: "/api/mng/searchCondition/company",
+        	    url: CompUrl,
         	    cache : false,
         	    data: JSON.stringify($.extend({}, info)),
         	    callback: function (res) {
@@ -369,7 +380,8 @@ fnObj.pageStart = function () {
 	        res.list.forEach(function (n) {
 	        	if(info.grpcd != "S0001") 
 		        {
-	        		if(info.comcd == "2")
+	        		if(info.comcd == "2") //개발
+	        		//if(info.comcd == "3") //운영
 	            	{
 	        			if(n.code == "S0001" || n.code == "S0002" || n.code == "S0003" || n.code == "S0004")
 	        			{
@@ -408,7 +420,8 @@ fnObj.pageStart = function () {
             if(info.grpcd != "S0001") 
 	        {
             	$("#" + 1).attr('disabled', true);
-            	if(info.comcd == "2")
+            	if(info.comcd == "2") //개발
+            	//if(info.comcd == "3") //운영
             	{
             		$("#" + 3).attr('disabled', true);
             		$("#" + 5).attr('disabled', true);
@@ -482,13 +495,22 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     },
     getData: function () {
     	var comCd = "";
-    	if($("[data-ax5select='comSelectWhere']").ax5select("getValue")[0].value === undefined)
+    	
+    	if(init == 0)
     	{
-    		comCd = "";
+    		if(info.grpcd != "S0001") { comCd = info.comcd; }    		
+    		init = 1;
     	}
     	else
     	{
-    		comCd = $("[data-ax5select='comSelectWhere']").ax5select("getValue")[0].value;    		
+    		if($("[data-ax5select='comSelectWhere']").ax5select("getValue")[0].value === undefined)
+    		{
+    			comCd = "";
+    		}
+    		else
+    		{
+    			comCd = $("[data-ax5select='comSelectWhere']").ax5select("getValue")[0].value;    		
+    		}
     	}
     	
         return {

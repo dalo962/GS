@@ -78,7 +78,8 @@ fnObj.pageStart = function () {
 		    	/* 소속 리스트조회 후 셋팅하는 부분 */ 
 				axboot.ajax({
 				    type: "POST",
-				    url: "/api/mng/searchCondition/company",
+				    //url: "/api/mng/searchCondition/company",
+				    url: "/api/mng/searchCondition/companyHO",
 				    cache : false,
 				    data: JSON.stringify($.extend({}, info)),
 				    callback: function (res) {

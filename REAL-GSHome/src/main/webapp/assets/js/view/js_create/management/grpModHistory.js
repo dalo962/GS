@@ -167,7 +167,8 @@ fnObj.pageStart = function () {
 	    	
 			axboot.ajax({
 			    type: "POST",
-			    url: "/api/mng/searchCondition/company",
+			    //url: "/api/mng/searchCondition/company",
+			    url: "/api/mng/searchCondition/companyHO",
 			    cache : false,
 			    data: JSON.stringify($.extend({}, info)),
 			    callback: function (res) {

@@ -724,7 +724,7 @@ function time_set(){
 		type: "GET",
 		url: "/api/statLstMng/historytimeget",
 		cache: false,
-		data: {comSelect:75, codeSelect: select + "_75"},
+		data: {comSelect:info.comcd, codeSelect: select + "_" + info.comcd},
 		callback: function(res) {
 			var com_stime = "";
 			var com_etime = "";
@@ -861,11 +861,13 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 		    callback: function (res) {
  	    		var grpcd = res[0].grp_auth_cd;
  	    		var comcd = res[0].company_cd;
+ 	    		info.comcd = res[0].company_cd;
  	    		// 권한코드 :: 공통코드관리 => 권한그룹
  	    		
 		    	axboot.ajax({
 		    		type: "POST",
-		    		url: "/api/mng/searchCondition/company",
+		    		//url: "/api/mng/searchCondition/company",
+		    		url: "/api/mng/searchCondition/companyRE",
 		    		cache : false,
 		    		data: JSON.stringify($.extend({}, info)),
 		    		callback: function (res) {
