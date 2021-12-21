@@ -23,30 +23,36 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	caller.gridView01.addRow();
     },   
     PAGE_SAVE: function (caller, act, data) {
-    	var saveList = [].concat(caller.gridView01.getData());
-    	saveList = saveList.concat(caller.gridView01.getData("deleted"));
+    	// Grid의 모든 data (deleted 포함)
+    	var _saveList = [].concat(caller.gridView01.getData());
+    	_saveList = _saveList.concat(caller.gridView01.getData("deleted"));
+    	
+    	var saveList = []; 
     	
     	var reqExp = /^[0-9]*$/;
     	var dndnis = 0;
     	var dnuseyn = 0;
     	var dngroup = 0;
     	var dnmedia = 0;
-    	saveList.forEach(function (n){
-    		if(n.dnis == null || n.dnis == "")
-    		{
-    			dndnis = dndnis + 1;
-    		}
-    		if(n.dnis_useyn == null || n.dnis_useyn == "")
-    		{
-    			dnuseyn = dnuseyn + 1;
-    		}
-    		if(n.dnis_group == null || n.dnis_group == "")
-    		{
-    			dngroup = dngroup + 1;
-    		}
-    		if(n.dnis_media == null || n.dnis_media == "")
-    		{
-    			dnmedia = dnmedia + 1;
+    	_saveList.forEach(function (n){
+    		if(!(n.__created__ && n.__deleted__)) { // 새로운데이터이면서 삭제된건 제외
+    			saveList.push(n);
+	    		if(n.dnis == null || n.dnis == "")
+	    		{
+	    			dndnis = dndnis + 1;
+	    		}
+	    		if(n.dnis_useyn == null || n.dnis_useyn == "")
+	    		{
+	    			dnuseyn = dnuseyn + 1;
+	    		}
+	    		if(n.dnis_group == null || n.dnis_group == "")
+	    		{
+	    			dngroup = dngroup + 1;
+	    		}
+	    		if(n.dnis_media == null || n.dnis_media == "")
+	    		{
+	    			dnmedia = dnmedia + 1;
+	    		}
     		}
     	});
     	if(dndnis > 0) 

@@ -23,8 +23,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	caller.gridView01.addRow();
     },   
     PAGE_SAVE: function (caller, act, data) {
-    	var saveList = [].concat(caller.gridView01.getData());
-    	saveList = saveList.concat(caller.gridView01.getData("deleted"));
+    	// Grid의 모든 data (deleted 포함)
+    	var _saveList = [].concat(caller.gridView01.getData());
+    	_saveList = _saveList.concat(caller.gridView01.getData("deleted"));
+    	
+    	var saveList = []; 
     	
     	var reqExp = /^[0-9]*$/;
     	var blani = 0;
@@ -32,28 +35,31 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var bluse = 0;
     	var bldeg = 0;
     	var ovdesc = 0;
-    	saveList.forEach(function (n){
-    		if(n.ani == null || n.ani == "")
-    		{
-    			blani = blani + 1;
-    		}
-    		if(n.ani != null || n.ani != "")
-    		{
-    			if(reqExp.test(n.ani) == false)
-    			{
-    			blnumber = blnumber + 1;
-    			}
-    		}
-    		if(n.bl_useyn == null || n.bl_useyn == "") {
-    			bluse = bluse + 1;
-    		}
-    		if(n.degree == null || n.degree == "") {
-    			bldeg = bldeg + 1;
-    		}
-    		if(n.description != null && n.description != ""){
-    			if(getByteLength((n.description))> 3000){
-        			ovdesc = ovdesc + 1;
-            	}
+    	_saveList.forEach(function (n){
+    		if(!(n.__created__ && n.__deleted__)) { // 새로운데이터이면서 삭제된건 제외
+    			saveList.push(n);
+	    		if(n.ani == null || n.ani == "")
+	    		{
+	    			blani = blani + 1;
+	    		}
+	    		if(n.ani != null || n.ani != "")
+	    		{
+	    			if(reqExp.test(n.ani) == false)
+	    			{
+	    			blnumber = blnumber + 1;
+	    			}
+	    		}
+	    		if(n.bl_useyn == null || n.bl_useyn == "") {
+	    			bluse = bluse + 1;
+	    		}
+	    		if(n.degree == null || n.degree == "") {
+	    			bldeg = bldeg + 1;
+	    		}
+	    		if(n.description != null && n.description != ""){
+	    			if(getByteLength((n.description))> 3000){
+	        			ovdesc = ovdesc + 1;
+	            	}
+	    		}
     		}
     	});
     	if(blani > 0) 

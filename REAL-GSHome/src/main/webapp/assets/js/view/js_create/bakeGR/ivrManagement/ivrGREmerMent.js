@@ -37,9 +37,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	caller.gridView01.addRow();
     },   
     PAGE_SAVE: function (caller, act, data) {
-    	var saveList = [].concat(caller.gridView01.getData());
+    	// Grid의 모든 data (deleted 포함)
+    	var _saveList = [].concat(caller.gridView01.getData());
+    	_saveList = _saveList.concat(caller.gridView01.getData("deleted"));
     	
-    	saveList = saveList.concat(caller.gridView01.getData("deleted"));
+    	var saveList = []; 
     	
     	var reqExp = /^[0-9]*$/;
     	var bldnis = 0;
@@ -53,80 +55,83 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var timedif = 0;
     	var prtime = 0;
     	var ovment = 0;
-    	
-    	saveList.forEach(function (n){
-    		var sd = n.sdate+n.stime;	// 나(n)의 시작시간
-    		var ed = n.edate+n.etime;	// 나(n)의 종료시간
-    		
-    		var r = saveList.find(function (s) {
-        		var ssd = s.sdate+s.stime;	// 비교대상(s)의 시작시간
-        		var sed = s.edate+s.etime;	// 비교대상(s)의 종료시간
-        		
-        		// 자기자신이 아니면서 dnis가 같은 경우 //
-    			if(s.__index != n.__index && s.dnis == n.dnis) {
-    				if(sd >= ssd && ed <= sed) {
-    					// 1. 입력된 시작/종료시간이 기존 시작/종료시간을 포함 //
-    					return s.dnis;
-    				} else if(sd <= ssd && ed >= sed) {
-    					// 2. 입력된 시작/종료시간이 기존 시작/종료시간에 포함 //
-    					return s.dnis;
-    				} else if(sd >= ssd && sd <= sed) {
-    					// 3. 입력된 시작시간이 기존 시작/종료시간 사이에 있음 //
-    					return s.dnis;
-    				} else if(ed >= ssd && ed <= sed) {
-    					// 4. 입력된 종료시간이 시작/종료시간 사이에 있음 //
-    					return s.dnis;
-    				}
-    			}
-    		});
-    		
-    		if(n.dnis == null || n.dnis == "")
-    		{
-    			bldnis = bldnis + 1;
-    		}
-    		if(n.sdate == null || n.sdate == "")
-    		{
-    			blsdate = blsdate + 1;
-    		}
-    		if(n.edate == null || n.edate == "")
-    		{
-    			bledate = bledate + 1;
-    		}
-    		if(n.stime == null || n.stime == "")
-    		{
-    			blstime = blstime + 1;
-    		}
-    		if(n.etime == null || n.etime == "")
-    		{
-    			bletime = bletime + 1;
-    		}
-    		if(n.emer_type == null || n.emer_type == "")
-    		{
-    			blemertype = blemertype + 1;
-    		}
-    		if(n.ment == null || n.ment == "")
-			{
-    			if(!n.__deleted__ && n.emer_type == 0)
-    			{
-        			// 삭제되지 않고, 유형이 "직접입력" 인 경우
-    				blment = blment + 1;
-    			}
-			}
-    		if(n.sdate > n.edate) {	// 시작날짜가 종료날짜보다 큰 경우 (종료날짜가 시작날짜보다 작은 경우)
-    			datedif = datedif + 1;
-    		}
-    		if(n.sdate == n.edate) { // 날짜는 같은데 시작시간이 종료시간보다 큰 경우 (종료시간이 시작시간보다 작은 경우)
-    			if(n.stime > n.etime) {
-    				timedif = timedif + 1;
-    			}
-    		}
-    		if(r != null && r != '') { // dnis가 같으면서 시간이 겹치는 경우
-    			prtime = prtime + 1;
-    		}
-    		if(n.ment != null && n.ment != ""){
-    			if(getByteLength((n.ment))> 300){
-            		ovment = ovment + 1;
-            	}
+
+    	_saveList.forEach(function (n){
+    		if(!(n.__created__ && n.__deleted__)) { // 새로운데이터이면서 삭제된건 제외
+    			saveList.push(n);
+	    		var sd = n.sdate+n.stime;	// 나(n)의 시작시간
+	    		var ed = n.edate+n.etime;	// 나(n)의 종료시간
+	    		
+	    		var r = saveList.find(function (s) {
+	        		var ssd = s.sdate+s.stime;	// 비교대상(s)의 시작시간
+	        		var sed = s.edate+s.etime;	// 비교대상(s)의 종료시간
+	        		
+	        		// 자기자신이 아니면서 dnis가 같은 경우 //
+	    			if(s.__index != n.__index && s.dnis == n.dnis) {
+	    				if(sd >= ssd && ed <= sed) {
+	    					// 1. 입력된 시작/종료시간이 기존 시작/종료시간을 포함 //
+	    					return s.dnis;
+	    				} else if(sd <= ssd && ed >= sed) {
+	    					// 2. 입력된 시작/종료시간이 기존 시작/종료시간에 포함 //
+	    					return s.dnis;
+	    				} else if(sd >= ssd && sd <= sed) {
+	    					// 3. 입력된 시작시간이 기존 시작/종료시간 사이에 있음 //
+	    					return s.dnis;
+	    				} else if(ed >= ssd && ed <= sed) {
+	    					// 4. 입력된 종료시간이 시작/종료시간 사이에 있음 //
+	    					return s.dnis;
+	    				}
+	    			}
+	    		});
+	    		
+	    		if(n.dnis == null || n.dnis == "")
+	    		{
+	    			bldnis = bldnis + 1;
+	    		}
+	    		if(n.sdate == null || n.sdate == "")
+	    		{
+	    			blsdate = blsdate + 1;
+	    		}
+	    		if(n.edate == null || n.edate == "")
+	    		{
+	    			bledate = bledate + 1;
+	    		}
+	    		if(n.stime == null || n.stime == "")
+	    		{
+	    			blstime = blstime + 1;
+	    		}
+	    		if(n.etime == null || n.etime == "")
+	    		{
+	    			bletime = bletime + 1;
+	    		}
+	    		if(n.emer_type == null || n.emer_type == "")
+	    		{
+	    			blemertype = blemertype + 1;
+	    		}
+	    		if(n.ment == null || n.ment == "")
+				{
+	    			if(!n.__deleted__ && n.emer_type == 0)
+	    			{
+	        			// 삭제되지 않고, 유형이 "직접입력" 인 경우
+	    				blment = blment + 1;
+	    			}
+				}
+	    		if(n.sdate > n.edate) {	// 시작날짜가 종료날짜보다 큰 경우 (종료날짜가 시작날짜보다 작은 경우)
+	    			datedif = datedif + 1;
+	    		}
+	    		if(n.sdate == n.edate) { // 날짜는 같은데 시작시간이 종료시간보다 큰 경우 (종료시간이 시작시간보다 작은 경우)
+	    			if(n.stime > n.etime) {
+	    				timedif = timedif + 1;
+	    			}
+	    		}
+	    		if(r != null && r != '') { // dnis가 같으면서 시간이 겹치는 경우
+	    			prtime = prtime + 1;
+	    		}
+	    		if(n.ment != null && n.ment != ""){
+	    			if(getByteLength((n.ment))> 300){
+	            		ovment = ovment + 1;
+	            	}
+	    		}
     		}
     	});
     	if(bldnis > 0) 

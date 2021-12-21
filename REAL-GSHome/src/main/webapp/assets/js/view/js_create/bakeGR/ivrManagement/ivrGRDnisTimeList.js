@@ -27,9 +27,12 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	caller.gridView01.addRow();
     },   
     PAGE_SAVE: function (caller, act, data) {
-    	var saveList = [].concat(caller.gridView01.getData());
-    	saveList = saveList.concat(caller.gridView01.getData("deleted"));
-    	    	
+    	// Grid의 모든 data (deleted 포함)
+    	var _saveList = [].concat(caller.gridView01.getData());
+    	_saveList = _saveList.concat(caller.gridView01.getData("deleted"));
+    	
+    	var saveList = []; 
+    		
     	var reqExp = /^[0-9]*$/;
     	var reqExp2 = /^\d{6}$/;
     	var wkdnis = 0;
@@ -39,45 +42,48 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var wkovuseyn = 0;
     	var wknumber = 0;    	
     	var wknumber2 = 0;
-    	saveList.forEach(function (n){
-    		if(n.dnis == null || n.dnis == "")
-    		{
-    			wkdnis = wkdnis + 1;
+    	_saveList.forEach(function (n){
+    		if(!(n.__created__ && n.__deleted__)) { // 새로운데이터이면서 삭제된건 제외
+    			saveList.push(n);
+	    		if(n.dnis == null || n.dnis == "")
+	    		{
+	    			wkdnis = wkdnis + 1;
+	    		}
+	    		if(n.useyn == null || n.useyn == "")
+	    		{
+	    			wkuseyn = wkuseyn + 1;
+	    		}
+	    		if(n.lc_useyn == null || n.lc_useyn == "")
+	    		{
+	    			wklcuseyn = wklcuseyn + 1;
+	    		}
+	    		if(n.hl_useyn == null || n.hl_useyn == "")
+	    		{
+	    			wkhluseyn = wkhluseyn + 1;
+	    		}
+	    		if(n.ov_useyn == null || n.ov_useyn == "")
+	    		{
+	    			wkovuseyn = wkovuseyn + 1;
+	    		}
+	    		/*
+	    		if(reqExp.test(n.dnis) == false 
+	    		  || reqExp.test(n.wr_stime) == false  || reqExp.test(n.wr_etime) == false
+	    		  || reqExp.test(n.lc_stime) == false  || reqExp.test(n.lc_etime) == false
+	    		  || reqExp.test(n.sat_stime) == false || reqExp.test(n.sat_etime) == false
+	    		  || reqExp.test(n.sun_stime) == false || reqExp.test(n.sun_etime) == false
+	    		  || reqExp.test(n.hl_stime) == false  || reqExp.test(n.hl_etime) == false)
+	    		{
+	    			wknumber = wknumber + 1;
+	    		}
+	    		if(  reqExp2.test(n.wr_stime) == false  || reqExp2.test(n.wr_etime) == false
+	    	      || reqExp2.test(n.lc_stime) == false  || reqExp2.test(n.lc_etime) == false
+	    	      || reqExp2.test(n.sat_stime) == false || reqExp2.test(n.sat_etime) == false
+	    	      || reqExp2.test(n.sun_stime) == false || reqExp2.test(n.sun_etime) == false
+	    	      || reqExp2.test(n.hl_stime) == false  || reqExp2.test(n.hl_etime) == false)
+	    	    {
+	    			wknumber2 = wknumber2 + 1;
+	    	    }*/
     		}
-    		if(n.useyn == null || n.useyn == "")
-    		{
-    			wkuseyn = wkuseyn + 1;
-    		}
-    		if(n.lc_useyn == null || n.lc_useyn == "")
-    		{
-    			wklcuseyn = wklcuseyn + 1;
-    		}
-    		if(n.hl_useyn == null || n.hl_useyn == "")
-    		{
-    			wkhluseyn = wkhluseyn + 1;
-    		}
-    		if(n.ov_useyn == null || n.ov_useyn == "")
-    		{
-    			wkovuseyn = wkovuseyn + 1;
-    		}
-    		/*
-    		if(reqExp.test(n.dnis) == false 
-    		  || reqExp.test(n.wr_stime) == false  || reqExp.test(n.wr_etime) == false
-    		  || reqExp.test(n.lc_stime) == false  || reqExp.test(n.lc_etime) == false
-    		  || reqExp.test(n.sat_stime) == false || reqExp.test(n.sat_etime) == false
-    		  || reqExp.test(n.sun_stime) == false || reqExp.test(n.sun_etime) == false
-    		  || reqExp.test(n.hl_stime) == false  || reqExp.test(n.hl_etime) == false)
-    		{
-    			wknumber = wknumber + 1;
-    		}
-    		if(  reqExp2.test(n.wr_stime) == false  || reqExp2.test(n.wr_etime) == false
-    	      || reqExp2.test(n.lc_stime) == false  || reqExp2.test(n.lc_etime) == false
-    	      || reqExp2.test(n.sat_stime) == false || reqExp2.test(n.sat_etime) == false
-    	      || reqExp2.test(n.sun_stime) == false || reqExp2.test(n.sun_etime) == false
-    	      || reqExp2.test(n.hl_stime) == false  || reqExp2.test(n.hl_etime) == false)
-    	    {
-    			wknumber2 = wknumber2 + 1;
-    	    }*/
     	});
     	if(wkdnis > 0) 
     	{ 

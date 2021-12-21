@@ -23,24 +23,30 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	caller.gridView01.addRow();
     },   
     PAGE_SAVE: function (caller, act, data) {
-    	var saveList = [].concat(caller.gridView01.getData());
-    	saveList = saveList.concat(caller.gridView01.getData("deleted"));
+    	// Grid의 모든 data (deleted 포함)
+    	var _saveList = [].concat(caller.gridView01.getData());
+    	_saveList = _saveList.concat(caller.gridView01.getData("deleted"));
+    	
+    	var saveList = []; 
     	
     	var reqExp = /^[0-9]*$/;
     	var hlholiday = 0;
     	var hluseyn = 0;
     	var hldes = 0;
-    	saveList.forEach(function (n){
-    		if(n.holiday == null || n.holiday == "")
-    		{
-    			hlholiday = hlholiday + 1;
-    		}
-    		if(n.hl_useyn == null || n.hl_useyn == "")
-    		{
-    			hluseyn = hluseyn + 1;
-    		}
-    		if(n.description == null || n.description == "") {
-    			hldes = hldes + 1;
+    	_saveList.forEach(function (n){
+    		if(!(n.__created__ && n.__deleted__)) { // 새로운데이터이면서 삭제된건 제외
+    			saveList.push(n);
+        		if(n.holiday == null || n.holiday == "")
+        		{
+        			hlholiday = hlholiday + 1;
+        		}
+        		if(n.hl_useyn == null || n.hl_useyn == "")
+        		{
+        			hluseyn = hluseyn + 1;
+        		}
+        		if(n.description == null || n.description == "") {
+        			hldes = hldes + 1;
+        		}	
     		}
     	});
     	if(hlholiday > 0) 

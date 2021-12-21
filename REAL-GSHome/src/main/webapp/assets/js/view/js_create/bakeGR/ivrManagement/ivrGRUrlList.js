@@ -22,28 +22,34 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	caller.gridView01.addRow();
     },   
     PAGE_SAVE: function (caller, act, data) {
-    	var saveList = [].concat(caller.gridView01.getData());
-    	saveList = saveList.concat(caller.gridView01.getData("deleted"));
-    	    	
+    	// Grid의 모든 data (deleted 포함)
+    	var _saveList = [].concat(caller.gridView01.getData());
+    	_saveList = _saveList.concat(caller.gridView01.getData("deleted"));
+    	
+    	var saveList = []; 
+    	
     	var reqExp = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/; 		 
     	var ulnm = 0;
     	var ulip = 0;
     	var ulnumber = 0;
-    	saveList.forEach(function (n){
-    		if(n.url_nm == null || n.url_nm == "")
-    		{
-    			ulnm = ulnm + 1;
-    		}
-    		if(n.svr_ip == null || n.svr_ip == "")
-    		{
-    			ulip = ulip + 1;
-    		}
-    		if(n.svr_ip != null || n.svr_ip != "")
-    		{
-    			if(reqExp.test(n.svr_ip) == false)
-    			{
-    				ulnumber = ulnumber + 1;
-    			}
+    	_saveList.forEach(function (n){
+    		if(!(n.__created__ && n.__deleted__)) { // 새로운데이터이면서 삭제된건 제외
+    			saveList.push(n);
+	    		if(n.url_nm == null || n.url_nm == "")
+	    		{
+	    			ulnm = ulnm + 1;
+	    		}
+	    		if(n.svr_ip == null || n.svr_ip == "")
+	    		{
+	    			ulip = ulip + 1;
+	    		}
+	    		if(n.svr_ip != null || n.svr_ip != "")
+	    		{
+	    			if(reqExp.test(n.svr_ip) == false)
+	    			{
+	    				ulnumber = ulnumber + 1;
+	    			}
+	    		}
     		}
     	});
     	if(ulnm > 0) 
