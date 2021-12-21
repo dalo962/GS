@@ -44,10 +44,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     			blnumber = blnumber + 1;
     			}
     		}
-    		if(n.bl_useyn != null || n.bl_useyn != "") {
+    		if(n.bl_useyn == null || n.bl_useyn == "") {
     			bluse = bluse + 1;
     		}
-    		if(n.degree != null || n.degree != "") {
+    		if(n.degree == null || n.degree == "") {
     			bldeg = bldeg + 1;
     		}
     		if(n.description != null && n.description != ""){
