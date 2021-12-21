@@ -43,6 +43,8 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	
     	var reqExp = /^[0-9]*$/;
     	var bldnis = 0;
+    	var blsdate = 0;
+    	var bledate = 0;
     	var blstime = 0;
     	var bletime = 0;
     	var blemertype = 0;
@@ -81,6 +83,14 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		if(n.dnis == null || n.dnis == "")
     		{
     			bldnis = bldnis + 1;
+    		}
+    		if(n.sdate == null || n.sdate == "")
+    		{
+    			blsdate = blsdate + 1;
+    		}
+    		if(n.edate == null || n.edate == "")
+    		{
+    			bledate = bledate + 1;
     		}
     		if(n.stime == null || n.stime == "")
     		{
@@ -122,6 +132,16 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(bldnis > 0) 
     	{ 
     		alert("대표번호를 선택하시기 바랍니다."); 
+    		return;
+    	}
+    	if(blsdate > 0) 
+    	{ 
+    		alert("시작날짜를 입력하시기 바랍니다."); 
+    		return;
+    	}
+    	if(bledate > 0) 
+    	{ 
+    		alert("종료날짜를 입력하시기 바랍니다."); 
     		return;
     	}
     	if(blstime > 0) 
