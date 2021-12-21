@@ -9,7 +9,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
             url: "/gr/api/ivr/ivrDnisTimeList/DnisListSearch",
             data: $.extend({}, this.searchView.getData()),
             callback: function (res) {
-                caller.gridView01.setData(res);
+            	setTimeout(function(){
+            		caller.gridView01.setData(res);
+            	},300);
+                
             },
             options: {
                 onError: function (err) {
@@ -301,13 +304,17 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
     initView: function () {
         var _this = this;
-
+        console.log(_this);
         this.target = axboot.gridBuilder({
         	showRowSelector: true,
             frozenColumnIndex: 0,
             multipleSelect: true,
             showLineNumber:true,
             target: $('[data-ax5grid="grid-view-01"]'),
+            header: {
+                align: "center",
+                columnHeight: 28
+            },
             columns: [
             	{key: "dnis", label: "대표번호", width: 150, align: "center", sortable: true, 
             		editor: {
@@ -455,7 +462,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 {key: "sat_etime", label: "토요일근무 종료시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},                
                 {key: "sun_stime", label: "일요일근무 시작시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
                 {key: "sun_etime", label: "일요일근무 종료시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
-                {key: "hl_useyn", label: "휴일근무 사용유무", width: 140, align: "center", sortable: true, editor: {
+                {key: "hl_useyn", label: '<span style="color: red;">휴일근무</span>', width: 140, align: "center", sortable: true, editor: {
                 	type: "select", config: {
                 		columnKeys: {
                 			optionValue: "value", optionText: "text"
@@ -468,18 +475,18 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 }, formatter: function() {
                 	switch(this.item.hl_useyn) {
                 		case "0":
-                			return "미사용";
+                			return '미사용';
                 			break; 	
                 		case "1":
-	        				return "사용";
+	        				return '사용';
 	        				break;              		
                 		default :
-                			return '<span style="color: red;">선택</span>';
+                			return '선택';
                 			break;
                 	}
                 }},
-                {key: "hl_stime", label: "휴일근무 시작시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
-                {key: "hl_etime", label: "휴일근무 종료시간", width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
+                {key: "hl_stime", label: '<span style="color: red;">휴일 시작시간</span>', width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
+                {key: "hl_etime", label: '<span style="color: red;">휴일 종료시간</span>', width: 150, align: "center", sortable: true, editor:"text", formatter:"hour_colon"},
                 {key: "crt_dt", label: "작성일자", width: 180, align: "center", sortable: true,
                 	formatter: function() {
                 		var crdt = "";
@@ -526,6 +533,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 }
             }
         });
+        console.log(_this.target);
         axboot.buttonClick(this, "data-grid-view-01-btn", {
         	"add": function () {
                 ACTIONS.dispatch(ACTIONS.PAGE_ADD);
