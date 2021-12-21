@@ -357,7 +357,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 			{value: "1", text: "월-금"},
                 			{value: "2", text: "월-토"},
                 			{value: "3", text: "월-일"},
-                			{value: "4", text: "월-일(휴일포함)"}
                     	]
                 	}
                 }, formatter: function() {
