@@ -64,7 +64,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		alert("대표번호 그룹을 입력하시기 바랍니다."); 
     		return;
     	}
-    	if(dnuseyn > 0) 
+    	if(dnmedia > 0) 
     	{ 
     		alert("대표번호 매체를 입력하시기 바랍니다."); 
     		return;

@@ -29,6 +29,8 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var reqExp = /^[0-9]*$/;
     	var blani = 0;
     	var blnumber = 0;
+    	var bluse = 0;
+    	var bldeg = 0;
     	var ovdesc = 0;
     	saveList.forEach(function (n){
     		if(n.ani == null || n.ani == "")
@@ -41,6 +43,12 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     			{
     			blnumber = blnumber + 1;
     			}
+    		}
+    		if(n.bl_useyn != null || n.bl_useyn != "") {
+    			bluse = bluse + 1;
+    		}
+    		if(n.degree != null || n.degree != "") {
+    			bldeg = bldeg + 1;
     		}
     		if(n.description != null && n.description != ""){
     			if(getByteLength((n.description))> 3000){
@@ -56,6 +64,16 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(blnumber > 0) 
     	{ 
     		alert("이슈고객 번호는 숫자만 입력하시기 바랍니다."); 
+    		return;
+    	}    	
+    	if(bluse > 0) 
+    	{ 
+    		alert("사용유무를 선택하시기 바랍니다."); 
+    		return;
+    	}    	
+    	if(bldeg > 0) 
+    	{ 
+    		alert("차수를 선택하시기 바랍니다."); 
     		return;
     	}
     	if(ovdesc > 0) 
