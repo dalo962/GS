@@ -8,7 +8,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
             data: $.extend({}, this.searchView.getData()),
             callback: function (res) {
                 caller.gridView01.setData(res);
-                fnObj.excelgrid.initView();
             },
             options: {
                 onError: function (err) {
@@ -460,66 +459,8 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 });
 
 
-fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
-    initView: function () {    	
-        var _this = this;
-        var data = fnObj.gridView01.getData();
-        excelTable = [];
-        excelTable.push('<table border="1">');
-        
-        var detailHeadStr="";        
-        
-        detailHeadStr += "<tr>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>블랙컨슈머 번호</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>사용유무</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>작성일자</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>작성자</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>수정일자</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>수정자</th>";
-
-		detailHeadStr += "</tr>";
-	        
-		$("#gridExcel-detail-thead").append(detailHeadStr);
-	    excelTable.push(detailHeadStr);
-	        
-	    var detailbodyStr="";
-	    
-	    data.forEach(function(m){	     	
-		    detailbodyStr += "<tr>";
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(m.ani) + "</td>";
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.flag) + "</td>";
-		    
-		    var cday = "";
-		    var ctime = "";
-		    if(m.crt_dt != undefined)
-		    {
-		    	cday = m.crt_dt.substr(0,8);
-		    	ctime = m.crt_dt.substr(8,6);
-		    }
-		    
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + fmtDay(cday) + " " + fmtTime(ctime) + "</td>";
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.crt_by) + "</td>";
-		    
-		    var uday = "";
-		    var utime = "";
-		    if(m.udt_dt != undefined)
-		    {
-		    	uday = m.udt_dt.substr(0,8);
-		    	utime = m.udt_dt.substr(8,6);
-		    }
-		    
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + fmtDay(uday) + " " + fmtTime(utime) + "</td>";
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.udt_by) + "</td>";
-
-		    detailbodyStr += "</tr>";
-		});
-	            
-	    $("#gridExcel-detail-tbody").append(detailbodyStr); 
-	    excelTable.push(detailbodyStr); 
-    }
-});
-
-//엑셀 업로드
+/*
+// 엑셀 업로드
 var rABS = true; 
 
 function fixdata(data) {
@@ -581,7 +522,7 @@ function handleFile(e) {
             var workbook;
  
             if(rABS) {
-                /* if binary string, read with type 'binary' */
+                // if binary string, read with type 'binary'
                 //workbook = XLSX.read(data, {type: 'binary'});
             	var binary = "";
             	var bytes = new Uint8Array(data);
@@ -592,7 +533,7 @@ function handleFile(e) {
             	workbook = XLSX.read(binary, {type:'binary'});          	
             	
             } else {
-                /* if array buffer, convert to base64 */
+                // if array buffer, convert to base64
                 //var arr = fixdata(data);
                 //workbook = XLSX.read(btoa(arr), {type: 'base64'});
             	workbook = XLSX.read(data, {type:'binary'}); 
@@ -627,3 +568,4 @@ $(function() {
         input_dom_element.addEventListener('change', handleFile, false);
     }
 });
+*/

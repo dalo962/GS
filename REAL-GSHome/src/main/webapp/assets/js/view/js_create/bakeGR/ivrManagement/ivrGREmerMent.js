@@ -21,13 +21,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
             		if(fisrt_search_flag == true){
                 		setTimeout(function(){
                     		caller.gridView01.setData(res);
-                            fnObj.excelgrid.initView();
                             date_set();
                             fisrt_search_flag = false;
                     	}, 200);
                 	}else{
                 		caller.gridView01.setData(res);
-                        fnObj.excelgrid.initView();
                 	}
             	}
             },
@@ -811,167 +809,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
     	this.target.exportExcel("비상멘트_목록_" + dateString + ".xls");
     }
 });
-
-
-fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
-    initView: function () {    	
-        var _this = this;
-        var data = fnObj.gridView01.getData();
-        excelTable = [];
-        excelTable.push('<table border="1">');
-        
-        var detailHeadStr="";        
-        
-        detailHeadStr += "<tr>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>블랙컨슈머 번호</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>사용유무</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>작성일자</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>작성자</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>수정일자</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>수정자</th>";
-
-		detailHeadStr += "</tr>";
-	        
-		$("#gridExcel-detail-thead").append(detailHeadStr);
-	    excelTable.push(detailHeadStr);
-	        
-	    var detailbodyStr="";
-	    
-	    data.forEach(function(m){	     	
-		    detailbodyStr += "<tr>";
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(m.ani) + "</td>";
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.flag) + "</td>";
-		    
-		    var cday = "";
-		    var ctime = "";
-		    if(m.crt_dt != undefined)
-		    {
-		    	cday = m.crt_dt.substr(0,8);
-		    	ctime = m.crt_dt.substr(8,6);
-		    }
-		    
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + fmtDay(cday) + " " + fmtTime(ctime) + "</td>";
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.crt_by) + "</td>";
-		    
-		    var uday = "";
-		    var utime = "";
-		    if(m.udt_dt != undefined)
-		    {
-		    	uday = m.udt_dt.substr(0,8);
-		    	utime = m.udt_dt.substr(8,6);
-		    }
-		    
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + fmtDay(uday) + " " + fmtTime(utime) + "</td>";
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.udt_by) + "</td>";
-
-		    detailbodyStr += "</tr>";
-		});
-	            
-	    $("#gridExcel-detail-tbody").append(detailbodyStr); 
-	    excelTable.push(detailbodyStr); 
-    }
-});
-
-//엑셀 업로드
-var rABS = true; 
-
-function fixdata(data) {
-    var o = "", l = 0, w = 10240;
-    for(; l<data.byteLength/w; ++l) o+=String.fromCharCode.apply(null,new Uint8Array(data.slice(l*w,l*w+w)));
-    o+=String.fromCharCode.apply(null, new Uint8Array(data.slice(l*w)));
-    return o;
-}
-
-function getConvertDataToBin($data){
-    var arraybuffer = $data;
-    var data = new Uint8Array(arraybuffer);
-    var arr = new Array();
-    for(var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
-    var bstr = arr.join("");
- 
-    return bstr;
-}
-
-function getCsvToJson($csv){
- 
-    var startRow = 2;
-    var csvSP = $csv.split( "|" );
-    var csvRow = [], csvCell = [];
-    var cellName = ["ani", "flag"];
-    csvSP.forEach(function(item, index, array){
- 
-        var patt = new RegExp(":"); 
-        var isExistTocken = patt.test( item );
- 
-        if( isExistTocken && ( startRow - 1 ) <= index ){
-            csvRow.push( item );
-        }
-    });
- 
-    csvRow.forEach(function(item, index, array){
-        var row = item.split(":");
-        var obj = {};
-        row.forEach(function(item, index, array){
-            obj[ cellName[index] ] = item;
-        });
- 
-        csvCell[index] = obj;
-    });
-    return csvCell;
-}
-
-function handleFile(e) {
-    var files = e.target.files;
-    var i,f;
-    for (i = 0; i != files.length; ++i) {
-        f = files[i];
-        var reader = new FileReader();
-        var name = f.name;
- 
-        reader.onload = function(e) {
-            var data = e.target.result;
-
-            var workbook;
- 
-            if(rABS) {
-                /* if binary string, read with type 'binary' */
-                //workbook = XLSX.read(data, {type: 'binary'});
-            	var binary = "";
-            	var bytes = new Uint8Array(data);
-            	var length = bytes.byteLength;
-            	for (var i=0; i < length; i++){
-            		binary += String.fromCharCode(bytes[i])
-            	}
-            	workbook = XLSX.read(binary, {type:'binary'});          	
-            	
-            } else {
-                /* if array buffer, convert to base64 */
-                //var arr = fixdata(data);
-                //workbook = XLSX.read(btoa(arr), {type: 'base64'});
-            	workbook = XLSX.read(data, {type:'binary'}); 
-            }//end. if
- 			console.log(workbook);
-            
- 			workbook.SheetNames.forEach(function(item, index, array) 
- 			{
- 				if(index == 0)
- 				{
- 					var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[item],{FS:":",RS:"|"} );
-	                
- 					console.log(getCsvToJson(csv));
- 					for(var i =0; i < getCsvToJson(csv).length; i++)
- 					{
- 						fnObj.gridView01.addRowExcel(getCsvToJson(csv)[i].ani, getCsvToJson(csv)[i].flag);
- 					}
- 				}
- 			});//end. forEach 			 			
-        }; //end onload
- 
-        if(rABS) reader.readAsArrayBuffer(f); //reader.readAsBinaryString(f);
-        else reader.readAsBinaryString(f); //reader.readAsArrayBuffer(f);
- 
-    }//end. for
-}
 
 function getByteLength(s,b,i,c){
     for(b=i=0;c=s.charCodeAt(i++);b+=c>>11?3:c>>7?2:1);
