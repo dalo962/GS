@@ -82,6 +82,10 @@ public class ivrGRUrlListController extends commController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<ivrGRUrlList> search = null;
 		
+		String msg = "success";
+		int result = 0;
+		int sqlrst = 0;
+		
 		// 현재 로그인된 ID정보를 가져온다
 		loginUser = SessionUtils.getCurrentMdcLoginUser(request);
 		String cid = loginUser.getSessionUser().getUserCd();
@@ -113,7 +117,13 @@ public class ivrGRUrlListController extends commController{
 						map.put("crt_by", cid);
 						
 						logger.info("ivrGRUrlListService.UrlListIst Query Start...");
-						ivrGRUrlListService.UrlListIst(map);
+						
+						sqlrst = ivrGRUrlListService.UrlListIst(map);
+
+						if(sqlrst == 0)
+						{
+							result++;
+						}
 					}
 				}
 				else if(AXBootTypes.DataStatus.MODIFIED.equals(ul.getDataStatus()))
@@ -123,20 +133,40 @@ public class ivrGRUrlListController extends commController{
 					map.put("upt_by", cid);
 						
 					logger.info("ivrGRUrlListService.UrlListUdt Query Start...");
-					ivrGRUrlListService.UrlListUdt(map);					
+					
+					sqlrst = ivrGRUrlListService.UrlListUdt(map);
+
+					if(sqlrst == 0)
+					{
+						result++;
+					}
 				}
 				else if(AXBootTypes.DataStatus.DELETED.equals(ul.getDataStatus()))
 				{
 					logger.info("ivrGRUrlListService.UrlListDel Query Start...");
-					ivrGRUrlListService.UrlListDel(map);
+					
+					sqlrst = ivrGRUrlListService.UrlListDel(map);
+
+					if(sqlrst == 0)
+					{
+						result++;
+					}
 				}			
+			}
+			
+			if(result == 0){
+				msg = "success";
+			}else{
+				msg = "DB 처리 중 오류가 발생하였습니다.\n 관리자에게 문의하세요.";
 			}
 		}
 		catch(Exception e)
 		{
-			System.out.println(e.getMessage());
+			msg = e.getMessage()+"\n 관리자에게 문의하세요.";
+			System.out.println(e.getStackTrace());
+			logger.error(e.toString());
 		}
-		return ok();		
+		return ok(msg);		
 	}
 	
 	
