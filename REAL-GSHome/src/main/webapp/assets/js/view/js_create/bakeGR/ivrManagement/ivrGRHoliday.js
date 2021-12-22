@@ -76,7 +76,8 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		            data: JSON.stringify(saveList),
 		            callback: function (res) {
 		            	alert(res.message);
-		            	if(res.message == 'success'){
+
+		            	if(res.message.indexOf('관리자') == -1) {
 		            		axToast.push("저장 되었습니다.");
 			            	ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
 		            	}

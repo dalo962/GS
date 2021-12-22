@@ -1,14 +1,21 @@
 var fnObj = {};
 var dnis_options = [];
 var fisrt_search_flag = true;
+var save_flag = false;
  
 var ACTIONS = axboot.actionExtend(fnObj, {
-    PAGE_SEARCH: function (caller, act, data) {        
+    PAGE_SEARCH: function (caller, act, data) {  
+    	var data = $.extend({}, this.searchView.getData());
+    	if(save_flag == true) {
+    		data.sdate = '';
+    		data.edate = '';
+    		save_flag = false;
+    	}
     	axboot.ajax({
             type: "GET",
             cache: false,
             url: "/gr/api/ivr/ivrEmerMent/EmerMentSearch",
-            data: $.extend({}, this.searchView.getData()),
+            data: data,
             callback: function (res) {
             	if(res.length > 0){
             		if(fisrt_search_flag == true){
@@ -67,7 +74,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	        		var sed = s.edate+s.etime;	// 비교대상(s)의 종료시간
 	        		
 	        		// 자기자신이 아니면서 dnis가 같은 경우 //
-	    			if(s.__index != n.__index && s.dnis == n.dnis) {
+	    			if(s.__index != n.__index && s.dnis == n.dnis && !n.__deleted__) {
 	    				if(sd >= ssd && ed <= sed) {
 	    					// 1. 입력된 시작/종료시간이 기존 시작/종료시간을 포함 //
 	    					return s.dnis;
@@ -197,8 +204,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 		            url: "/gr/api/ivr/ivrEmerMent/EmerMentSave",
 		            data: JSON.stringify(saveList),
 		            callback: function (res) {
-		            	alert(res.message);		            	
-		            	if(res.message == 'success'){
+		            	alert(res.message);		      
+
+		            	if(res.message.indexOf('관리자') == -1) {
+		            		save_flag = true;
 		            		axToast.push("저장 되었습니다.");
 			            	ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
 		            	}
