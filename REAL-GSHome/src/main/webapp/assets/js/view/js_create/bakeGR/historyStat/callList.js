@@ -654,12 +654,14 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	
         return {
         	comSelect: $("[data-ax5select='comSelect']").ax5select("getValue")[0].value,
-        	deptSelect: $('[data-ax5select="deptSelect"]').ax5select("getValue")[0].value == ""
-    				? $('[data-ax5select="deptSelect"]').ax5select("getValue")[0].value
-	    			: $('[data-ax5select="deptSelect"]').ax5select("getValue")[0].text,
-        	teamSelect: $('[data-ax5select="teamSelect"]').ax5select("getValue")[0].value == ""
-					? $('[data-ax5select="teamSelect"]').ax5select("getValue")[0].value
-	    			: $('[data-ax5select="teamSelect"]').ax5select("getValue")[0].text,
+        	deptSelect: $('[data-ax5select="deptSelect"]').ax5select("getValue")[0].value,
+        	//deptSelect: $('[data-ax5select="deptSelect"]').ax5select("getValue")[0].value == ""
+    		//		? $('[data-ax5select="deptSelect"]').ax5select("getValue")[0].value
+	    	//		: $('[data-ax5select="deptSelect"]').ax5select("getValue")[0].text,
+        	teamSelect: $('[data-ax5select="teamSelect"]').ax5select("getValue")[0].value,
+        	//teamSelect: $('[data-ax5select="teamSelect"]').ax5select("getValue")[0].value == ""
+			//		? $('[data-ax5select="teamSelect"]').ax5select("getValue")[0].value
+	    	//		: $('[data-ax5select="teamSelect"]').ax5select("getValue")[0].text,
         	callText: $("#callText").val(),
         	agidText: $("#agidText").val(),
         	connidText: $("#connidText").val(),
