@@ -49,7 +49,7 @@
 							from 	WINK1.callinfo 
 							where 	connidfst in (select	connidfst 
 							 						from 	WINK1.callinfo 
-							 					   where 	connid = (${connid})
+							 					   where 	connid in (${connid})
 													 and 	etimets between WINK1.K2U(#{s_day}) and	WINK1.K2U(#{e_day})
 												 ) 
 							and 	etimets between WINK1.K2U(#{s_day}) and	WINK1.K2U(#{e_day})
