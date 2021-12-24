@@ -698,7 +698,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 	} else if (key == "sdate" || key == "edate") {		// 날짜인경우
                 		var date = this.item[key].replaceAll(/[-\/]/g,'');	// 입력된 날짜에서 -, / 제외
 	                    var index = this.item.__index;					// 변경될 index
-                		var regex = /^([1-2]\d{3})([01-12]{2})(\d{2})$/g;							// 날짜 (YYYYMMDD) => 숫자 8자리
+                		var regex = /^([1-2]\d{3})([0][1-9]|1[0-2])(\d{2})$/g;// 날짜 (YYYYMMDD) => 숫자 8자리
                 		var matcher = regex.exec(date);					// 입력된 날짜와 정규식의 매칭 결과
 
             			if(date != "" && !matcher) {	// 입력된 날짜가 정규식과 다른 경우

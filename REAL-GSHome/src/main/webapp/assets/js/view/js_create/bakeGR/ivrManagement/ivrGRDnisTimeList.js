@@ -42,9 +42,18 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var wkovuseyn = 0;
     	var wknumber = 0;    	
     	var wknumber2 = 0;
+    	var samednis = 0;
     	_saveList.forEach(function (n){
     		if(!(n.__created__ && n.__deleted__)) { // 새로운데이터이면서 삭제된건 제외
     			saveList.push(n);
+    			
+    			var r = saveList.find(function (s) {
+	        		// 자기자신이 아니면서 dnis가 같은 경우 //
+	    			if(s.__index != n.__index && s.dnis == n.dnis) {
+    					return s.dnis;
+	    			}
+	    		});
+    			
 	    		if(n.dnis == null || n.dnis == "")
 	    		{
 	    			wkdnis = wkdnis + 1;
@@ -65,6 +74,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	    		{
 	    			wkovuseyn = wkovuseyn + 1;
 	    		}
+	    		if(r != null && r != '') {
+	    			samednis = samednis + 1;
+	    		}
+	    		
 	    		/*
 	    		if(reqExp.test(n.dnis) == false 
 	    		  || reqExp.test(n.wr_stime) == false  || reqExp.test(n.wr_etime) == false
@@ -118,6 +131,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(wknumber2 > 0) 
     	{ 
     		alert("근무시간을 HH24MISS형식으로 입력하시기 바랍니다."); 
+    		return;
+    	}
+    	if(samednis > 0) {
+    		alert("이미 선택되어있는 대표번호입니다.");
     		return;
     	}
 
@@ -487,7 +504,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	        				return '사용';
 	        				break;              		
                 		default :
-                			return '선택';
+                			return '<span style="color: red;">선택</span>';
                 			break;
                 	}
                 }},
@@ -530,7 +547,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 
             			if(time != "" && !matcher) {	// 입력된 시간이 정규식과 다른 경우
             				alert("올바른 시간 형식으로 입력하시기 바랍니다."); // alert 띄우고
-            	    		time = "";	// 입력된 값을 빈칸으로
+            	    		time = "000000";	// 입력된 값을 000000으로
             			}
 	                    
 	                    this.self.setValue(index, key, time);
