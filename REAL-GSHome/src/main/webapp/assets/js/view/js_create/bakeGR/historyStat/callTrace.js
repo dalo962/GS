@@ -1011,25 +1011,47 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	        		{key: "CALLTYPE", label: "호유형", width: 130, align: "center", sortable: true},
 	        		{key: "ANI", label: "고객/내선번호", width: 130, align: "center", sortable: true,
 	    	        	formatter:function(){
-	    	        		if(this.value != null)
-	                		{
+//	    	        		if(this.value != null)
+//	                		{
+//	    	        			var ani = this.value;
+//	    	        			
+//	                			if(ani != "" && ani != null) {
+//	                				var len = ani.length;
+//	                    			// 자리수 체크
+//	                    	        if(len == 11) { // 010****1234
+//	                    	        	return ani.substr(0, 3) + "****" + ani.substr(7, 4);
+//	                    	        } else if(len == 10) { // 02****1234
+//	                    	        	return ani.substr(0, 2) + "****" + ani.substr(6, 4);
+//	                    	        } else if(len == 9) { // 02***1234
+//	                    	        	return ani.substr(0, 2) + "***" + ani.substr(5, 4);
+//	                    	        } else {
+//	                    	        	//return "****";
+//	                    	        	return ani;
+//	                    	        }
+//	                			}
+//	                		}
+	    	        		
+	    	        		if(this.value != null) {
+	    	        			var regex = /(\d{2,3})(\d{3,4})(\d{4})/g; // 000-0000-0000
 	    	        			var ani = this.value;
+	    	        			var matcher = regex.exec(ani);
 	    	        			
-	                			if(ani != "" && ani != null) {
-	                				var len = ani.length;
-	                    			// 자리수 체크
-	                    	        if(len == 11) { // 010****1234
-	                    	        	return ani.substr(0, 3) + "****" + ani.substr(7, 4);
-	                    	        } else if(len == 10) { // 02****1234
-	                    	        	return ani.substr(0, 2) + "****" + ani.substr(6, 4);
-	                    	        } else if(len == 9) { // 02***1234
-	                    	        	return ani.substr(0, 2) + "***" + ani.substr(5, 4);
-	                    	        } else {
-	                    	        	//return "****";
-	                    	        	return ani;
-	                    	        }
-	                			}
-	                		}
+	    	        			if(matcher) { // 검색결과 있는경우 : 가운데자리 *로 채우기
+	    	        				var middle = matcher[2];
+	    	        				return matcher[1] + middle.split('').fill('*', 0, middle.length).join('') + matcher[3];
+	    	        			} else { // 검색결과 없는경우 : 4자리-4자리인지 확인하기
+	    	        				regex = /(\d{4})(\d{4})/g; // 0000-0000
+	    	        				matcher = regex.exec(ani);
+	    	        				
+	    	        				if(matcher) { // 검색결과 있는경우 : 앞자리 *로 채우기
+	    	        					return '****' + matcher[2];
+	    	        				}
+	    	        			}
+	    	        			
+	    	        			// 위의 형식과 일치하지 않으면 그냥 return (ex. 내선번호 등등~~)
+	    	        			return ani;
+	    	        		}
+	    	        		
 	                		return null;
 	                	}
 	        		},
