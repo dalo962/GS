@@ -204,7 +204,7 @@ public class callListController extends commController{
 	// 전화번호 가운데자리 마스킹하는 메서드 //
 	private String maskPhoneNumber (String phoneNumber) {
 		String resultNumber = phoneNumber;
-		String regex = "(\\d{2,3})(\\d{3,4})(\\d{4})$";	// 전화번호 정규식
+		String regex = "(\\d{2,3})(\\d{3,4})(\\d{4})$";	// 전화번호 정규식 (000-0000-0000)
 		Matcher matcher = Pattern.compile(regex).matcher(resultNumber);
 		
 		if(matcher.find()) { // 입력받은 번호에서 정규식과 맞는 패턴을 찾는다.
@@ -212,11 +212,23 @@ public class callListController extends commController{
 			int length = target.length();
 			char[] c = new char[length];
 			Arrays.fill(c, '*'); // 중간번호 사이즈만큼 * 을 채운다.
+
+			return resultNumber.replaceFirst(target, String.valueOf(c));
+		} else {
+			regex = "(\\d{4})(\\d{4})"; // 전화번호 정규식 (0000-0000)
+			matcher = Pattern.compile(regex).matcher(resultNumber);
 			
-			return resultNumber.replace(target, String.valueOf(c));
+			if(matcher.find()) {
+				String target = matcher.group(1);
+				int length = target.length();
+				char[] c = new char[length];
+				Arrays.fill(c, '*');
+
+				return resultNumber.replaceFirst(target, String.valueOf(c));
+			}
 		}
 
-		// 3자리로 나눠지지 않는 경우 (1자리 또는 2자리)
+		// 전화번호 패턴이 "000-0000-0000" 또는 "0000-0000"가 아닌 경우
 		return resultNumber;
 	}
 }
