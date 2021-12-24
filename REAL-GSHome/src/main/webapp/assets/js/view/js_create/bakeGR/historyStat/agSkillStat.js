@@ -363,6 +363,7 @@ var gridcom = [];
 var row = [];
 var last = [];
 
+var init = 0;
 // fnObj 기본 함수 스타트와 리사이즈
 fnObj.pageStart = function () {
     var _this = this;
@@ -1370,9 +1371,16 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	var data = {}; 
     	
     	var inter = "day";
-    	if($("[data-ax5select='interval']").ax5select("getValue")[0].value != undefined)
+    	if(init == 0)
     	{
-    		inter = $("[data-ax5select='interval']").ax5select("getValue")[0].value;
+    		init = 1;
+    	}
+    	else
+    	{
+    		if($("[data-ax5select='interval']").ax5select("getValue")[0].value != undefined)
+    		{
+    			inter = $("[data-ax5select='interval']").ax5select("getValue")[0].value;
+    		}
     	}
     	
     	data.interval = inter;
