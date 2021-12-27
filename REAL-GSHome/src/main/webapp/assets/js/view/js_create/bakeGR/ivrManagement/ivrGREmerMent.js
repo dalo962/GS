@@ -1,33 +1,42 @@
 var fnObj = {};
 var dnis_options = [];
-var fisrt_search_flag = true;
+var first_search_flag = true;
 var save_flag = false;
+
+var allList = [];
  
 var ACTIONS = axboot.actionExtend(fnObj, {
     PAGE_SEARCH: function (caller, act, data) {  
     	var data = $.extend({}, this.searchView.getData());
-    	if(save_flag == true) {
+    	
+    	// 저장으로 인한 조회일 때 조건 다 없애고 조회 //
+    	if(save_flag) { 
+    		$("#startDate").val('');
+        	$("#endDate").val('');
+            $("#selMent").val('');
+            
     		data.sdate = '';
     		data.edate = '';
-    		save_flag = false;
+    		data.ment = '';
     	}
+    	
     	axboot.ajax({
             type: "GET",
             cache: false,
             url: "/gr/api/ivr/ivrEmerMent/EmerMentSearch",
             data: data,
             callback: function (res) {
-            	if(res.length > 0){
-            		if(fisrt_search_flag == true){
-                		setTimeout(function(){
-                    		caller.gridView01.setData(res);
-                            date_set();
-                            fisrt_search_flag = false;
-                    	}, 200);
-                	}else{
-                		caller.gridView01.setData(res);
-                	}
-            	}
+        		setTimeout(function(){
+            		caller.gridView01.setData(res);
+            		
+            		// 처음 조회거나 저장하는 경우에만 실행 //
+            		if(first_search_flag || save_flag) {
+            			allList = res; // 전체리스트 저장
+
+            			first_search_flag = false;
+            			save_flag = false;
+            		}
+            	}, 200);
             },
             options: {
                 onError: function (err) {
@@ -61,18 +70,23 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var prtime = 0;
     	var ovment = 0;
 
-    	_saveList.forEach(function (n){
+    	_saveList.forEach(function (n) {
     		if(!(n.__created__ && n.__deleted__)) { // 새로운데이터이면서 삭제된건 제외
     			saveList.push(n);
 	    		var sd = n.sdate+n.stime;	// 나(n)의 시작시간
 	    		var ed = n.edate+n.etime;	// 나(n)의 종료시간
 	    		
-	    		var r = saveList.find(function (s) {
+	    		var r = allList.find(function (s) {
+	    			// seq 값이 있으면 seq로 비교, 없으면 index로 비교 //
+	    			var me = n.seq != '' && n.seq != null
+	    				? n.seq != s.seq
+	    				: n.__index != s.__index;
+	    			
 	        		var ssd = s.sdate+s.stime;	// 비교대상(s)의 시작시간
 	        		var sed = s.edate+s.etime;	// 비교대상(s)의 종료시간
 	        		
 	        		// 자기자신이 아니면서 dnis가 같은 경우 //
-	    			if(s.__index != n.__index && s.dnis == n.dnis && !n.__deleted__) {
+	    			if(me && s.dnis == n.dnis && !n.__deleted__) {
 	    				if(sd >= ssd && ed <= sed) {
 	    					// 1. 입력된 시작/종료시간이 기존 시작/종료시간을 포함 //
 	    					return s.dnis;
@@ -333,7 +347,7 @@ fnObj.pageStart = function () {
 
     ACTIONS.dispatch(ACTIONS.SET_DNIS);
 //  ACTIONS.dispatch(ACTIONS.PAGE_SEARCH); // searchView - comp_cd 불러온 이후로 위치변경
-    
+	
     console.log(window.location);
     console.log(window.location.origin);
     //window.location.pathname.substring(0, window.location.pathname.indexOf("/",2));
@@ -370,7 +384,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 	        }
 	    });
 	    
-//	    date_set();
+	    date_set();
 	    
 		axboot.ajax({
 	    	type: "POST",
@@ -860,8 +874,10 @@ function date_set(){
     
 	if($("#startDate").val().length != 10 || $("#endDate").val().length != 10)
 	{
-		$("#startDate").val(yyyy+"-"+MM+"-"+dd);
-    	$("#endDate").val(yyyy+"-"+MM+"-"+dd);
+		//$("#startDate").val(yyyy+"-"+MM+"-"+dd);
+    	//$("#endDate").val(yyyy+"-"+MM+"-"+dd);
+		$("#startDate").val('');
+    	$("#endDate").val('');
 	}	
 	
 	$('[data-ax5picker="date"]').ax5picker({
@@ -899,6 +915,15 @@ function date_set(){
                         this.self
                             .setContentValue(this.item.id, 0, ax5.util.date(yyyy+MM+dd, {"return": "yyyy-MM-dd"}))
                             .setContentValue(this.item.id, 1, ax5.util.date(yyyy+MM+dd, {"return": "yyyy-MM-dd"}))
+                            .close()
+                    ;
+                }
+            },
+            clear: {
+                label: "Clear", onClick: function () {
+                        this.self
+                            .setContentValue(this.item.id, 0, "")
+                            .setContentValue(this.item.id, 1, "")
                             .close()
                     ;
                 }
