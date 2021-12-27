@@ -770,7 +770,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		return dt;
                 	}
             	},
-            	{key: "weekday", label: "요일", width: 80, align: "center", sortable: true,
+            	{key: "weekday", label: "요일", width: 50, align: "center", sortable: true,
                 	formatter: function() {
                 		var date = new Date(this.item.END_DATE.substr(0,4) + "-" + this.item.END_DATE.substr(4,2) + "-" + this.item.END_DATE.substr(6,2));
                 		return weeks[date.getDay()];
@@ -800,19 +800,19 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		return dt + " " + tm;
                 	}
             	},
-            	{key: "COMP_CD", label: "센터", width: 200, align: "center", sortable: true,
+            	{key: "COMP_CD", label: "센터", width: 100, align: "center", sortable: true,
             		formatter: function() {
             			switch(this.item.COMP_CD) {
             			case "RETAIL": return "GS리테일";
             			}
             		}
             	},
-            	{key: "DID", label: "대표번호", width: 200, align: "center", sortable: true},
-            	{key: "ARSID", label: "ARSID", width: 300, align: "center", sortable: true},
-            	{key: "MACHINE_CD", label: "인입장비", width: 150, align: "center", sortable: true},
+            	{key: "DID", label: "대표번호", width: 150, align: "center", sortable: true},
+            	{key: "ARSID", label: "ARSID", width: 280, align: "center", sortable: true},
+            	{key: "MACHINE_CD", label: "인입장비", width: 100, align: "center", sortable: true},
             	{key: "ANI", label: "고객번호", width: 150, align: "center", sortable: true},
-            	{key: "LAST_CODE", label: "마지막메뉴", width: 150, align: "center", sortable: true},
-            	{key: "AGENT_FLAG", label: "상담사연결요청", width: 100, align: "center", sortable: true,
+            	{key: "LAST_CODE", label: "마지막메뉴", width: 120, align: "center", sortable: true},
+            	{key: "AGENT_FLAG", label: "상담사연결요청", width: 150, align: "center", sortable: true,
             		formatter: function() {
             			if(this.value == 1) {
             				return 'Y';
