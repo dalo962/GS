@@ -32,6 +32,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var dndnis = 0;
     	var dnuseyn = 0;
     	var dngroup = 0;
+    	var dngroup_eng = 0;
     	var dnmedia = 0;
     	_saveList.forEach(function (n){
     		if(!(n.__created__ && n.__deleted__)) { // 새로운데이터이면서 삭제된건 제외
@@ -47,6 +48,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	    		if(n.dnis_group == null || n.dnis_group == "")
 	    		{
 	    			dngroup = dngroup + 1;
+	    		}
+	    		if(n.dnis_group_eng == null || n.dnis_group_eng == "")
+	    		{
+	    			dngroup_eng = dngroup_eng + 1;
 	    		}
 	    		if(n.dnis_media == null || n.dnis_media == "")
 	    		{
@@ -67,6 +72,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(dngroup > 0) 
     	{ 
     		alert("대표번호 그룹을 입력하시기 바랍니다."); 
+    		return;
+    	}
+    	if(dngroup_eng > 0) 
+    	{ 
+    		alert("대표번호 그룹(영문)을 입력하시기 바랍니다."); 
     		return;
     	}
     	if(dnmedia > 0) 
@@ -313,7 +323,15 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             			return dnis_group;
             		}
             	},
-            	{key: "dnis_group_eng", label: "그룹(영문)", width: 140, align: "center", editor:"text"},
+            	{key: "dnis_group_eng", label: "그룹(영문)", width: 140, align: "center", editor:"text",
+            		formatter: function () {
+            			var dnis_group_eng = this.item.dnis_group_eng;
+            			if(dnis_group_eng == '' || dnis_group_eng == null) {
+            				return '<span style="color: red;">입력</span>';
+            			}
+            			return dnis_group_eng;
+            		}
+            	},
             	{key: "dnis_media", label: "매체", width: 140, align: "center", editor:"text",
             		formatter: function () {
             			var dnis_media = this.item.dnis_media;
