@@ -57,15 +57,13 @@
                     </ax:tr>
                 </ax:tbl>
             </ax:form>
+			<div class="H10"></div>
         </div>
 
         <ax:split-layout name="ax1" orientation="vertical">
         
             <!-- gridView01 :: 조회내역 -->
             <ax:split-panel width="*" style="height:98%;">
-                <div class="ax-button-group" data-fit-height-aside="grid-view-01">
-                	<!-- 버튼그룹 -->
-                </div>
                 <!-- ↓실제 GridView↓ -->
                 <div data-ax5grid="grid-view-01" data-fit-height-content="grid-view-01" style="height: 300px;"></div>
             </ax:split-panel>
