@@ -331,7 +331,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         console.log(_this);
         this.target = axboot.gridBuilder({
         	showRowSelector: true,
-            frozenColumnIndex: 0,
+            frozenColumnIndex: 2,
             multipleSelect: true,
             showLineNumber:true,
             target: $('[data-ax5grid="grid-view-01"]'),
