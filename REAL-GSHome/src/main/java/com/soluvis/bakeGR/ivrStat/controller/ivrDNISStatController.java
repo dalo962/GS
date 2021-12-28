@@ -1,36 +1,24 @@
 package com.soluvis.bakeGR.ivrStat.controller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.chequer.axboot.core.api.response.ApiResponse;
-import com.chequer.axboot.core.code.AXBootTypes;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.soluvis.bake.common.controller.commController;
 import com.soluvis.bake.common.utils.RequestUtil;
 import com.soluvis.bakeGR.ivrStat.service.ivrDNISStatService;
 import com.soluvis.bake.system.domain.user.MDCLoginUser;
-import com.soluvis.bake.system.utils.SessionUtils;
 
 /** 
  * @author yejinlee

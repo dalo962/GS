@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.chequer.axboot.core.mybatis.MyBatisMapper;
-import com.soluvis.bake.ivrManagement.domain.ivrBlackList;
 
 @Repository
 public interface ivrDNISStatMapper extends MyBatisMapper{	
