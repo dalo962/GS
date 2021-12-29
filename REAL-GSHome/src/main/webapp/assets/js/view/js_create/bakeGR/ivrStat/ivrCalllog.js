@@ -738,8 +738,8 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         	ani : this.ani.val(),
         	startdate : this.sDate.val().replaceAll('-',''),
         	enddate : this.eDate.val().replaceAll('-',''),
-        	starttime : sti+"00",
-        	endtime : eti+"59"
+        	starttime : sti,
+        	endtime : eti
         }
     }
 }); // searchView 종료
