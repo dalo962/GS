@@ -1,6 +1,7 @@
 package com.soluvis.bakeGR.historyStat.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class agInfoManagerController extends commController{
 	MDCLoginUser loginUser;
 	
 	/** 
-	 * @desc 직책 정보를 조회한다
+	 * @desc 직책 정보를 조회한다(안씀)
 	 */ 
 	@RequestMapping(value="/agInfoDepSel", method = RequestMethod.GET, produces = APPLICATION_JSON)
 	public @ResponseBody List<agInfoManager> agInfoDepSel(@Valid @SQLInjectionSafe HttpServletRequest request) throws Exception {
@@ -54,7 +55,7 @@ public class agInfoManagerController extends commController{
 		return search;
 	}
 	/** 
-	 * @desc 스킬 정보를 조회한다
+	 * @desc 스킬 정보를 조회한다(안씀)
 	 */ 
 	@RequestMapping(value="/skInfoDepSel", method = RequestMethod.GET, produces = APPLICATION_JSON)
 	public @ResponseBody List<agInfoManager> skInfoDepSel(@Valid @SQLInjectionSafe HttpServletRequest request) throws Exception {
@@ -62,6 +63,41 @@ public class agInfoManagerController extends commController{
 		
 		return search;
 	}
+	
+	/** 
+	 * @desc 직책정보를 조회한다
+	 */ 
+	@RequestMapping(value="/infoDepCodeSel", method = RequestMethod.GET, produces = APPLICATION_JSON)
+	public @ResponseBody List<agInfoManager> infoDepCodeSel(@Valid @SQLInjectionSafe HttpServletRequest request) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("group_cd", "DEP_CODE");
+		List<agInfoManager> search = agInfoManagerService.InfoCodeSel(map);
+		
+		return search;
+	}
+	/** 
+	 * @desc 근무시간정보를 조회한다
+	 */ 
+	@RequestMapping(value="/infoWorkTimeCodeSel", method = RequestMethod.GET, produces = APPLICATION_JSON)
+	public @ResponseBody List<agInfoManager> infoWorkTimeCodeSel(@Valid @SQLInjectionSafe HttpServletRequest request) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("group_cd", "WORKTIME_CODE");
+		List<agInfoManager> search = agInfoManagerService.InfoCodeSel(map);
+		
+		return search;
+	}
+	/** 
+	 * @desc 업무시간정보를 조회한다
+	 */ 
+	@RequestMapping(value="/infoWorkCodeSel", method = RequestMethod.GET, produces = APPLICATION_JSON)
+	public @ResponseBody List<agInfoManager> infoWorkCodeSel(@Valid @SQLInjectionSafe HttpServletRequest request) throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("group_cd", "WORK_CODE");
+		List<agInfoManager> search = agInfoManagerService.InfoCodeSel(map);
+		
+		return search;
+	}
+	
 	
 	/** 
 	 * @desc 상담사 정보를 조회한다
@@ -200,13 +236,27 @@ public class agInfoManagerController extends commController{
 				{ params.put("gender", ""); } 
 				else { params.put("gender", io.getGender()); };
 				
+				/*
 				if(io.getWork_yn() == null || "".equals(io.getWork_yn())) 
-				{ params.put("work_yn", ""); } 
-				else { params.put("work_yn", io.getWork_yn()); };
+				{ 
+					params.put("work_yn", ""); 
+				} 
+				else 
+				{ 	
+					params.put("work_yn", io.getWork_yn()); 
+				};
+				*/
 				
 				if(io.getLeave_date() == null || "".equals(io.getLeave_date())) 
-				{ params.put("leave_date", ""); } 
-				else { params.put("leave_date", io.getLeave_date().replaceAll("-", "")); };
+				{ 
+					params.put("work_yn", "1");
+					params.put("leave_date", "");
+				} 
+				else 
+				{
+					params.put("work_yn", "0");
+					params.put("leave_date", io.getLeave_date().replaceAll("-", ""));
+				};
 				
 				params.put("agent_id", io.getAgent_id());
 				//System.out.println(params);

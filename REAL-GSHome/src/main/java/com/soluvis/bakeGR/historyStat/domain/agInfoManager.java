@@ -32,6 +32,13 @@ public class agInfoManager extends BaseJpaModel<String>{
 	private String work_yn;
 	private String leave_date;
 
+	private String group_cd;
+	private String group_nm;
+	private String code;
+	private String name;
+	private String sort;
+	private String use_yn;	
+	
 	@Override
 	public String getId() {
 		// TODO Auto-generated method stub

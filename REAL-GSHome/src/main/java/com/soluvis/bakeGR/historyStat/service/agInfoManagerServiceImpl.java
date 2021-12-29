@@ -29,6 +29,12 @@ public class agInfoManagerServiceImpl implements agInfoManagerService{
 	}
 	
 	@Override
+	public List<agInfoManager> InfoCodeSel(Map<String,Object> params)
+	{		
+		return agInfoManagerMapper.InfoCodeSel(params);
+	}
+	
+	@Override
 	public List<agInfoManager> agInfoSel(Map<String,Object> params)
 	{		
 		return agInfoManagerMapper.agInfoSel(params);

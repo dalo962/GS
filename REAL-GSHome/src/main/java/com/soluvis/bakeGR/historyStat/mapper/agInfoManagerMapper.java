@@ -15,6 +15,8 @@ public interface agInfoManagerMapper extends MyBatisMapper{
 	List<agInfoManager> agInfoDepSel();
 	// 스킬 리스트
 	List<agInfoManager> skInfoDepSel();
+	// 공통 코드 
+	List<agInfoManager> InfoCodeSel(Map<String,Object> params);
 	// 상담사 정보 관리 조회
 	List<agInfoManager> agInfoSel(Map<String,Object> params);
 	// 상담사 정보 수정

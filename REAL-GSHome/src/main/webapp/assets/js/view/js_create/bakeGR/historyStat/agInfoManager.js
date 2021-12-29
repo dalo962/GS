@@ -1,4 +1,9 @@
 var fnObj = {};
+
+var dcode = [];
+var wcode = [];
+var wtcode = [];
+
 var ACTIONS = axboot.actionExtend(fnObj, {
     PAGE_SEARCH: function (caller, act, data) {
     	var selText = $("#selText").val();
@@ -223,48 +228,100 @@ fnObj.pageStart = function () {
 		}
 	});
     
-    axboot
-    .call({
-    	type: "POST",
-	    url: "/api/statLstMng/userAuthLst",
-	    data: "",
-	    callback: function (res) {
-	    	res.forEach(function (n){
-	    		info.grpcd = n.grp_auth_cd;
-	    		info.comcd = n.company_cd;
-	    		info.cencd = n.center_cd;
-	    		info.teamcd = n.team_cd;
-	    		info.chncd = n.chn_cd;
-	    	});  
+    axboot.promise()
+    .then(function (ok, fail, data){
+    	axboot.ajax({
+	    	type: "POST",
+		    url: "/api/statLstMng/userAuthLst",
+		    data: "",
+		    callback: function (res) {
+		    	res.forEach(function (n){
+		    		info.grpcd = n.grp_auth_cd;
+		    		info.comcd = n.company_cd;
+		    		info.cencd = n.center_cd;
+		    		info.teamcd = n.team_cd;
+		    		info.chncd = n.chn_cd;
+		    	});
 	    	
-	    	axboot.ajax({
-	    	   	type: "POST",
-	    	    //url: "/api/mng/searchCondition/company",
-	    	   	url: "/api/mng/searchCondition/companyRE",
-	    	    cache : false,
-	    	    data: JSON.stringify($.extend({}, info)),
-	    	    callback: function (res) {
-	    	        var resultSet = [];
-	    	        res.list.forEach(function (n) {
-	    	        	resultSet.push({
-	    	               	value: n.id, text: n.name,
-	    	            });
-	    	        });
-	    	        $("[data-ax5select='comSelect']").ax5select({
-	    		        theme: 'primary',
-	    		        onStateChanged: function () {
-	    		        	_this.searchView.partSearch();
-	    		        },
-	    		        options: resultSet,
-	    	        });
-	    	        $('[data-ax5select="comSelect"]').ax5select("setValue", info.comcd);
-	    	        _this.searchView.partSearch();
-	    	        //_this.searchView.skillSearch();
-	    	    }
-	    	});
-	    }
+		    	axboot.ajax({
+		    	   	type: "POST",
+		    	    //url: "/api/mng/searchCondition/company",
+		    	   	url: "/api/mng/searchCondition/companyRE",
+		    	    cache : false,
+		    	    data: JSON.stringify($.extend({}, info)),
+		    	    callback: function (res) {
+		    	        var resultSet = [];
+		    	        res.list.forEach(function (n) {
+		    	        	resultSet.push({
+		    	               	value: n.id, text: n.name,
+		    	            });
+		    	        });
+		    	        $("[data-ax5select='comSelect']").ax5select({
+		    		        theme: 'primary',
+		    		        onStateChanged: function () {
+		    		        	_this.searchView.partSearch();
+		    		        },
+		    		        options: resultSet,
+		    	        });
+		    	        $('[data-ax5select="comSelect"]').ax5select("setValue", info.comcd);
+		    	        _this.searchView.partSearch();
+		    	        _this.searchView.skillSearch();
+	    	    	    	
+				    	// 직책			
+						axboot.ajax({
+							type:"GET",
+							url:"/gr/api/hist/agInfo/infoDepCodeSel",
+							cache : false,
+							data: "",
+							callback:function(res)
+							{
+								res.forEach(function (n) {
+				                	dcode.push({
+				                        value: n.name, text: n.name,
+				                    });
+				                });
+							
+								// 근무시간
+								axboot.ajax({
+									type:"GET",
+									url:"/gr/api/hist/agInfo/infoWorkTimeCodeSel",
+									cache : false,
+									data: "",
+									callback:function(res)
+									{
+										res.forEach(function (n) {
+											wtcode.push({
+						                        value: n.name, text: n.name,
+						                    });
+						                });
+									
+										// 업무
+										axboot.ajax({
+											type:"GET",
+											url:"/gr/api/hist/agInfo/infoWorkCodeSel",
+											cache : false,
+											data: "",
+											callback:function(res)
+											{
+												res.forEach(function (n) {
+													wcode.push({
+								                        value: n.name, text: n.name,
+								                    });
+								                });
+												
+												ok();
+											}
+										});
+									}
+								});
+							}
+						});
+		    	    }
+		    	});
+		    }
+	    });
     })
-    .done(function () {
+    .then(function (ok, fail, data) {
         _this.pageButtonView.initView();
         _this.searchView.initView();
         _this.gridView01.initView();
@@ -690,6 +747,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
             }
         });
 		
+		/*
 		var dep = [];
 		dep.push({value: "", text: "전체" });
 		
@@ -715,7 +773,36 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 				});
 			}
 		});
+		*/
 		
+		// 직책
+		var dep = [];
+		dep.push({value: "", text: "전체" });
+		
+		axboot.ajax({
+			type:"GET",
+			url:"/gr/api/hist/agInfo/infoDepCodeSel",
+			cache : false,
+			data: "",
+			callback:function(res)
+			{
+				res.forEach(function (n) {
+                	dep.push({
+                        value: n.name, text: n.name,
+                    });
+                });
+				
+				$("[data-ax5select='depSelect']").ax5select({
+			        theme: 'primary',
+			        options: dep,
+			        onChange: function () {
+			        	
+			        }
+				});
+			}
+		});
+		
+		/*
 		var skp = [];
 		skp.push({value: "", text: "전체" });
 		
@@ -741,7 +828,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 				});
 			}
 		});
-		
+		*/
 		var join = [];
 		join.push({value: "", text: "전체" });
 		join.push({value: "1", text: "재직" });
@@ -835,14 +922,14 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
             }
         });
     },
-    /*
     skillSearch: function(){
     	//console.log("compId : " + $("[data-ax5select='comSelect']").ax5select("getValue")[0].value);
     	//console.log("chnId : " + $("[data-ax5select='chanSelect']").ax5select("getValue")[0].value);
         var data = {}; 
         //data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
         //data.chnId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
-        data.compId = 75; //리테일
+        data.compId = 75; //개발
+        //data.compId = 260; //운영
         data.chnId = "";    	
         data.skId = "";
 	    axboot.ajax({
@@ -871,7 +958,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
                 $('[data-ax5select="skSelect"]').ax5select("setValue",[""]);
             }
         });
-    }*/
+    }
 });
 
 /**
@@ -888,15 +975,65 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            showLineNumber:true,
 	            target: $('[data-ax5grid="grid-view-01"]'),
 	            columns: [
-	            	{key: "company_name", label: '<span style="font-weight:bold;color:#FF0000">' + "센터" + '</span>', width: 90, align: "center", sortable: true},
-	            	{key: "dept_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "브랜드"+ '</span>', width: 90, align: "center", sortable: true},
-	            	{key: "team_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "팀" + '</span>', width: 90, align: "center", sortable: true},
-	            	{key: "dep_nm", label: "직책", width: 90, align: "center", sortable: true, editor:"text"},
-	                {key: "agent_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "상담사명" + '</span>', width: 90, align: "center", sortable: true},
-	                {key: "join_date", label: "입사일", width: 90, align: "center", sortable: true, editor:"text"},
-	                {key: "work_time", label: "근무시간", width: 90, align: "center", sortable: true, editor:"text"},
-	                {key: "work", label: "업무", width: 90, align: "center", sortable: true, editor:"text"},
-	                {key: "skill_name", label: "상담스킬그룹(대표번호)", width: 450, align: "center", sortable: true, editor:"text", multiLine:true},
+	            	{key: "agent_id", label: '<span style="font-weight:bold;color:#FF0000">' + "사번" + '</span>', width: 80, align: "center", sortable: true},
+	            	{key: "company_name", label: '<span style="font-weight:bold;color:#FF0000">' + "센터" + '</span>', width: 80, align: "center", sortable: true},
+	            	{key: "dept_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "브랜드"+ '</span>', width: 80, align: "center", sortable: true},
+	            	{key: "team_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "팀" + '</span>', width: 80, align: "center", sortable: true},
+	            	{key: "dep_nm", label: "직책", width: 80, align: "center", sortable: true, 
+	            		editor:{
+	            			type: "select",
+	            			config: {
+	            				columnKeys: {
+	            					optionValue: "value", optionText: "text"
+	            				},
+	            				options: dcode
+	            			}
+	            		}
+	            	},
+	                {key: "agent_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "상담사명" + '</span>', width: 80, align: "center", sortable: true},
+	                {key: "join_date", label: "입사일", width: 90, align: "center", sortable: true, 
+	                	editor: {
+	                	direction: "auto",
+	                	type: "date",
+	                	disabled : function () {
+	                		return false;
+	                	},
+	                	config: {
+	                		selectMode: "day",
+	                		control: {
+	                			yearTmpl: "%년",
+	                			dayTmpl: "%s"
+	                			},
+	                		lang: {
+	                			yearTmpl: "%년",
+	                			months: ['01월','02월','03월','04월','05월','06월','07월','08월','09월','10월','11월','12월'],
+	                			dayTmpl: "%s"
+	                			}	                		
+	                		}
+	                	}
+	                },
+	                {key: "work_time", label: "근무시간", width: 90, align: "center", sortable: true, 
+	            		editor:{
+	            			type: "select",
+	            			config: {
+	            				columnKeys: {
+	            					optionValue: "value", optionText: "text"
+	            				},
+	            				options: wtcode
+	            			}
+	            		}
+	                },
+	                {key: "work", label: "업무", width: 140, align: "center", sortable: true,
+	            		editor:{
+	            			type: "select",
+	            			config: {
+	            				columnKeys: {
+	            					optionValue: "value", optionText: "text"
+	            				},
+	            				options: wcode
+	            			}
+	            		}},
+	                {key: "skill_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "상담스킬그룹" + '</span>', width: 380, align: "center", sortable: true, multiLine:true},
 	                {key: "age", label: "연령대", width: 80, align: "center", sortable: true, editor: {
                     	type: "select", config: {
                     		columnKeys: {
@@ -978,7 +1115,9 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                			break;
                     	}
                     }},
-	                {key: "work_yn", label: "재직구분", width: 80, align: "center", sortable: true, editor: {
+	                {key: "work_yn", label: '<span style="font-weight:bold;color:#FF0000;">' + "재직구분" + '</span>', width: 80, align: "center", sortable: true, 
+                    	/*
+                    	editor: {	                
                     	type: "select", config: {
                     		columnKeys: {
                     			optionValue: "value", optionText: "text"
@@ -988,7 +1127,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                         		{value: "1", text: "재직"},
                         	]
                     	}
-                    }, formatter: function() {
+                    },*/ formatter: function() {
                     	switch(this.item.work_yn) {               		
 	                		case "0":
 	                			return "퇴사";
@@ -1001,7 +1140,27 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                			break;
                     	}
                     }},
-	                {key: "leave_date", label: "퇴사일", width: 95, align: "center", sortable: true, editor:"text"},
+	                {key: "leave_date", label: "퇴사일", width: 95, align: "center", sortable: true, 
+	                	editor: {
+		                	direction: "auto",
+		                	type: "date",
+		                	disabled : function () {
+		                		return false;
+		                	},
+		                	config: {
+		                		selectMode: "day",
+		                		control: {
+		                			yearTmpl: "%년",
+		                			dayTmpl: "%s"
+		                		},
+		                		lang: {
+		                			yearTmpl: "%년",
+		                			months: ['01월','02월','03월','04월','05월','06월','07월','08월','09월','10월','11월','12월'],
+		                			dayTmpl: "%s"
+		                		}             		
+		                	}
+		                },
+	                }
 	            ],
 	            body: {
 	            	columnHeight:65,
@@ -1074,7 +1233,8 @@ function getCsvToJson($csv){
     var startRow = 2;
     var csvSP = $csv.split( "|" );
     var csvRow = [], csvCell = [];
-    var cellName = ["agent_id", "dep_nm", "join_date", "work_time", "work", "skill_name", "age", "mey_yn", "gender", "work_yn" ,"leave_date"];
+    //var cellName = ["agent_id", "dep_nm", "join_date", "work_time", "work", "skill_name", "age", "mey_yn", "gender", "work_yn" ,"leave_date"];
+    var cellName = ["agent_id", "dep_nm", "join_date", "work_time", "work", "age", "mey_yn", "gender", "leave_date"];
     csvSP.forEach(function(item, index, array){
  
         var patt = new RegExp(":"); 
@@ -1089,7 +1249,7 @@ function getCsvToJson($csv){
         var row = item.split(":");
         var obj = {};
         row.forEach(function(item, index, array){
-        	if(index == 6)
+        	if(index == 5)
         	{
         		if(item == "20대") { item = "20age"}
 				else if(item == "30대") { item = "30age" }
@@ -1098,24 +1258,26 @@ function getCsvToJson($csv){
 				else if(item == "60대") { item = "60age" }
 				else { gitem = null}
         	}
-        	else if(index == 7)
+        	else if(index == 6)
         	{
         		if(item == "미혼") { item = "0"}
 				else if(item == "기혼") { item = "1" }
 				else { item = null}
 			}
-        	else if(index == 8)
+        	else if(index == 7)
         	{
         		if(item == "남자") { item = "1"}
 				else if(item == "여자") { item = "2" }
 				else { item = null}
         	}
+        	/*
         	else if(index == 9)
         	{
         		if(item == "재직") { item = "1"}
 				else if(item == "퇴사") { item = "0" }
 				else { item = null}
         	}
+        	*/
             obj[ cellName[index] ] = item;
         });
  
@@ -1127,6 +1289,10 @@ function getCsvToJson($csv){
 function handleFile(e) {
     var files = e.target.files;
     var i,f;
+    
+    var suss = 0;
+    var fail = 0;
+
     for (i = 0; i != files.length; ++i) {
         f = files[i];
         var reader = new FileReader();
@@ -1176,19 +1342,27 @@ function handleFile(e) {
 	 								n.join_date = getCsvToJson(csv)[i].join_date;
 	 								n.work_time = getCsvToJson(csv)[i].work_time;
 	 								n.work = getCsvToJson(csv)[i].work;
-	 								n.skill_name = getCsvToJson(csv)[i].skill_name;
+	 								//n.skill_name = getCsvToJson(csv)[i].skill_name;
 	 								n.age = getCsvToJson(csv)[i].age;
 	 								n.mey_yn = getCsvToJson(csv)[i].mey_yn;
 	 								n.gender = getCsvToJson(csv)[i].gender;
-	 								n.work_yn = getCsvToJson(csv)[i].work_yn;
+	 								//n.work_yn = getCsvToJson(csv)[i].work_yn;
 	 								n.leave_date = getCsvToJson(csv)[i].leave_date;
 	 								
 	 								n.__modified__ = true;
+	 								
+	 								suss++;
 	 							}
 	 						});
 	 						
-	 						fnObj.gridView01.setData(list);	 						
- 						} 						
+	 						fnObj.gridView01.setData(list);
+	 						fail = getCsvToJson(csv).length - suss;
+	 						alert("[엑셀업로드] " + getCsvToJson(csv).length + "명 중 " + suss + "명 성공 " + fail + "명 실패");
+ 						}
+ 						else
+ 						{
+ 							fail++;
+ 						}
  						//fnObj.gridView01.addRowExcel(getCsvToJson(csv)[i].ani, getCsvToJson(csv)[i].flag);
  					}
  				}

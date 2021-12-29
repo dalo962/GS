@@ -16,9 +16,127 @@
 				Connect By Regexp_Substr(SKILL_NAME, '[^,]+', 1, Level) Is Not Null
 		ORDER BY skill_name
     </select>
+    
+    <select id="InfoCodeSel" parameterType="hashmap" resultType="agInfoMng" fetchSize="1000">
+    	SELECT 	GROUP_CD AS group_cd, GROUP_NM AS group_nm, CODE AS code, NAME AS name, SORT AS sort, USE_YN AS use_yn
+		FROM 	AX_COMMON_CODE_M
+		WHERE	GROUP_CD = #{group_cd}
+		AND		USE_YN = 'Y'
+		ORDER BY SORT
+    </select>
+	
+    <select id="agInfoSel" parameterType="hashmap" resultType="agInfoMng" fetchSize="1000">
+    	SELECT *
+    	FROM	(SELECT AAS.AGENT_ID as agent_id,
+    					AAS.COMPANY_CD as company_cd,
+    					AAS.DEPT_CD as dept_cd,
+    					AAS.TEAM_CD as team_cd,
+				        AAS.COMPANY_NAME as company_name,
+				        AAS.DEPT_NAME as dept_name,
+				        AAS.TEAM_NAME as team_name,
+				        APS.DEP_NM as dep_nm,
+				        AAS.AGENT_NAME as agent_name,
+				        APS.JOIN_DATE as join_date,
+				        APS.WORK_TIME as work_time,
+				        APS.WORK as work,
+				        LISTAGG(CS.NAME,',') WITHIN GROUP(ORDER BY AAS.AGENT_DBID) AS SKILL_NAME,
+				        APS.AGE as age,
+				        APS.MEY_YN as mey_yn,
+				        APS.GENDER as gender,
+				        APS.work_yn as work_yn,
+				        APS.LEAVE_DATE as leave_date
+				FROM    WDM.AX_A_STRUCT AAS, WDM.AX_A_PRECORD APS,
+				        GCTI.CFG_SKILL CS, GCTI.CFG_SKILL_LEVEL CSL
+				WHERE   AAS.AGENT_ID = APS.AGENT_ID(+)
+				AND     CS.DBID(+) = CSL.SKILL_DBID
+				AND     CSL.PERSON_DBID(+) = AAS.AGENT_DBID
+				GROUP BY AAS.COMPANY_CD, AAS.DEPT_CD, AAS.TEAM_CD, AAS.AGENT_ID, AAS.COMPANY_NAME, AAS.DEPT_NAME, AAS.TEAM_NAME, 
+						 APS.DEP_NM, AAS.AGENT_NAME, APS.JOIN_DATE, APS.WORK_TIME, APS.WORK, APS.AGE, APS.MEY_YN, APS.GENDER, APS.WORK_YN, APS.LEAVE_DATE
+				)
+		WHERE 	1=1
+		<if test="compid != '' and compid != null">
+		AND		COMPANY_CD = #{compid}
+		</if>
+		<if test="deptid != '' and deptid != null">
+		AND		DEPT_CD = #{deptid}
+		</if>
+		<if test="teamid != '' and teamid != null">
+		AND		TEAM_CD = #{teamid}
+		</if>		
+		<if test="agent_name != '' and agent_name != null">
+		AND		agent_name IN (${agent_name})
+		</if>
+		<if test="dep != '' and dep != null">
+		AND		DEP_NM = #{dep}
+		</if>
+		<if test="sk != '' and sk != null">
+		AND		SKILL_NAME like '%' || #{sk} || '%'
+		</if>
+		<if test="workyn != '' and workyn != null">
+		AND		work_yn = #{workyn}
+		</if>
+		<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
+		AND		JOIN_DATE BETWEEN #{s_day} AND #{e_day}
+		</if>
+		ORDER BY AGENT_NAME, AGENT_ID
+    </select>
+    
+    
+    <update id="agInfoUdt" parameterType="hashmap">
+		MERGE INTO WDM.AX_A_PRECORD
+			USING DUAL
+			ON (AGENT_ID = #{agent_id})
+			WHEN MATCHED THEN 
+				UPDATE SET
+					dep_nm = #{dep_nm},
+					join_date = #{join_date},
+					work_time = #{work_time},
+					work = #{work},
+					skill_name = null,
+					age = #{age},
+					mey_yn = #{mey_yn},  
+					gender = #{gender},
+					work_yn = #{work_yn},
+					leave_date = #{leave_date}
+			WHEN NOT MATCHED THEN
+				INSERT 
+				   (agent_id,
+					dep_nm,
+					join_date,
+					work_time,
+					work,
+					skill_name,
+					age,
+					mey_yn,
+					gender,
+					work_yn,
+					leave_date)
+				VALUES
+				   (#{agent_id},
+				    #{dep_nm},
+				    #{join_date},
+				    #{work_time},
+				    #{work},
+				    null,
+				    #{age},
+				    #{mey_yn},
+				    #{gender},
+				    #{work_yn},
+				    #{leave_date}
+				   )
+	</update>
 	
 	
-	<select id="agInfoSel" parameterType="hashmap" resultType="agInfoMng" fetchSize="1000">
+	<select id="skInfoDepSelasis" parameterType="hashmap" resultType="agInfoMng" fetchSize="1000">
+    	Select 	DISTINCT Regexp_Substr(SKILL_NAME,'[^,]+', 1, Level) as skill_name
+		From 	WDM.AX_A_PRECORD
+		WHERE 	SKILL_NAME IS NOT NULL
+				Connect By Regexp_Substr(SKILL_NAME, '[^,]+', 1, Level) Is Not Null
+		ORDER BY skill_name
+    </select>
+    
+    
+	<select id="agInfoSelasis" parameterType="hashmap" resultType="agInfoMng" fetchSize="1000">
     	SELECT *
     	FROM	(SELECT AAS.AGENT_ID as agent_id,
     					AAS.COMPANY_CD as company_cd,
@@ -69,65 +187,7 @@
 		ORDER BY AGENT_NAME, AGENT_ID
     </select>
     
-    
-    <select id="agInfoSelasis" parameterType="hashmap" resultType="agInfoMng" fetchSize="1000">
-    	SELECT *
-    	FROM	(SELECT AAS.AGENT_ID as agent_id,
-    					AAS.COMPANY_CD as company_cd,
-    					AAS.DEPT_CD as dept_cd,
-    					AAS.TEAM_CD as team_cd,
-				        AAS.COMPANY_NAME as company_name,
-				        AAS.DEPT_NAME as dept_name,
-				        AAS.TEAM_NAME as team_name,
-				        APS.DEP_NM as dep_nm,
-				        AAS.AGENT_NAME as agent_name,
-				        APS.JOIN_DATE as join_date,
-				        APS.WORK_TIME as work_time,
-				        APS.WORK as work,
-				        LISTAGG(CS.NAME,',') WITHIN GROUP(ORDER BY AAS.AGENT_DBID) AS SKILL_NAME,
-				        APS.AGE as age,
-				        APS.MEY_YN as mey_yn,
-				        APS.GENDER as gender,
-				        APS.WORK_YN as work_yn,
-				        APS.LEAVE_DATE as leave_date
-				FROM    WDM.AX_A_STRUCT AAS, WDM.AX_A_PRECORD APS,
-				        GCTI.CFG_SKILL CS, GCTI.CFG_SKILL_LEVEL CSL
-				WHERE   AAS.AGENT_ID = APS.AGENT_ID(+)
-				AND     CS.DBID(+) = CSL.SKILL_DBID
-				AND     CSL.PERSON_DBID(+) = AAS.AGENT_DBID
-				GROUP BY AAS.COMPANY_CD, AAS.DEPT_CD, AAS.TEAM_CD, AAS.AGENT_ID, AAS.COMPANY_NAME, AAS.DEPT_NAME, AAS.TEAM_NAME, 
-						 APS.DEP_NM, AAS.AGENT_NAME, APS.JOIN_DATE, APS.WORK_TIME, APS.WORK, APS.AGE, APS.MEY_YN, APS.GENDER, APS.WORK_YN, APS.LEAVE_DATE
-				)
-		WHERE 	1=1
-		<if test="compid != '' and compid != null">
-		AND		COMPANY_CD = #{compid}
-		</if>
-		<if test="deptid != '' and deptid != null">
-		AND		DEPT_CD = #{deptid}
-		</if>
-		<if test="teamid != '' and teamid != null">
-		AND		TEAM_CD = #{teamid}
-		</if>		
-		<if test="agent_name != '' and agent_name != null">
-		AND		agent_name IN (${agent_name})
-		</if>
-		<if test="dep != '' and dep != null">
-		AND		DEP_NM = #{dep}
-		</if>
-		<if test="sk != '' and sk != null">
-		AND		SKILL_NAME like '%' || #{sk} || '%'
-		</if>
-		<if test="workyn != '' and workyn != null">
-		AND		work_yn = #{workyn}
-		</if>
-		<if test="s_day != '' and e_day != '' and s_day != null and e_day != null">
-		AND		JOIN_DATE BETWEEN #{s_day} AND #{e_day}
-		</if>
-		ORDER BY AGENT_NAME, AGENT_ID
-    </select>
-    
-    
-    <update id="agInfoUdt" parameterType="hashmap">
+    <update id="agInfoUdtasis" parameterType="hashmap">
 		MERGE INTO WDM.AX_A_PRECORD
 			USING DUAL
 			ON (AGENT_ID = #{agent_id})
