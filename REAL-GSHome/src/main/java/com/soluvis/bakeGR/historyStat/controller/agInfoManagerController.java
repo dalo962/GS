@@ -248,8 +248,15 @@ public class agInfoManagerController extends commController{
 				*/
 				
 				if(io.getLeave_date() == null || "".equals(io.getLeave_date())) 
-				{ 
-					params.put("work_yn", "1");
+				{
+					if(io.getJoin_date() == null || "".equals(io.getJoin_date())) 
+					{
+						params.put("work_yn", "");
+					}
+					else
+					{
+						params.put("work_yn", "1");
+					}
 					params.put("leave_date", "");
 				} 
 				else 
