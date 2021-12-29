@@ -714,10 +714,10 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	var eti = this.eTime.ax5select("getValue")[0].value.replaceAll(':','');
     	
     	if(sti == "2400") {
-    		sti = "2359";
+    		sti = "235959";
     	}
     	if(eti == "2400") {
-    		eti = "2359";
+    		eti = "235959";
     	}
     	
         return {
@@ -738,7 +738,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         	ani : this.ani.val(),
         	startdate : this.sDate.val().replaceAll('-',''),
         	enddate : this.eDate.val().replaceAll('-',''),
-        	starttime : sti,
+        	starttime : sti+"01",
         	endtime : eti
         }
     }
