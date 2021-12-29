@@ -677,9 +677,6 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 	        theme: 'primary',
 	        onChange: function () {
 	        	fnObj.gridView01.initView();
-	        	
-	        	date_set();
-	        	time_set();
 	        }
         });
     	
