@@ -34,6 +34,12 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var blnumber = 0;
     	var bluse = 0;
     	var bldeg = 0;
+    	
+    	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+    	var blagid = 0;
+    	var blagnm = 0;
+    	var blconnid = 0;
+    	
     	var ovdesc = 0;
     	_saveList.forEach(function (n){
     		if(!(n.__created__ && n.__deleted__)) { // 새로운데이터이면서 삭제된건 제외
@@ -52,9 +58,18 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	    		if(n.bl_useyn == null || n.bl_useyn == "") {
 	    			bluse = bluse + 1;
 	    		}
-	    		if(n.degree == null || n.degree == "") {
-	    			bldeg = bldeg + 1;
+
+	        	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+	    		if(n.agentid == null || n.agentid == "") {
+	    			blagid = blagid + 1;
 	    		}
+	    		if(n.agentname == null || n.agentname == "") {
+	    			blagnm = blagnm + 1;
+	    		}
+	    		if(n.connid == null || n.connid == "") {
+	    			blconnid = blconnid + 1;
+	    		}
+	    		
 	    		if(n.description != null && n.description != ""){
 	    			if(getByteLength((n.description))> 3000){
 	        			ovdesc = ovdesc + 1;
@@ -81,7 +96,22 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	{ 
     		alert("차수를 선택하시기 바랍니다."); 
     		return;
+    	}    
+
+    	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+    	if(blagid > 0) { 
+    		alert("상담사 사번을 입력하시기 바랍니다."); 
+    		return;
+    	}    	
+    	if(blagnm > 0) { 
+    		alert("상담사 이름를 입력하시기 바랍니다."); 
+    		return;
+    	}    	
+    	if(blconnid > 0) { 
+    		alert("CONNID를 입력하시기 바랍니다."); 
+    		return;
     	}
+    	
     	if(ovdesc > 0) 
     	{ 
     		alert("사유가 1000자를 넘습니다. 1000자 이내로 작성해주세요.");
@@ -354,10 +384,11 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             				return '<span style="color: red; font-size: 0.5rem;">"-" 제외한 전화번호 입력</span>';
             			}
             			var result_ani = ani;
-            			var regex = /(\d{2,3})(\d{3,4})(\d{4})/g;
+            			var regex = /^(01[0-9]|02|0[3-4][1-3]|05[1-5]|06[1-4])(\d{3,4})(\d{4})$/g;
             			var matcher = regex.exec(result_ani);
             			
             			if(matcher) {
+            				console.log(matcher)
             				var middle_number = matcher[2];
             				return matcher[1]+middle_number.split('').fill('*',0,middle_number.length).join('')+matcher[3];
             			}
@@ -426,9 +457,36 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 	}
                 }}, 
             	{key: "description", label: "사유", width: 240, align: "center", editor:"text"},
-            	{key: "agentid", label: "사번", width: 80, align: "center", editor:"text"},
-            	{key: "agentname", label: "상담사", width: 80, align: "center", editor:"text"},
-            	{key: "connid", label: "ConnID", width: 130, align: "center", editor:"text"},
+            	{key: "agentid", label: "사번", width: 80, align: "center", editor:"text",
+                	formatter: function() {
+        	        	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+                		var agentid = this.item.agentid;
+                		if(agentid == '' || agentid == null) {
+                			return '<span style="color: red;">입력</span>';
+                		}
+
+                		return agentid;
+                }},
+            	{key: "agentname", label: "상담사", width: 80, align: "center", editor:"text",
+                	formatter: function() {
+        	        	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+                		var agentname = this.item.agentname;
+                		if(agentname == '' || agentname == null) {
+                			return '<span style="color: red;">입력</span>';
+                		}
+
+                		return agentname;
+                }},
+            	{key: "connid", label: "ConnID", width: 130, align: "center", editor:"text",
+                	formatter: function() {
+        	        	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+                		var connid = this.item.connid;
+                		if(connid == '' || connid == null) {
+                			return '<span style="color: red;">입력</span>';
+                		}
+
+                		return connid;
+                }},
             	{key: "recBtn", label: "듣기", width: 50, align: "center", 
                 	formatter: function() {     
                 		if(this.item.connid != null && this.item.connid != ''){
@@ -479,7 +537,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 	if(key == "ani") {
                 		var ani = this.item.ani.replaceAll('-', '');		// 현재 입력된 ani에서 - 제외
 	                    var index = this.item.__index;						// 현재 입력된 ani의 위치
-	                    var regex = /^(\d{2,3})(\d{3,4})(\d{4})$/g;			// 전화번호 형식 정규식
+	                    var regex = /^(01[0-9]|02|0[3-4][1-3]|05[1-5]|06[1-4])(\d{3,4})(\d{4})$/g;			// 전화번호 형식 정규식
             			var matcher = regex.exec(ani);						// 입력된 ani와 정규식의 매칭 결과
 
             			if(ani != "" && !matcher) {	// 입력된 ani가 전화번호 형식과 다른 경우
@@ -488,6 +546,67 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             			}
 	                    
 	                    this.self.setValue(index, key, ani);
+                	}
+    	        	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 ) 
+                	else if(key == "connid") {
+                		var index = this.item.__index;
+                		var connid = this.item.connid;
+                		var length = connid.length;
+                		var regex = /[a-z|0-9]/gi; // 숫자문자 또는 영문자 정규식
+                		
+                		if(length != 0 && !regex.test(connid)) {
+                			alert("CONNID는 숫자, 영어 소문자만 입력할 수 있습니다."); // alert 띄우고
+            	    		connid = "";	// 입력된 값을 빈칸으로
+            	    		
+                    		this.self.setValue(index, key, connid);
+                    		return;
+                		}
+                		
+                		if(length > 16) {
+                			alert("CONNID는 최대 16자까지 입력할 수 있습니다."); // alert 띄우고
+            	    		//connid = "";	// 입력된 값을 빈칸으로
+                			connid = connid.substr(0, 16); // 자리수에 맞게 자름
+            	    		
+                    		this.self.setValue(index, key, connid);
+                    		return;
+                		}
+                		
+                	} else if(key == "agentname") {
+                		var index = this.item.__index;
+                		var agentname = this.item.agentname;
+                		var length = agentname.length;
+                		var regex = /[a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/gi; // 영문자 또는 한글 정규식
+                		
+                		if(length != 0 && !regex.test(agentname)) {
+                			alert("상담사 이름은 한글 또는 영문자만 입력할 수 있습니다."); // alert 띄우고
+            	    		agentname = "";	// 입력된 값을 빈칸으로
+            	    		
+                    		this.self.setValue(index, key, agentname);
+                			
+                    		return;
+                		}
+                		
+                		if(length > 10) {
+                			alert("상담사 이름은 최대 10자까지 입력할 수 있습니다."); // alert 띄우고
+                			//agentname = "";	// 입력된 값을 빈칸으로
+                			agentname = agentname.substr(0, 10); // 자리수에 맞게 자름
+                			
+                    		this.self.setValue(index, key, agentname);
+                    		return;
+                		}
+                	} else if(key == "agentid") {
+                		var index = this.item.__index;
+                		var agentid = this.item.agentid;
+                		var length = agentid.length;
+                		
+                		if(length > 10) {
+                			alert("상담사 사번은 최대 10자까지 입력할 수 있습니다."); // alert 띄우고
+                			//agentid = "";	// 입력된 값을 빈칸으로
+            	    		agentid = agentid.substr(0, 10); // 자리수에 맞게 자름
+            	    		
+                    		this.self.setValue(index, key, agentid);
+                    		return;
+                		}
                 	}
                 }
             }
