@@ -1355,9 +1355,7 @@ function handleFile(e) {
 	 							}
 	 						});
 	 						
-	 						fnObj.gridView01.setData(list);
-	 						fail = getCsvToJson(csv).length - suss;
-	 						alert("[엑셀업로드] " + getCsvToJson(csv).length + "명 중 " + suss + "명 성공 " + fail + "명 실패");
+	 						fnObj.gridView01.setData(list);	 						
  						}
  						else
  						{
@@ -1365,6 +1363,9 @@ function handleFile(e) {
  						}
  						//fnObj.gridView01.addRowExcel(getCsvToJson(csv)[i].ani, getCsvToJson(csv)[i].flag);
  					}
+ 					
+ 					fail = getCsvToJson(csv).length - suss;
+					alert("[엑셀업로드] " + getCsvToJson(csv).length + "명 중 " + suss + "명 성공 " + fail + "명 실패");
  				}
  			});//end. forEach 			 			
         }; //end onload
