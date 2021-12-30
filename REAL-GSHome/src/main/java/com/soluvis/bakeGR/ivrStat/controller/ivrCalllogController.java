@@ -113,7 +113,7 @@ public class ivrCalllogController extends commController{
 	// 전화번호 가운데자리 마스킹하는 메서드 //
 	private String maskPhoneNumber (String phoneNumber) {
 		String resultNumber = phoneNumber;
-		String regex = "(\\d{2,3})(\\d{3,4})(\\d{4})$";	// 전화번호 정규식 (000-0000-0000)
+		String regex = "^(01[0-9]|02|0[3-4][1-3]|05[1-5]|06[1-4])(\\d{3,4})(\\d{4})$";	// 전화번호 정규식 (000-0000-0000)
 		Matcher matcher = Pattern.compile(regex).matcher(resultNumber);
 		
 		if(matcher.find()) { // 입력받은 번호에서 정규식과 맞는 패턴을 찾는다.
@@ -124,7 +124,7 @@ public class ivrCalllogController extends commController{
 
 			return resultNumber.replaceFirst(target, String.valueOf(c));
 		} else {
-			regex = "(\\d{4})(\\d{4})"; // 전화번호 정규식 (0000-0000)
+			regex = "^(\\d{4})(\\d{4})$"; // 전화번호 정규식 (0000-0000)
 			matcher = Pattern.compile(regex).matcher(resultNumber);
 			
 			if(matcher.find()) {
