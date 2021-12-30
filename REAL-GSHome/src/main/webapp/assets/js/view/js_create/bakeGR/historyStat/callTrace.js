@@ -1009,7 +1009,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            	{key: "CONNIDFST", label: "최초CONNID", width: 170, align: "center", sortable: true},
 	    	        {key: "CONNID", label: "최종CONNID", width: 170, align: "center", sortable: true}	,  
 	        		{key: "CALLTYPE", label: "호유형", width: 130, align: "center", sortable: true},
-	        		{key: "ANI", label: "고객/내선번호", width: 130, align: "center", sortable: true,
+	        		{key: "ANI", label: "고객전화번호", width: 130, align: "center", sortable: true,
 	    	        	formatter:function(){
 //	    	        		if(this.value != null)
 //	                		{
@@ -1055,7 +1055,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                		return null;
 	                	}
 	        		},
-	                {key: "DNIS", label: "대표번호", width: 130, align: "center", sortable: true,
+	                {key: "DNIS", label: "인입VDN", width: 130, align: "center", sortable: true,
 		    	        	formatter:function(){
 		                		if(this.value != null)
 		                		{
@@ -1082,9 +1082,9 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	        		{key: "COM_NAME", label: "센터", width: 130, align: "center", sortable: true},
 	            	{key: "DEPT_NAME", label: "브랜드", width: 130, align: "center", sortable: true},
 	            	{key: "TEAM_NAME", label: "팀", width: 130, align: "center", sortable: true},
-	            	{key: "AGENT_ID", label: "최종상담사사번", width: 130, align: "center", sortable: true},
-	            	{key: "AGENT_NAME", label: "최종상담사명", width: 130, align: "center", sortable: true},
 	            	{key: "LASTDN", label: "최종상담사내선", width: 130, align: "center", sortable: true},
+	            	{key: "AGENT_NAME", label: "최종상담사명", width: 130, align: "center", sortable: true},
+	            	{key: "AGENT_ID", label: "최종상담사사번", width: 130, align: "center", sortable: true},	            		            	
 	            	//{key: "RPARTY", label: "종료주체", width: 130, align: "center", sortable: true}	            	  	        
 	            ],
 	            body: {
@@ -1147,14 +1147,15 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>최초CONNID</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>최종CONNID</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>호유형</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>고객/내선번호</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>대표번호</th>";
+		detailHeadStr += "<th align='center' colspan=1 rowspan=1>고객전화번호</th>";
+		detailHeadStr += "<th align='center' colspan=1 rowspan=1>인입VDN</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>센터</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>브랜드</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>팀</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>최종상담사사번</th>";
-		detailHeadStr += "<th align='center' colspan=1 rowspan=1>최종상담사명</th>";
 		detailHeadStr += "<th align='center' colspan=1 rowspan=1>최종상담사내선</th>";
+		detailHeadStr += "<th align='center' colspan=1 rowspan=1>최종상담사명</th>";
+		detailHeadStr += "<th align='center' colspan=1 rowspan=1>최종상담사사번</th>";		
+		
 		//detailHeadStr += "<th align='center' colspan=1 rowspan=1>종료주체</th>";
 		detailHeadStr += "</tr>";
 	        
@@ -1243,9 +1244,9 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.COM_NAME) + "</td>";
 		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.DEPT_NAME) + "</td>";
 		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.TEAM_NAME) + "</td>";
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.AGENT_ID) + "</td>";
-		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.AGENT_NAME) + "</td>";
 		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.LASTDN) + "</td>";
+		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.AGENT_NAME) + "</td>";		    
+		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.AGENT_ID) + "</td>";
 		    //detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.RPARTY) + "</td>";
 		    detailbodyStr += "</tr>";
 		});

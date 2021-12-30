@@ -1249,7 +1249,59 @@ function getCsvToJson($csv){
         var row = item.split(":");
         var obj = {};
         row.forEach(function(item, index, array){
-        	if(index == 5)
+        	if(index == 1)
+        	{
+        		var chk = 0;
+        		dcode.forEach(function (n) {
+					if(item == n.value)
+					{
+						item = n.value;
+						chk = 1;
+					}
+                });
+        		
+        		if(chk == 0)
+        		{
+        			item = null;
+        		}        		
+        	}        	
+        	else if(index == 2)
+        	{
+        		item = item.replace(/-/gi, "");
+        	}        	
+        	else if(index == 3)
+        	{
+        		var chk = 0;
+        		wtcode.forEach(function (n) {
+					if(item == n.value)
+					{
+						item = n.value;
+						chk = 1;
+					}
+                });
+        		
+        		if(chk == 0)
+        		{
+        			item = null;
+        		} 
+        	}        	
+        	else if(index == 4)
+        	{
+        		var chk = 0;
+        		wcode.forEach(function (n) {
+					if(item == n.value)
+					{
+						item = n.value;
+						chk = 1;
+					}
+                });
+        		
+        		if(chk == 0)
+        		{
+        			item = null;
+        		} 
+        	}        	
+        	else if(index == 5)
         	{
         		if(item == "20대") { item = "20age"}
 				else if(item == "30대") { item = "30age" }
@@ -1269,6 +1321,10 @@ function getCsvToJson($csv){
         		if(item == "남자") { item = "1"}
 				else if(item == "여자") { item = "2" }
 				else { item = null}
+        	}
+        	else if(index == 8)
+        	{
+        		item = item.replace(/-/gi, "");
         	}
         	/*
         	else if(index == 9)

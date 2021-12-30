@@ -187,6 +187,7 @@ public class callTraceController extends commController{
 		params.put("s_day", SqlSafeUtil.getSqlInjectionSafe(params.get("startDate").toString().replace("-", "") + params.get("startTime").toString() + "00"));
 		params.put("e_day", SqlSafeUtil.getSqlInjectionSafe(params.get("endDate").toString().replace("-", "") + params.get("endTime").toString() + "59"));		
 		
+		logger.info("callTrService.callTrSel Query Start...");
 		List<Map<String,Object>> search = callTrService.callTrSel(params);		
 
 		return search;
@@ -200,6 +201,7 @@ public class callTraceController extends commController{
 		Map<String,Object> params = RequestUtil.getParameterMap(request);			
 		params.put("connidfst", SqlSafeUtil.getSqlInjectionSafe(connid));
 		
+		logger.info("callTrService.connidfsts Query Start...");
 		List<Map<String,Object>> connidsearch = callTrService.connidfsts(params);
 		
 		int connidsearchsize = connidsearch.size();
@@ -221,6 +223,7 @@ public class callTraceController extends commController{
 		
 		params.put("connid", conns);
 		
+		logger.info("callTrService.callTrTbSel Query Start...");
 		List<Map<String,Object>> search = callTrService.callTrTbSel(params);
 
 		return search;
@@ -232,6 +235,7 @@ public class callTraceController extends commController{
 		Map<String,Object> params = RequestUtil.getParameterMap(request);			
 		params.put("conn_id", SqlSafeUtil.getSqlInjectionSafe(connid));
 		
+		logger.info("callTrService.sessionidget Query Start...");
 		List<Map<String,Object>> search = callTrService.sessionidget(params);
 		
 		return search;
