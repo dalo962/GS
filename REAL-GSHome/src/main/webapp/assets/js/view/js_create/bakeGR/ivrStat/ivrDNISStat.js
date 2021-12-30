@@ -991,34 +991,35 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 
         var weeks = ["일", "월", "화", "수", "목", "금", "토"];
         
-        var row_date = {key: "ROW_DATE", label: "날짜", width: 150, align: "center", sortable: true};
+        var row_date = {key: "ROW_DATE", label: "날짜", width: 120, align: "center", sortable: true};
         var weekday = {key: "weekday", label: "요일", width: 80, align: "center", sortable: true,
 	        	formatter: function() {
 	        		var date = new Date(this.item.ROW_DATE);
 	        		return weeks[date.getDay()];
 	        	}
 	        };
-        var starttime = {key: "STARTTIME", label: "시간", width: 150, align: "center", sortable: true};
-        var comp_cd = {key: "COMP_CD", label: "센터", width: 150, align: "center", sortable: true,
+        var starttime = {key: "STARTTIME", label: "시간", width: 120, align: "center", sortable: true};
+        var comp_cd = {key: "COMP_CD", label: "센터", width: 120, align: "center", sortable: true,
         		formatter: function() {
         			switch(this.item.COMP_CD) {
         			case "RETAIL": return "GS리테일";
         			}
         		}
         	};
-        var did = {key: "DID", label: "대표번호", width: 200, align: "center", sortable: true};
-        var dnis = {key: "DNIS", label: "VDN", width: 100, align: "center", sortable: true};
-        var n_incall = {key: "N_INCALL", label: "인입건수", width: 150, align: "center", sortable: true};
-        var n_agentreq = {key: "N_AGENTREQ", label: "상담사요청건수", width: 150, align: "center", sortable: true};
-        var n_privacy = {key: "N_PRIVACY", label: "개인정보동의", width: 150, align: "center", sortable: true};
-        var n_blackconsumer = {key: "N_BLACKCONSUMER", label: "이슈고객", width: 150, align: "center", sortable: true};
+        var did = {key: "DID", label: "대표번호", width: 150, align: "center", sortable: true};
+        var dnis = {key: "DNIS", label: "VDN", width: 80, align: "center", sortable: true};
+        var vdn_name = {key: "VDN_NAME", label: "구분", width: 150, align: "center", sortable: true};
+        var n_incall = {key: "N_INCALL", label: "인입건수", width: 120, align: "center", sortable: true};
+        var n_agentreq = {key: "N_AGENTREQ", label: "상담사요청건수", width: 120, align: "center", sortable: true};
+        var n_privacy = {key: "N_PRIVACY", label: "개인정보동의건수", width: 130, align: "center", sortable: true};
+        var n_blackconsumer = {key: "N_BLACKCONSUMER", label: "이슈고객인입건수", width: 130, align: "center", sortable: true};
         
         if(select == "day") {
-        	columns = [row_date, weekday, comp_cd, did, dnis, n_incall, n_agentreq, n_privacy, n_blackconsumer];
+        	columns = [row_date, weekday, comp_cd, did, dnis, vdn_name, n_incall, n_agentreq, n_privacy, n_blackconsumer];
         } else if(select == "month") {
-        	columns = [row_date, comp_cd, did, dnis, n_incall, n_agentreq, n_privacy, n_blackconsumer];
+        	columns = [row_date, comp_cd, did, dnis, vdn_name, n_incall, n_agentreq, n_privacy, n_blackconsumer];
         } else {
-        	columns = [row_date, weekday, starttime, comp_cd, did, dnis, n_incall, n_agentreq, n_privacy, n_blackconsumer];
+        	columns = [row_date, weekday, starttime, comp_cd, did, dnis, vdn_name, n_incall, n_agentreq, n_privacy, n_blackconsumer];
         }
         
         this.target = axboot.gridBuilder({

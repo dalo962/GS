@@ -10,43 +10,15 @@
 				comp_cd as comp_cd,
 				did as did,
 				dnis as dnis,
+				nvl(b.name, '인입') as vdn_name,
 				nvl(n_incall,0) as n_incall,
 				nvl(n_agentreq,0) as n_agentreq,
 				nvl(n_privacy,0) as n_privacy,
 				nvl(n_blackconsumer,0) as n_blackconsumer
-		FROM	${table}
-		WHERE	row_date BETWEEN #{startdate} AND #{enddate}
+		FROM	${table} a  LEFT OUTER JOIN gsivr.ars_code_vdn b  ON a.dnis=b.vdn
+		WHERE 	row_date BETWEEN #{startdate} AND #{enddate}
 		<if test="interval != 'day' and interval != 'month'">
 		AND		starttime BETWEEN #{starttime} AND #{endtime}
-		</if>
-		<if test="comp_cd != '' and comp_cd != null">
-		AND		comp_cd = #{comp_cd}
-		</if>
-		<if test="did != '' and did != null">
-		AND		did = #{did}
-		</if>
-		ORDER BY row_date asc <if test="interval != 'day' and interval != 'month'">, starttime asc</if> , did asc
-    </select>
-
-
-	<select id="DNISStatGetTest" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
-		SELECT	row_date as row_date,
-				<if test="interval != 'day' and interval != 'month'">
-				starttime as starttime,
-				</if>
-				comp_cd as comp_cd,
-				did as did,
-				dnis as dnis,
-				nvl(n_incall,0) as n_incall,
-				nvl(n_agentreq,0) as n_agentreq,
-				nvl(n_privacy,0) as n_privacy,
-				nvl(n_blackconsumer,0) as n_blackconsumer
-		FROM	${table}
-		WHERE	row_date <![CDATA[>=]]> #{startdate}
-		AND		row_date <![CDATA[<=]]> #{enddate}
-		<if test="interval != 'day' and interval != 'month'">
-		AND		starttime <![CDATA[>=]]> #{starttime}
-		AND		starttime <![CDATA[<=]]> #{endtime}
 		</if>
 		<if test="comp_cd != '' and comp_cd != null">
 		AND		comp_cd = #{comp_cd}
