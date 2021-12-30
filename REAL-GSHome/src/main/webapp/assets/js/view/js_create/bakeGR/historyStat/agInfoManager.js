@@ -1267,7 +1267,9 @@ function getCsvToJson($csv){
         	}        	
         	else if(index == 2)
         	{
-        		item = item.replace(/-/gi, "");
+        		if(item != null && item != '') {
+        			item = toDateFormat(item);
+        		}
         	}        	
         	else if(index == 3)
         	{
@@ -1324,7 +1326,9 @@ function getCsvToJson($csv){
         	}
         	else if(index == 8)
         	{
-        		item = item.replace(/-/gi, "");
+        		if(item != null && item != '') {
+        			item = toDateFormat(item);
+        		}
         	}
         	/*
         	else if(index == 9)
@@ -1340,6 +1344,43 @@ function getCsvToJson($csv){
         csvCell[index] = obj;
     });
     return csvCell;
+}
+
+// 날짜 형식 지정 //
+function toDateFormat(date_string) {
+	var year, month, day;
+	var regex = /^([1-2]\d{3})([0][1-9]|1[0-2])(\d{2})$/g; // 날짜 정규식 (YYYYMMDD) => 숫자 8자리
+	var matcher = regex.exec(date_string);
+	
+	if(matcher) { // matcher에 들어온 값이 있다면 ( YYYYMMDD 형식 텍스트 )
+		year = matcher[1];
+		month = matcher[2];
+		day = matcher[3];
+		
+		var _d31 = ["01", "03", "05", "07", "08", "10", "12"];
+		var _d30 = ["04", "06", "09", "11"];
+		
+		// day 오류 검사
+		if((_d31.find(function(m) { if(m == month) return m == month }) && day > "31")	// 최대 일이 31일 인것들
+				|| (_d30.find(function(m) { if(m == month) return m == month }) && day > "30")) {	// 최대 일이 30일 인것들
+			return '';
+		} else if(month == "02") { // 2월 윤달 계산
+			var isleap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+			if(day > 29 || (day == 29 && !isleap)) {
+				return '';
+			}
+		}
+	} else { // matcher에 들어온 값이 없는 경우( 엑셀 date 형식 또는 잘못된 형식 )
+		var date = new Date(date_string);
+		if(isNaN(date.getFullYear()) || date.getFullYear() > 2999) { // 올바르지 않은 날짜 ( 201111년 등 )
+			return '';
+		} else {
+			year = date.getFullYear();
+			month = ax5.util.setDigit(date.getMonth() + 1, 2);
+			day = ax5.util.setDigit(date.getDate(), 2);
+		}
+	}
+	return year + '-' + month + '-' + day;
 }
 
 function handleFile(e) {
