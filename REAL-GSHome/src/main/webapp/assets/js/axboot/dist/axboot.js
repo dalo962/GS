@@ -1736,11 +1736,11 @@ ax5.ui.grid.formatter["sec"] = function () {
 ax5.ui.grid.formatter["ptg"] = function () {
 	if(typeof this.value !== "undefined") {
 		if(this.value.toString().indexOf('.') < 0){
-			//return this.value + "%";	
-			return this.value;
+			return this.value + "%";
+			//return this.value;
 		}else{
 			//return this.value.toString().substring(0,this.value.toString().indexOf('.')+3) + "%";	
-			return this.value.toString().substring(0,this.value.toString().indexOf('.')+2);
+			return this.value.toString().substring(0,this.value.toString().indexOf('.')+2) + "%";
 		}
 		
 	}
@@ -1749,7 +1749,7 @@ ax5.ui.grid.formatter["ptg"] = function () {
 //퍼센트 포멧터
 ax5.ui.grid.formatter["perptg"] = function () {
 	if(typeof this.value !== "undefined") {
-		return this.value;
+		return this.value + "%";
 	}
 };
 

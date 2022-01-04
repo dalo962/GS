@@ -44,7 +44,7 @@ public interface statListManagerMapper extends MyBatisMapper{
 	// 유저 항목관리 테이블 사용여부 항목 수정
 	int userFacUdt(Map<String,Object> params);
 
-	
+
 	// modal창 조회
 	List<statListManager> skillListSelmodal(Map<String,Object> params);
 	List<statListManager> agentListSelmodal(Map<String,Object> params);
@@ -61,4 +61,6 @@ public interface statListManagerMapper extends MyBatisMapper{
 	
 	// 처음 특정 사용자가 세팅한대로 세팅
 	int userFacIstSetting(Map<String,Object> params);
+
+	List<statListManager> userOpeCheck(Map<String,Object> params);
 }

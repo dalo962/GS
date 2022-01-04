@@ -150,11 +150,55 @@ public class UserService extends BaseService<User, String> {
 	            	}
 	            	else
 	            	{
-	            		map.put("user_cd", user.getUserCd());
-	            		statLstMngService.userFacIstSetting(map);
+	            		map.put("user_cd", "setting");
+	            		List<statListManager> userOpeChk = statLstMngService.userOpeCheck(map);
+	            		int userOpeChkSize = userOpeChk.size();
+	            		
+	            		if(userOpeChkSize == 0)
+	            		{
+	            			seq.put("seq", "");
+				            seq.put("dispname", "");
+				            seq.put("useyn", "");
+				            List<statListManager> skillLst = statLstMngService.skillListSelmodal(seq);
+				            List<statListManager> agentLst = statLstMngService.agentListSelmodal(seq);
+				            
+				            int skillLstsize = skillLst.size();
+				            if(skillLstsize != 0)
+				            {                	
+				            	for(int i = 0; i < skillLstsize; i++)
+				            	{
+				            		map.put("user_cd", user.getUserCd());
+				            		map.put("stat_gubun", "SKILL");
+				            		map.put("stat_seq", skillLst.get(i).getSeq());
+				            		map.put("stat_yn", skillLst.get(i).getUse_yn());
+				            		map.put("dispname", skillLst.get(i).getDispname());
+				            		
+				            		statLstMngService.userFacIst(map);
+				            	}
+				            }
+				            int agentLstsize = agentLst.size();
+				            if(agentLstsize != 0)
+				            {                	
+				            	for(int i = 0; i < agentLstsize; i++)
+				            	{
+				            		map.put("user_cd", user.getUserCd());
+				            		map.put("stat_gubun", "AGENT");
+				            		map.put("stat_seq", agentLst.get(i).getSeq());
+				            		map.put("stat_yn", agentLst.get(i).getUse_yn());
+				            		map.put("dispname", agentLst.get(i).getDispname());
+				            		
+				            		statLstMngService.userFacIst(map);
+				            	}
+				            }
+	            		}
+	            		else
+	            		{
+	            			map.put("user_cd", user.getUserCd());
+	            			statLstMngService.userFacIstSetting(map);
+	            		}
 	            	}
-	            }     
-            } 
+	            }
+            }
         }
     }
 

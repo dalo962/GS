@@ -165,5 +165,11 @@ public class statListManagerServiceImpl implements statListManagerService{
 	{		
 		return statLstMngMapper.userFacIstSetting(params);
 	}
+	
+	@Override
+	public List<statListManager> userOpeCheck(Map<String,Object> params)
+	{
+		return statLstMngMapper.userOpeCheck(params);
+	}
 }
 

@@ -57,5 +57,7 @@ public interface statListManagerService {
 	
 	
 	public int userFacIstSetting(Map<String,Object> params);
+
+	public List<statListManager> userOpeCheck(Map<String,Object> params);
 }
 

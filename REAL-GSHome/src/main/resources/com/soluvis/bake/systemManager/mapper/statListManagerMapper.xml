@@ -221,4 +221,12 @@
 		FROM	WDM.AX_USER_FACTOR
 		WHERE	USER_ID = 'setting'
 	</insert>
+
+
+	<select id="userOpeCheck" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
+		SELECT	USER_CD AS user_cd
+		FROM	AX_USER_M
+		where 	user_cd = #{user_cd}
+		order by user_cd
+    </select>
 </mapper>
