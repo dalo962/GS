@@ -38,8 +38,8 @@ import com.soluvis.bakeGR.ivrManagement.utils.globalVariables;
 import com.soluvis.connTTS.makeSound;
 
 /** 
- * @author gihyunpark
- * @desc   ivr 블랙컨슈머 리스트를 조회한다.
+ * @author dskang
+ * @desc   IVR 비상멘트 관리 Controller
  */
 @Controller
 @RequestMapping(value = "/gr/api/ivr/ivrEmerMent")
