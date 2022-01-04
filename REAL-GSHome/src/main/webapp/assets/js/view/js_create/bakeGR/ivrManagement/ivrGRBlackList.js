@@ -35,7 +35,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var bluse = 0;
     	var bldeg = 0;
     	
-    	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+    	// 20211230 추가 :: 정합성체크 및 필수값으로
     	var blagid = 0;
     	var blagnm = 0;
     	var blconnid = 0;
@@ -60,7 +60,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	    			bluse = bluse + 1;
 	    		}
 
-	        	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+	        	// 20211230 추가 :: 정합성체크 및 필수값으로
 	    		if(n.agentid == null || n.agentid == "") {
 	    			blagid = blagid + 1;
 	    		}
@@ -104,7 +104,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		return;
     	}    
 
-    	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+    	// 20211230 추가 :: 정합성체크 및 필수값으로
     	if(blagid > 0) { 
     		alert("상담사 사번을 입력하시기 바랍니다."); 
     		return;
@@ -161,6 +161,9 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     },
     EXCEL_EXPORT: function (caller, act, data) {
     	caller.gridView01.exportExcel();
+    },
+    EXCEL_DOWNLOAD: function (caller, act, data) {
+    	window.open('/assets/js/common/black_list_template.xlsx');
     },
     GET_REC: function (caller, act, data) {
     	var recList = [].concat(fnObj.gridView01.getData("selected"));
@@ -261,6 +264,9 @@ fnObj.pageButtonView = axboot.viewExtend({
             "excel": function () {
                 ACTIONS.dispatch(ACTIONS.EXCEL_EXPORT);
             },
+            "sample": function() {
+            	ACTIONS.dispatch(ACTIONS.EXCEL_DOWNLOAD);
+            }
         });
     }
 });
@@ -468,7 +474,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "description", label: "사유", width: 240, align: "center", editor:"text"},
             	{key: "agentid", label: "사번", width: 80, align: "center", editor:"text",
                 	formatter: function() {
-        	        	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+                    	// 20211230 추가 :: 정합성체크 및 필수값으로
                 		var agentid = this.item.agentid;
                 		if(agentid == '' || agentid == null) {
                 			return '<span style="color: red;">입력</span>';
@@ -478,7 +484,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 }},
             	{key: "agentname", label: "상담사", width: 80, align: "center", editor:"text",
                 	formatter: function() {
-        	        	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+                    	// 20211230 추가 :: 정합성체크 및 필수값으로
                 		var agentname = this.item.agentname;
                 		if(agentname == '' || agentname == null) {
                 			return '<span style="color: red;">입력</span>';
@@ -488,7 +494,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 }},
             	{key: "connid", label: "ConnID", width: 130, align: "center", editor:"text",
                 	formatter: function() {
-        	        	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 )
+                    	// 20211230 추가 :: 정합성체크 및 필수값으로
                 		var connid = this.item.connid;
                 		if(connid == '' || connid == null) {
                 			return '<span style="color: red;">입력</span>';
@@ -556,7 +562,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                    
 	                    this.self.setValue(index, key, ani);
                 	}
-    	        	// TODO 추가 ( 20211230 정합성체크 및 필수값으로 ) 
+                	// 20211230 추가 :: 정합성체크 및 필수값으로
                 	// CONNID //
                 	else if(key == "connid") {
                 		var index = this.item.__index;
@@ -665,18 +671,8 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         this.target.addRow({__created__: true}, "last");
         this.target.focus("END");
     },
-    addRowExcel: function (Exani, Exflag) {
-    	
-    	if(Exflag == "사용" || Exflag == "Y")
-    	{
-    		Exflag = "Y";
-    	}
-    	else
-    	{
-    		Exflag = "N";
-    	}
-    	
-        this.target.addRow({__created__: true, ani:Exani, flag:Exflag}, "last");
+    addRowExcel: function (ani, bl_useyn, degree, description, agentid, agentname, connid) {
+        this.target.addRow({ani, bl_useyn, degree, description, agentid, agentname, connid, __created__: true}, "last");
         this.target.focus("END");
     },
     exportExcel: function () {
@@ -764,3 +760,194 @@ function getByteLength(s,b,i,c){
     for(b=i=0;c=s.charCodeAt(i++);b+=c>>11?3:c>>7?2:1);
     return b;
 }
+
+// 20220103 추가 :: 이슈고객 엑셀 업로드
+// 엑셀 업로드 //
+var rABS = true; 
+
+function fixdata(data) {
+    var o = "", l = 0, w = 10240;
+    for(; l < data.byteLength / w; ++l) {
+    	o+=String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+    }
+    o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+    return o;
+}
+
+function getConvertDataToBin($data){
+    var arraybuffer = $data;
+    var data = new Uint8Array(arraybuffer);
+    var arr = new Array();
+    for(var i = 0; i != data.length; ++i) { 
+    	arr[i] = String.fromCharCode(data[i]);
+    }
+    var bstr = arr.join("");
+ 
+    return bstr;
+}
+
+function getCsvToJson($csv){
+ 
+    var startRow = 2;
+    var csvSP = $csv.split("|");
+    var csvRow = [], csvCell = [];
+    var cellName = ["ani", "bl_useyn", "degree", "description", "agentid", "agentname", "connid"];
+
+    csvSP.forEach(function(item, index, array){
+        var patt = new RegExp(":"); 
+        var isExistTocken = patt.test( item );
+ 
+        if( isExistTocken && ( startRow - 1 ) <= index ){
+            csvRow.push( item );
+        }
+    });
+
+    var errorCase = 0;
+    
+    csvRow.forEach(function(item, index, array){
+        var row = item.split(":");
+        var obj = {};
+    	var error = 0;
+        row.forEach(function(item, index, array){
+    		var length = item.length;
+        	if(index == 0) { // 이슈고객 번호
+        		if(item.charAt(0) == '\'') {
+        			item = item.substring(1, length);
+        		} else if(item.charAt(0) != '0') {
+        			item = '0' + item;
+        		}
+        		
+        		item = item.replaceAll('-', '');
+                var regex = /^(01[0-9]|02|0[3-4][1-3]|05[1-5]|06[1-4])(\d{3,4})(\d{4})$/g; // 전화번호 형식 정규식
+    			var matcher = regex.exec(item);						// 입력된 ani와 정규식의 매칭 결과
+
+    			if(item != "" && !matcher) {	// 입력된 ani가 전화번호 형식과 다른 경우
+    				error++;
+    			}
+        	} else if(index == 1) { // 사용유무
+        		if(item == "사용") {
+        			item = "1";
+        		} else if(item == "미사용") {
+        			item = "0";
+        		} else {
+        			error++;
+        		}
+        	} else if(index == 2) { // 차수
+        		if(item != "1" && item != "2") {
+        			error++;
+        		}
+        	} else if(index == 3) { // 사유
+    			var _length = getByteLength(item);
+    			if(_length > 3000){
+    				error++;
+            	}
+        	} else if(index == 4) { // 사번
+        		if(length > 10) {
+        			error++;
+        		}
+        	} else if(index == 5) { // 상담사
+        		var regex = /[a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g; // 영문자 또는 한글 정규식
+        		
+        		if(!regex.test(item)) {
+        			error++;
+        		} else if(length > 10) {
+        			error++;
+        		}
+        	} else if(index == 6) { // ConnId
+        		var regex = /[a-z|0-9]/g; // 숫자문자 또는 영문자 정규식
+        		
+        		if(!regex.test(item)) {
+        			error++;
+        		} else if(length != 0 && length != 16) {
+        			error++;
+        		}
+			}
+        	
+            obj[cellName[index]] = item;
+        });
+        
+        if(error == 0) {
+        	csvCell[index - errorCase] = obj;
+        } else {
+        	errorCase++;
+        }
+    });
+    return { total: csvCell.length + errorCase, items: csvCell, error: errorCase };
+}
+
+function handleFile(e) {
+    var files = e.target.files;
+    var i, f;
+    
+    var suss = 0;
+    var fail = 0;
+
+    for (i = 0; i != files.length; ++i) {
+        f = files[i];
+        var reader = new FileReader();
+        var name = f.name;
+ 
+        reader.onload = function(e) {
+            var data = e.target.result;
+            var workbook;
+ 
+            if(rABS) {
+                /* if binary string, read with type 'binary' */
+                //workbook = XLSX.read(data, {type: 'binary'});
+            	var binary = "";
+            	var bytes = new Uint8Array(data);
+            	var length = bytes.byteLength;
+            	for(var i = 0; i < length; i++) {
+            		binary += String.fromCharCode(bytes[i])
+            	}
+            	workbook = XLSX.read(binary, {type:'binary'});          	
+            	
+            } else {
+                /* if array buffer, convert to base64 */
+                //var arr = fixdata(data);
+                //workbook = XLSX.read(btoa(arr), {type: 'base64'});
+            	workbook = XLSX.read(data, {type:'binary'}); 
+            }//end. if
+            
+ 			console.log(workbook);
+            
+ 			var find = workbook.SheetNames.find(function(item, index, array) {
+ 				if(item == 'Sheet1') {
+ 					var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[item],{FS:":",RS:"|"} );
+ 					var csvJson = getCsvToJson(csv);
+	                var items = csvJson.items;
+	                
+ 					console.log(csvJson);
+ 					
+ 					for(var i = 0; i < items.length; i++) {
+ 						fnObj.gridView01.addRowExcel(items[i].ani, items[i].bl_useyn, items[i].degree, items[i].description, items[i].agentid, items[i].agentname, items[i].connid);
+ 					}
+ 					
+					alert("[엑셀업로드] " + csvJson.total + "명 중 " + items.length + "명 성공 " + csvJson.error + "명 실패");
+					
+					return true;
+ 				}
+ 			});//end. workbook.forEach
+ 			
+ 			if(!find) {
+ 				console.log("[이슈고객 엑셀업로드] Sheet1을 찾을 수 없습니다.");
+				// alert("[엑셀업로드] Sheet1을 찾을 수 없습니다.");
+ 			}
+        }; //end reader.onload
+ 
+        if(rABS) {
+        	reader.readAsArrayBuffer(f); //reader.readAsBinaryString(f);
+        } else {
+        	reader.readAsBinaryString(f); //reader.readAsArrayBuffer(f);
+        }
+ 
+    }//end. for
+}
+ 
+var input_dom_element;
+$(function() {
+    input_dom_element = document.getElementById('excel');
+    if(input_dom_element.addEventListener) {
+        input_dom_element.addEventListener('change', handleFile, false);
+    }
+});

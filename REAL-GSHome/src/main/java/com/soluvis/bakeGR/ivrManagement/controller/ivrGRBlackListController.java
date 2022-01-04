@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -64,7 +66,7 @@ public class ivrGRBlackListController extends commController{
 	public @ResponseBody List<ivrGRBlackList> BlackListSearch(HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		Map<String,Object> params = RequestUtil.getParameterMap(request);
-		List<ivrGRBlackList> search = null;
+		List<ivrGRBlackList> search = null;		
 		
 		try
 		{	
@@ -195,11 +197,95 @@ public class ivrGRBlackListController extends commController{
 		
 		int result = 0;
 		int sqlrst = 0;
+		int errorCode = -1;
 		
 //		map.put("ani", bl.getAni());
 //		map.put("connid", bl.getConnid());
 //		map.put("description", bl.getDescription());
 //		map.put("agentid", bl.getAgentid());
+		
+		// 20220103 추가 :: IVR에서 받아오는 부분 예외처리!
+		// ani 검사 //
+		if(params.get("ani") == null || "".equals(params.get("ani").toString())) {
+			// 전화번호 빈값
+			logger.error("FromIVR Error: ANI가 빈값입니다.");
+			return errorCode;
+		} else {
+			String ani = params.get("ani").toString();
+			String aniRegex = "^(01[0-9]|02|0[3-4][1-3]|05[1-5]|06[1-4])(\\d{3,4})(\\d{4})$";	// 전화번호 정규식 (000-0000-0000)
+			Matcher aniMatcher = Pattern.compile(aniRegex).matcher(ani);
+			if(!aniMatcher.find()) {
+				// 전화번호 형식 잘못됨
+				logger.error("FromIVR Error: ANI 형식이 맞지 않습니다. (입력 : " + ani + ")");
+				return errorCode;
+			}
+		}
+		
+		// connid 검사 //
+		if(params.get("connid") == null || "".equals(params.get("connid").toString())) {
+			// connid 빈값
+			logger.error("FromIVR Error: CONNID가 빈값입니다.");
+			return errorCode;
+		} else {
+			String connid = params.get("connid").toString();
+			int connidLength = connid.length();
+			
+			if(connidLength != 16) {
+				// connid 자리수 잘못됨
+				logger.error("FromIVR Error: CONNID 글자수가 맞지 않습니다. (입력 : " + connidLength + "글자)");
+				return errorCode;
+			} else {
+				String connidRegex = "[a-z|0-9]{16}";
+				Matcher connidMatcher = Pattern.compile(connidRegex).matcher(connid);
+				if(!connidMatcher.matches()) {
+					// connid 형식 잘못됨
+					logger.error("FromIVR Error: CONNID 형식이 맞지 않습니다. (입력 : " + connid + ")");
+					return errorCode;
+				}
+			}
+		}
+		
+		// agentid 검사 //
+		
+		if(params.get("agentid") == null || "".equals(params.get("agentid").toString()) || "null".equals(params.get("agentid").toString().toLowerCase())) {
+			// agentid 빈값
+			logger.error("FromIVR Error: AGENTID가 빈값입니다.");
+			return errorCode;
+		} else {
+			String agentid = params.get("agentid").toString();
+			int agentidLength = agentid.length();
+			
+			if(agentidLength > 10) {
+				// agentid 자리수 잘못됨
+				logger.error("FromIVR Error: AGENTID 글자수가 맞지 않습니다. (입력 : " + agentidLength + ")");
+				return errorCode;
+			}
+		}
+		
+		// agentname 검사 //
+		
+		if(params.get("agentname") == null || "".equals(params.get("agentname").toString()) || "null".equals(params.get("agentname").toString().toLowerCase())) {
+			// agentname 빈값
+			logger.error("FromIVR Error: AGENTNAME이 빈값입니다.");
+			return errorCode;
+		} else {
+			String agentname = params.get("agentname").toString();
+			int agentnameLength = agentname.length();
+			
+			if(agentnameLength > 10) {
+				// agentname 자리수 잘못됨
+				logger.error("FromIVR Error: AGENTNAME 글자수가 맞지 않습니다. (입력 : " + agentnameLength + ")");
+				return errorCode;
+			} else {
+				String agentnameRegex = "[a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]{1,10}";
+				Matcher agentnameMatcher = Pattern.compile(agentnameRegex).matcher(agentname);
+				if(!agentnameMatcher.matches()) {
+					// agentname 형식 잘못됨
+					logger.error("FromIVR Error: AGENTNAME 형식이 맞지 않습니다. (입력 : " + agentname + ")");
+					return errorCode;
+				}
+			}
+		}
 		
 		params.put("comp_cd", "RETAIL");
 		params.put("bl_useyn", "1");

@@ -14,18 +14,24 @@
         <script type="text/javascript" src="<c:url value='/assets/js/view/js_create/bakeGR/ivrManagement/ivrGRBlackList.js?version=2'/>"></script>        
     </jsp:attribute>
     <jsp:body>
-		<ax:page-buttons></ax:page-buttons>
+		<ax:page-buttons><button type="button" class="btn btn-fn1" data-page-btn="sample"> 템플릿 다운로드 </button></ax:page-buttons>
 
         <div role="page-header">
             <ax:form name="searchView0">
-                <ax:tbl clazz="ax-search-tbl" minWidth="500px">   
+                <ax:tbl clazz="ax-search-tbl" minWidth="500px">  
                 	<ax:tr>
-						<ax:td label='센터' width="25%" labelWidth="100px">
+						<ax:td label="Excel업로드" labelWidth="150px" width="50%">
+                       	    <input type="file" id="excel" class="from-control" style="width:50%"/>
+                       	    <spen style="display:table-cell; text-align:left; padding-left:10px; padding-top:4px; vertical-align:middle;">※ 엑셀 재업로드는 파일 이름이 다른 파일이여야 하며,<br>&nbsp;&nbsp;&nbsp;파일 내용은 엑셀파일의 처음 Sheet1의 대한 내용만 읽습니다.</spen>
+                       	</ax:td>
+                    </ax:tr>  
+                	<ax:tr>
+						<ax:td label='센터' width="25%" labelWidth="150px">
 							<div class="form-group">
 								<div id="comSel" data-ax5select="comSelect" data-ax5select-config="{}"></div>					
 							</div>	
                     	</ax:td>
-						<ax:td label='전화번호' width="25%" labelWidth="100px">
+						<ax:td label='전화번호' width="25%" labelWidth="150px">
 							<div class="form-group">			
 								<input type="text" id="selText" name="selText" class="form-control" placeholder="">	
 							</div>
