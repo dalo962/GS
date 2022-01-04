@@ -625,7 +625,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             columns: [
             	// 그냥 키로 생성만 안해주면 화면에 안보이고 데이터는 가지고 있는다.
                 {key: "compName", label: "소속", width: 150, align: "center"},
-                {key: "partName", label: "부서", width: 250, align: "center"},
+                {key: "partName", label: "센터", width: 250, align: "center"},
                 {key: "name", label: "업무 팀", width: 300, align: "center"},
                 {key: "agroupDbid", label: "CTI AG DBID", width: 100, align: "center", editor: "text"},
                 {key: "agroupName", label: "CTI 그룹명", width: 250, align: "center", editor: "text"}
