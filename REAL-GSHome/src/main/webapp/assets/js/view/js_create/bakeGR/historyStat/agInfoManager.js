@@ -275,6 +275,7 @@ fnObj.pageStart = function () {
 							data: "",
 							callback:function(res)
 							{
+								dcode.push({value: "", text: "선택"});
 								res.forEach(function (n) {
 				                	dcode.push({
 				                        value: n.name, text: n.name,
@@ -289,6 +290,7 @@ fnObj.pageStart = function () {
 									data: "",
 									callback:function(res)
 									{
+										wtcode.push({value: "", text: "선택"});
 										res.forEach(function (n) {
 											wtcode.push({
 						                        value: n.name, text: n.name,
@@ -303,6 +305,7 @@ fnObj.pageStart = function () {
 											data: "",
 											callback:function(res)
 											{
+												wcode.push({value: "", text: "선택"});
 												res.forEach(function (n) {
 													wcode.push({
 								                        value: n.name, text: n.name,
@@ -988,6 +991,15 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            				},
 	            				options: dcode
 	            			}
+	            		}, formatter: function() {
+	            			if(this.item.dep_nm != undefined  && this.item.dep_nm != "" && this.item.dep_nm != null)
+	            			{
+	            				return this.item.dep_nm;
+	            			}
+	            			else
+	            			{
+	            				return "선택";
+	            			}
 	            		}
 	            	},
 	                {key: "agent_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "상담사명" + '</span>', width: 80, align: "center", sortable: true},
@@ -1010,7 +1022,15 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                			dayTmpl: "%s"
 	                			}	                		
 	                		}
-	                	}
+	                	}, formatter: function() {
+		            		if(this.item.join_date == undefined || this.item.join_date == "" || this.item.join_date == null) {
+	                			return '<span style="color: black; font-size:12px;">YYYY-MM-DD</span>';
+		            		}
+		            		else
+		            		{
+		            			return this.item.join_date;
+		            		}
+	            		}
 	                },
 	                {key: "work_time", label: "근무시간", width: 90, align: "center", sortable: true, 
 	            		editor:{
@@ -1020,6 +1040,15 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            					optionValue: "value", optionText: "text"
 	            				},
 	            				options: wtcode
+	            			}
+	            		}, formatter: function() {
+	            			if(this.item.work_time != undefined  && this.item.work_time != "" && this.item.work_time != null)
+	            			{
+	            				return this.item.work_time;
+	            			}
+	            			else
+	            			{
+	            				return "선택";
 	            			}
 	            		}
 	                },
@@ -1032,14 +1061,25 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            				},
 	            				options: wcode
 	            			}
-	            		}},
+	            		}, formatter: function() {
+	            			if(this.item.work != undefined  && this.item.work != "" && this.item.work != null)
+	            			{
+	            				return this.item.work;
+	            			}
+	            			else
+	            			{
+	            				return "선택";
+	            			}
+	            		}
+	                },
 	                {key: "skill_name", label: '<span style="font-weight:bold;color:#FF0000;">' + "상담스킬그룹" + '</span>', width: 380, align: "center", sortable: true, multiLine:true},
 	                {key: "age", label: "연령대", width: 80, align: "center", sortable: true, editor: {
                     	type: "select", config: {
                     		columnKeys: {
                     			optionValue: "value", optionText: "text"
                     		},
-                    		options: [                        		
+                    		options: [
+                    			{value: "", text: "선택"},
                         		{value: "20age", text: "20대"},
                         		{value: "30age", text: "30대"},
                         		{value: "40age", text: "40대"},
@@ -1049,7 +1089,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     	}
                     }, formatter: function() {
                     	switch(this.item.age) {
-	                    	case "20age":
+                    		case "20age":
 	                			return "20대";
 	                			break;                    		
 	                		case "30age":
@@ -1075,12 +1115,13 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     			optionValue: "value", optionText: "text"
                     		},
                     		options: [
+                    			{value: "", text: "선택"},
                         		{value: "0", text: "미혼"},
                         		{value: "1", text: "기혼"},
                         	]
                     	}
                     }, formatter: function() {
-                    	switch(this.item.mey_yn) {               		
+                    	switch(this.item.mey_yn) {
 	                		case "0":
 	                			return "미혼";
 	                			break;
@@ -1098,13 +1139,14 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                     			optionValue: "value", optionText: "text"
                     		},
                     		options: [
+                    			{value: "", text: "선택"},
                         		{value: "1", text: "남자"},
                         		{value: "2", text: "여자"},
                         	]
                     	}
                     }, formatter: function() {
-                    	switch(this.item.gender) {             		
-	                		case "1":
+                    	switch(this.item.gender) {
+                    		case "1":
 	                			return "남자";
 	                			break;
 	                		case "2" :
@@ -1128,7 +1170,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                         	]
                     	}
                     },*/ formatter: function() {
-                    	switch(this.item.work_yn) {               		
+                    	switch(this.item.work_yn) {
 	                		case "0":
 	                			return "퇴사";
 	                			break;
@@ -1136,7 +1178,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                			return "재직";
 	                			break;
 	                		default :
-	                			return "선택";
+	                			return "";
 	                			break;
                     	}
                     }},
@@ -1159,7 +1201,15 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 		                			dayTmpl: "%s"
 		                		}             		
 		                	}
-		                },
+		                }, formatter: function() {
+		            		if(this.item.join_date == undefined || this.item.join_date == "" || this.item.join_date == null) {
+	                			return '<span style="color: black; font-size:12px;">YYYY-MM-DD</span>';
+		            		}
+		            		else
+		            		{
+		            			return this.item.join_date;
+		            		}
+	            		},
 	                }
 	            ],
 	            body: {
