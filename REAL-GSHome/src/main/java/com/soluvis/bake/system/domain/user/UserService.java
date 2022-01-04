@@ -9,9 +9,11 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.chequer.axboot.core.controllers.BaseController;
 import com.chequer.axboot.core.parameter.RequestParams;
 import com.querydsl.core.BooleanBuilder;
 import com.soluvis.bake.common.service.menuManagerService;
@@ -57,6 +59,8 @@ public class UserService extends BaseService<User, String> {
   	
   	@Inject
     private menuManagerService mstService; // 메뉴 참조
+  	
+  	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(BaseController.class);
   	
     //------------------------------------------------------------------------------
     
@@ -107,6 +111,7 @@ public class UserService extends BaseService<User, String> {
 	            map.put("dispname","");
 	            List<statListManager> userChk = statLstMngService.userFacSel(map);
 	            
+	            logger.info("User Create Start..");
 	            // 초기 데이터가 없음
 	            if(userChk.size() == 0)
 	            {
