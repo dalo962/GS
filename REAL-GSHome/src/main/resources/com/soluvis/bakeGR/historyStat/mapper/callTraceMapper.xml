@@ -21,7 +21,8 @@
         from    WINK1.callinfo a, (select distinct company_cd, company_name, dept_cd, dept_name, team_cd, team_name, agent_dbid, agent_id, agent_name from WDM.ax_a_struct) b
         WHERE   a.lastperson = b.agent_dbid(+)
         <if test="center != '' and center != null">
-		AND		b.company_cd = #{center}		
+		AND		(b.company_cd = #{center} or a.dnis like '66%')
+		AND		a.dnis != '66666'	
 		</if>
 		<if test="dept_name != '' and dept_name != null">
 		AND		b.dept_cd = #{dept_name}	
