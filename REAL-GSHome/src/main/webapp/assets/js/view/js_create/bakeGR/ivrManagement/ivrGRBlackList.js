@@ -59,6 +59,9 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	    		if(n.bl_useyn == null || n.bl_useyn == "") {
 	    			bluse = bluse + 1;
 	    		}
+	    		if(n.degree == null || n.degree == "") {
+	    			bldeg = bldeg + 1;
+	    		}
 
 	        	// 20211230 추가 :: 정합성체크 및 필수값으로
 	    		if(n.agentid == null || n.agentid == "") {
