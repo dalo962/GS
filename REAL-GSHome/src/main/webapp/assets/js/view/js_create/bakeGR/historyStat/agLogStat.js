@@ -674,7 +674,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     }, 
     agentSearch: function(){
     	var data = {}; 
-    	data.interval = "";
+    	data.interval = "day";
     	data.create_at = $("#startDate").val();
         data.delete_at = $("#endDate").val(); 
         data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;

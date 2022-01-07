@@ -1371,6 +1371,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     	var data = {}; 
     	
     	var inter = "day";
+    	/*
     	if(init == 0)
     	{
     		init = 1;
@@ -1382,7 +1383,7 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     			inter = $("[data-ax5select='interval']").ax5select("getValue")[0].value;
     		}
     	}
-    	
+    	*/
     	data.interval = inter;
     	data.create_at = $("#startDate").val();
         data.delete_at = $("#endDate").val(); 
