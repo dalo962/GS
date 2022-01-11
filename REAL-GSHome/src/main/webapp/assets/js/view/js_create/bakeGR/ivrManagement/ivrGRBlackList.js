@@ -571,9 +571,11 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		var index = this.item.__index;
                 		var connid = this.item.connid;
                 		var length = connid.length;
-                		var regex = /[a-z|0-9]/g; // 숫자문자 또는 영문자 정규식
+                		// 20220111 수정 :: 정규식 이상 ( 안되는 것 만 넣는 경우만 걸러냄 => d*는 통과시킴 ) 
+                		var regex = /[a-z|0-9]*/g; // 숫자문자 또는 영문자 정규식
+                		var exec = regex.exec(connid);
                 		
-                		if(length != 0 && !regex.test(connid)) {
+                		if(length != 0 && (!exec || !(exec[0] == exec.input))) {
                 			alert("ConnID는 숫자, 영어 소문자만 입력할 수 있습니다."); // alert 띄우고
             	    		connid = "";	// 입력된 값을 빈칸으로
             	    		
@@ -592,9 +594,11 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		var index = this.item.__index;
                 		var agentname = this.item.agentname;
                 		var length = agentname.length;
-                		var regex = /[a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g; // 영문자 또는 한글 정규식
+                		// 20220111 수정 :: 정규식 이상 ( 안되는 것 만 넣는 경우만 걸러냄 => d*는 통과시킴 ) 
+                		var regex = /[a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*/g; // 영문자 또는 한글 정규식
+                		var exec = regex.exec(agentname);
                 		
-                		if(length != 0 && !regex.test(agentname)) {
+                		if(length != 0 && (!exec || !(exec[0] == exec.input))) {
                 			alert("상담사 이름은 한글 또는 영문자만 입력할 수 있습니다."); // alert 띄우고
             	    		agentname = "";	// 입력된 값을 빈칸으로
             	    		
