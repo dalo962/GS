@@ -849,13 +849,13 @@ function getCsvToJson($csv){
     				error++;
             	}
         	} else if(index == 4) { // 사번
-        		if(length > 10) {
+        		if(length == 0 || length > 10) {
         			error++;
         		}
         	} else if(index == 5) { // 상담사
         		var regex = /[a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*/g; // 영문자 또는 한글 정규식
         		var exec = regex.exec(item);
-        		console.log(exec);
+        		
         		if(length == 0 || (!exec || !(exec[0] == exec.input))) {
         			error++;
         		} else if(length > 10) {
@@ -865,7 +865,7 @@ function getCsvToJson($csv){
         		var regex = /[a-z|0-9]*/g; // 숫자문자 또는 영문자 정규식
         		var exec = regex.exec(item);
         		
-        		if(!exec || !(exec[0] == exec.input)) {
+        		if(length == 0 || (!exec || !(exec[0] == exec.input))) {
         			error++;
         		} else if(length != 0 && length != 16) {
         			error++;
