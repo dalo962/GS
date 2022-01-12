@@ -69,7 +69,7 @@
             <ax:splitter></ax:splitter> 
             <ax:split-panel height="70%" style="padding-bottom: 10px; height:84%;">
             	<ax:form name="searchView0">
-					<ax:tbl clazz="ax-search-tbl" minWidth="500px">
+					<ax:tbl id="hover" clazz="ax-search-tbl" minWidth="500px">
 						<ax:tr>
 							<ax:td label='시간입력' width="19%" labelWidth="100px">
 								<div class="form-group">

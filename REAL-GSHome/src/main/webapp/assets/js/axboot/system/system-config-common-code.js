@@ -212,7 +212,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
     	else{
     		dateString += date.getDate();
     	}  	
-    	this.target.exportExcel("공통코드_관리" +dateString+ ".xls");
+    	this.target.exportExcel("공통코드_관리_" +dateString+ ".xls");
     	//this.target.exportExcelXlsx("공통코드 관리_" +dateString);
     }
 });
