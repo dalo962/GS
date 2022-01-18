@@ -212,7 +212,7 @@ public class ivrGRBlackListController extends commController{
 			return errorCode;
 		} else {
 			String ani = params.get("ani").toString();
-			String aniRegex = "^(01[0-9]|02|0[3-4][1-3]|05[1-5]|06[1-4])(\\d{3,4})(\\d{4})$";	// 전화번호 정규식 (000-0000-0000)
+			String aniRegex = "^(0[1-9][0-9]|02)(\\d{3,4})(\\d{4})$";	// 전화번호 정규식 (000-0000-0000)
 			Matcher aniMatcher = Pattern.compile(aniRegex).matcher(ani);
 			if(!aniMatcher.find()) {
 				// 전화번호 형식 잘못됨

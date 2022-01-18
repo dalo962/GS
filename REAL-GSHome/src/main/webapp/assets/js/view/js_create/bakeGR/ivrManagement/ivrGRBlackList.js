@@ -403,7 +403,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             				return '<span style="color: red; font-size: 0.5rem;">"-" 제외한 전화번호 입력</span>';
             			}
             			var result_ani = ani;
-            			var regex = /^(01[0-9]|02|0[3-4][1-3]|05[1-5]|06[1-4])(\d{3,4})(\d{4})$/g;
+            			var regex = /^(0[1-9][0-9]|02)(\d{3,4})(\d{4})$/g;
             			var matcher = regex.exec(result_ani);
             			
             			if(matcher) {
@@ -555,7 +555,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 	if(key == "ani") {
                 		var ani = this.item.ani.replaceAll('-', '');		// 현재 입력된 ani에서 - 제외
 	                    var index = this.item.__index;						// 현재 입력된 ani의 위치
-	                    var regex = /^(01[0-9]|02|0[3-4][1-3]|05[1-5]|06[1-4])(\d{3,4})(\d{4})$/g;			// 전화번호 형식 정규식
+            			var regex = /^(0[1-9][0-9]|02)(\d{3,4})(\d{4})$/g;
             			var matcher = regex.exec(ani);						// 입력된 ani와 정규식의 매칭 결과
 
             			if(ani != "" && !matcher) {	// 입력된 ani가 전화번호 형식과 다른 경우
@@ -825,7 +825,7 @@ function getCsvToJson($csv){
         		}
         		
         		item = item.replaceAll('-', '');
-                var regex = /^(01[0-9]|02|0[3-4][1-3]|05[1-5]|06[1-4])(\d{3,4})(\d{4})$/g; // 전화번호 형식 정규식
+    			var regex = /^(0[1-9][0-9]|02)(\d{3,4})(\d{4})$/g;
     			var matcher = regex.exec(item);						// 입력된 ani와 정규식의 매칭 결과
 
     			if(item != "" && !matcher) {	// 입력된 ani가 전화번호 형식과 다른 경우
