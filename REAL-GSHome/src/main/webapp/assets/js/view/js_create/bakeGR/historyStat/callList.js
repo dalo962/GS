@@ -173,9 +173,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     GET_REC: function (caller, act, data) {
     	// 선택된 data의 cannid를 가져옴 //
     	var connid = caller.gridView01.getData("selected")[0].CONNID;
+    	var extension = caller.gridView01.getData("selected")[0].EXTENSION;
     	
     	// window.open 시 필요한 값들 :: url, name, specs //
-    	var url = rec_url + "/recseePlayer/?SEQNO=" + connid;
+    	var url = rec_url + "/recseePlayer/?ext=" + extension + "&SEQNO=" + connid;
     	var name = "recPopup";
     	var specs = "width=800,height=300,menubar=no,status=no";
     	
