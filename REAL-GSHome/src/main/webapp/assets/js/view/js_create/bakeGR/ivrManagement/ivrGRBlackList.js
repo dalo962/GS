@@ -35,7 +35,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var bluse = 0;
     	var bldeg = 0;
     	
-    	// 20211230 추가 :: 정합성체크 및 필수값으로
     	var blagid = 0;
     	var blagnm = 0;
     	var blconnid = 0;
@@ -63,7 +62,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 	    			bldeg = bldeg + 1;
 	    		}
 
-	        	// 20211230 추가 :: 정합성체크 및 필수값으로
 	    		if(n.agentid == null || n.agentid == "") {
 	    			blagid = blagid + 1;
 	    		}
@@ -107,7 +105,6 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		return;
     	}    
 
-    	// 20211230 추가 :: 정합성체크 및 필수값으로
     	if(blagid > 0) { 
     		alert("상담사 사번을 입력하시기 바랍니다."); 
     		return;
@@ -402,16 +399,26 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             			if(ani == '' || ani == null) {
             				return '<span style="color: red; font-size: 0.5rem;">"-" 제외한 전화번호 입력</span>';
             			}
-            			var result_ani = ani;
-            			var regex = /^(0[1-9][0-9]|02)(\d{3,4})(\d{4})$/g;
-            			var matcher = regex.exec(result_ani);
-            			
-            			if(matcher) {
-            				var middle_number = matcher[2];
-            				return matcher[1]+middle_number.split('').fill('*',0,middle_number.length).join('')+matcher[3];
+
+            			// 마스킹 //
+            			var sani = ani;
+
+            			if(sani.length > 5) {
+            				if(sani.length == 6)		{ sani = "**" + sani.substr(2, 4); } 
+            				else if(sani.length == 7)	{ sani = "***" + sani.substr(3, 4); } 
+            				else if(sani.length == 8)	{ sani = "****" + sani.substr(4, 4); } 
+            				else if(sani.length == 9)	{ sani = sani.substr(0, 3) + "**" + sani.substr(5, 4); } 
+            				else if(sani.length == 10)	{ sani = sani.substr(0, 3) + "***" + sani.substr(6, 4); } 
+            				else if(sani.length == 11)	{ sani = sani.substr(0, 3) + "****" + sani.substr(7, 4); } 
+            				else if(sani.length == 12)	{ sani = sani.substr(0, 4) + "****" + sani.substr(8, 4); } 
+            				else if(sani.length == 13)	{ sani = sani.substr(0, 4) + "*****" + sani.substr(9, 4); } 
+            				else if(sani.length == 14)	{ sani = sani.substr(0, 4) + "*****" + sani.substr(10, 4); }
+            				else if(sani.length == 15)	{ sani = sani.substr(0, 5) + "*****" + sani.substr(11, 4); }
+            				else if(sani.length == 16)	{ sani = sani.substr(0, 5) + "******" + sani.substr(12, 4); }
+            				else						{ sani = sani.substr(0, 3) + "****" + sani.substr(7, 4); }
             			}
-            			
-            			return result_ani;
+
+            			return sani;
             		},
             		editor: {
 	            		type: "text", disabled:function(){
@@ -477,7 +484,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             	{key: "description", label: "사유", width: 240, align: "center", editor:"text"},
             	{key: "agentid", label: "사번", width: 80, align: "center", editor:"text",
                 	formatter: function() {
-                    	// 20211230 추가 :: 정합성체크 및 필수값으로
                 		var agentid = this.item.agentid;
                 		if(agentid == '' || agentid == null) {
                 			return '<span style="color: red;">입력</span>';
@@ -487,7 +493,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 }},
             	{key: "agentname", label: "상담사", width: 80, align: "center", editor:"text",
                 	formatter: function() {
-                    	// 20211230 추가 :: 정합성체크 및 필수값으로
                 		var agentname = this.item.agentname;
                 		if(agentname == '' || agentname == null) {
                 			return '<span style="color: red;">입력</span>';
@@ -497,7 +502,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 }},
             	{key: "connid", label: "ConnID", width: 130, align: "center", editor:"text",
                 	formatter: function() {
-                    	// 20211230 추가 :: 정합성체크 및 필수값으로
                 		var connid = this.item.connid;
                 		if(connid == '' || connid == null) {
                 			return '<span style="color: red;">입력</span>';
@@ -555,23 +559,27 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 	if(key == "ani") {
                 		var ani = this.item.ani.replaceAll('-', '');		// 현재 입력된 ani에서 - 제외
 	                    var index = this.item.__index;						// 현재 입력된 ani의 위치
-            			var regex = /^(0[1-9][0-9]|02)(\d{3,4})(\d{4})$/g;
-            			var matcher = regex.exec(ani);						// 입력된 ani와 정규식의 매칭 결과
 
-            			if(ani != "" && !matcher) {	// 입력된 ani가 전화번호 형식과 다른 경우
-            				alert("전화번호를 올바르게 입력하시기 바랍니다."); // alert 띄우고
+	                    var regex = /^\d+$/gi;
+	                    var matcher = regex.exec(ani);
+
+	                    if(ani != "" && !matcher) {	// 입력된 ani가 전화번호 형식과 다른 경우
+	                    	alert("전화번호를 올바르게 입력하시기 바랍니다."); // alert 띄우고
             	    		ani = "";	// 입력된 값을 빈칸으로
+            			} else {
+            				if(ani.length != '' && (ani.length < 6 || ani.length > 16)) { // 자릿수 //
+            					alert("전화번호를 올바르게 입력하시기 바랍니다."); // alert 띄우고
+                	    		ani = "";	// 입력된 값을 빈칸으로
+            				}
             			}
 	                    
 	                    this.self.setValue(index, key, ani);
                 	}
-                	// 20211230 추가 :: 정합성체크 및 필수값으로
                 	// CONNID //
                 	else if(key == "connid") {
                 		var index = this.item.__index;
                 		var connid = this.item.connid;
                 		var length = connid.length;
-                		// 20220111 수정 :: 정규식 이상 ( 안되는 것 만 넣는 경우만 걸러냄 => d*는 통과시킴 ) 
                 		var regex = /[a-z|0-9]*/g; // 숫자문자 또는 영문자 정규식
                 		var exec = regex.exec(connid);
                 		
@@ -594,7 +602,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		var index = this.item.__index;
                 		var agentname = this.item.agentname;
                 		var length = agentname.length;
-                		// 20220111 수정 :: 정규식 이상 ( 안되는 것 만 넣는 경우만 걸러냄 => d*는 통과시킴 ) 
                 		var regex = /[a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*/g; // 영문자 또는 한글 정규식
                 		var exec = regex.exec(agentname);
                 		
@@ -609,7 +616,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		
                 		if(length > 10) {
                 			alert("상담사 이름은 최대 10자까지 입력할 수 있습니다."); // alert 띄우고
-                			//agentname = "";	// 입력된 값을 빈칸으로
                 			agentname = agentname.substr(0, 10); // 자리수에 맞게 자름
                 			
                     		this.self.setValue(index, key, agentname);
@@ -624,7 +630,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 		
                 		if(length > 10) {
                 			alert("상담사 사번은 최대 10자까지 입력할 수 있습니다."); // alert 띄우고
-                			//agentid = "";	// 입력된 값을 빈칸으로
             	    		agentid = agentid.substr(0, 10); // 자리수에 맞게 자름
             	    		
                     		this.self.setValue(index, key, agentid);
@@ -768,7 +773,6 @@ function getByteLength(s,b,i,c){
     return b;
 }
 
-// 20220103 추가 :: 이슈고객 엑셀 업로드
 // 엑셀 업로드 //
 var rABS = true; 
 
@@ -820,16 +824,19 @@ function getCsvToJson($csv){
         	if(index == 0) { // 이슈고객 번호
         		if(item.charAt(0) == '\'') {
         			item = item.substring(1, length);
-        		} else if(item.charAt(0) != '0') {
-        			item = '0' + item;
         		}
         		
         		item = item.replaceAll('-', '');
-    			var regex = /^(0[1-9][0-9]|02)(\d{3,4})(\d{4})$/g;
-    			var matcher = regex.exec(item);						// 입력된 ani와 정규식의 매칭 결과
+
+                var regex = /^\d+$/gi;
+                var matcher = regex.exec(item);
 
     			if(item != "" && !matcher) {	// 입력된 ani가 전화번호 형식과 다른 경우
     				error++;
+    			} else {
+    				if(length < 6 || length > 16) { // 자릿수 //
+    					error++;
+    				}
     			}
         	} else if(index == 1) { // 사용유무
         		if(item == "사용") {

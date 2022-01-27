@@ -204,7 +204,6 @@ public class ivrGRBlackListController extends commController{
 //		map.put("description", bl.getDescription());
 //		map.put("agentid", bl.getAgentid());
 		
-		// 20220103 추가 :: IVR에서 받아오는 부분 예외처리!
 		// ani 검사 //
 		if(params.get("ani") == null || "".equals(params.get("ani").toString())) {
 			// 전화번호 빈값
@@ -212,12 +211,27 @@ public class ivrGRBlackListController extends commController{
 			return errorCode;
 		} else {
 			String ani = params.get("ani").toString();
-			String aniRegex = "^(0[1-9][0-9]|02)(\\d{3,4})(\\d{4})$";	// 전화번호 정규식 (000-0000-0000)
+//			String aniRegex = "^(0[1-9][0-9]|02)(\\d{3,4})(\\d{4})$";	// 전화번호 정규식 (000-0000-0000)
+//			Matcher aniMatcher = Pattern.compile(aniRegex).matcher(ani);
+//			if(!aniMatcher.find()) {
+//				// 전화번호 형식 잘못됨
+//				logger.error("FromIVR Error: ANI 형식이 맞지 않습니다. (입력 : " + ani + ")");
+//				return errorCode;
+//			}
+			
+			String aniRegex = "^\\d+$";
 			Matcher aniMatcher = Pattern.compile(aniRegex).matcher(ani);
-			if(!aniMatcher.find()) {
-				// 전화번호 형식 잘못됨
-				logger.error("FromIVR Error: ANI 형식이 맞지 않습니다. (입력 : " + ani + ")");
+			if(!aniMatcher.find()) { 
+				// 숫자 아닌 경우
+				logger.error("FromIVR Error: ANI는 숫자만 입력해야합니다. (입력 : " + ani + ")");
 				return errorCode;
+			} else {
+				int aniLength = ani.length();
+				if(aniLength < 6 || aniLength > 16) {
+					// 전화번호 자릿수 틀린경우
+					logger.error("FromIVR Error: ANI는 6~16 사이의 숫자입니다. (입력 : " + ani + ", 자릿수 : " + aniLength + ")");
+					return errorCode;
+				}
 			}
 		}
 		

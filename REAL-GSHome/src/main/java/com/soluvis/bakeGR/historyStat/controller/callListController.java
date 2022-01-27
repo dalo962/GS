@@ -1,11 +1,8 @@
 package com.soluvis.bakeGR.historyStat.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -200,36 +197,25 @@ public class callListController extends commController{
 
 		return search;
 	}	
-	
+
 	// 전화번호 가운데자리 마스킹하는 메서드 //
-	private String maskPhoneNumber (String phoneNumber) {
-		String resultNumber = phoneNumber;
-		String regex = "^(0[1-9][0-9]|02)(\\d{3,4})(\\d{4})$";	// 전화번호 정규식 (000-0000-0000)
-		Matcher matcher = Pattern.compile(regex).matcher(resultNumber);
-		
-		if(matcher.find()) { // 입력받은 번호에서 정규식과 맞는 패턴을 찾는다.
-			String target = matcher.group(2); // 두 번째 그룹(중간번호 3~4자리)를 가져온다.
-			int length = target.length();
-			char[] c = new char[length];
-			Arrays.fill(c, '*'); // 중간번호 사이즈만큼 * 을 채운다.
-
-			return resultNumber.replaceFirst(target, String.valueOf(c));
-		} else {
-			regex = "^(\\d{4})(\\d{4})$"; // 전화번호 정규식 (0000-0000)
-			matcher = Pattern.compile(regex).matcher(resultNumber);
-			
-			if(matcher.find()) {
-				String target = matcher.group(1);
-				int length = target.length();
-				char[] c = new char[length];
-				Arrays.fill(c, '*');
-
-				return resultNumber.replaceFirst(target, String.valueOf(c));
-			}
+	private String maskPhoneNumber (String sani) {
+		if(sani.length() > 5) {
+			if(sani.length() == 6) 			{ sani = "**" + sani.substring(2, 6); } 
+			else if(sani.length() == 7)		{ sani = "***" + sani.substring(3, 7); } 
+			else if(sani.length() == 8)		{ sani = "****" + sani.substring(4, 8); } 
+			else if(sani.length() == 9)		{ sani = sani.substring(0, 3) + "**" + sani.substring(5, 9); } 
+			else if(sani.length() == 10)	{ sani = sani.substring(0, 3) + "***" + sani.substring(6, 10); } 
+			else if(sani.length() == 11)	{ sani = sani.substring(0, 3) + "****" + sani.substring(7, 11); } 
+			else if(sani.length() == 12)	{ sani = sani.substring(0, 4) + "****" + sani.substring(8, 12); } 
+			else if(sani.length() == 13)	{ sani = sani.substring(0, 4) + "*****" + sani.substring(9, 13); } 
+			else if(sani.length() == 14)	{ sani = sani.substring(0, 4) + "******" + sani.substring(10, 14); } 
+			else if(sani.length() == 15)	{ sani = sani.substring(0, 5) + "******" + sani.substring(11, 15); } 
+			else if(sani.length() == 16)	{ sani = sani.substring(0, 5) + "*******" + sani.substring(12, 16); } 
+			else							{ sani = sani.substring(0, 3) + "****" + sani.substring(7, 11); }
 		}
 
-		// 전화번호 패턴이 "000-0000-0000" 또는 "0000-0000"가 아닌 경우
-		return resultNumber;
+		return sani;
 	}
 }
 
