@@ -143,6 +143,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var chkag = 0;
     	var chkdg = 0;
     	var chkbcs = 0;
+    	var chkrty = 0;
     	saveList.forEach(function (n){
     		if(n.targettable.indexOf("MIG") != -1)
     		{
@@ -155,6 +156,10 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		if(n.targettable.indexOf("AX_A_STRUCT") != -1)
     		{
     			chkag++;
+    		}
+    		if(n.targettable.indexOf("SP_DAY_IVR_RETRY") != -1)
+    		{
+    			chkrty++;
     		}
     	});
     	
@@ -173,6 +178,12 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	if(chkag > 0)
     	{
     		alert("상담사목록은 선택 예약할 수 없습니다."); 
+    		return;
+    	}
+    	
+    	if(chkrty > 0)
+    	{
+    		alert("IVR 1일은 선택 예약할 수 없습니다."); 
     		return;
     	}
     	
@@ -342,6 +353,30 @@ var ACTIONS = axboot.actionExtend(fnObj, {
         				alert("1일 주기 입력 시간형식이 맞지 않습니다.");
         	    		return;
         			}
+    			}
+    			
+    			if(statgubun == "43(1DAY)")
+    			{
+    				var date = new Date();
+    			    var yyyy = date.getFullYear().toString();
+    			    var MM = (date.getMonth() + 1).toString();
+    			    if(MM.length == 1) MM = "0"+MM;
+    			    var dd = date.getDate().toString();
+    			    if(dd.length == 1) dd = "0"+dd;
+    			    
+    			    if(targettime1 != targettime2)
+        			{
+        				alert("시작시간과 종료시간에 같은 값을 입력하여야 합니다.");
+            	    	return;
+        			}
+    			    else
+    			    {
+    			    	if(targettime1 >= yyyy+MM+dd && targettime2 >= yyyy+MM+dd)
+    			    	{
+    			    		alert("시작시간과 종료시간을 전일 날짜로 입력하여야 합니다. ");
+                	    	return;
+    			    	}
+    			    }
     			}
     		}
     		else if(statgubun == "50(1MONTH)")
@@ -1022,7 +1057,7 @@ $("#hover").hover(
 							 '\n1시간 주기는 시간형식이 년월일시간(10자리) 입력 (1시간간격)' +
 							 '\n1일 주기는 시간형식이 년월일(8자리) 입력' +
 							 '\n1월 주기는 시간형식이 년월(6자리) 입력' +
-							 '\nIVR 1일 주기는 시간형식이 년월일(8자리) 입력' +
+							 '\nIVR 1일 주기는 시간형식이 년월일(8자리) 입력(전일날짜 입력)' +
 							 '\n상담사 목록 주기는 시간형식이 년월일(8자리) 입력' +
 							 '\nWINK2->WINK1 주기는 시간형식이 년월일시간분초(14자리) 입력');
 	}, 
