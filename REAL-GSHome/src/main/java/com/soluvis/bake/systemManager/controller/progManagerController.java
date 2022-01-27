@@ -331,7 +331,7 @@ public class progManagerController extends commController{
 					result = progMngService.penIst(map);
 				}
 			}
-			else if("31(1DAY)".equals(statgubun) || "40(1DAY)".equals(statgubun))
+			else if("31(1DAY)".equals(statgubun) || "40(1DAY)".equals(statgubun) || "43(1DAY)".equals(statgubun))
 			{
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 				

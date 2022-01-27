@@ -60,19 +60,28 @@
     </select>
 
 	<select id="connidfsts" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		select	wc1.connid as connid
+		from 	WINK1.callinfo wc1, WINK1.callinfo wc2
+		where 	wc1.connidfst = wc2.connidfst
+  		and 	wc2.connid = #{connidfst}
+		order by wc1.connid
+    </select>
+    
+    
+    <select id="connidfstsAsIs" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
 		select 	connid as connid 
 		from 	WINK1.callinfo 
 		where 	connidfst in (select connidfst 
 							 from 	 WINK1.callinfo 
 							 where connid = #{connidfst})
-		order by connid							 
+		order by connid
     </select>
 
 	<select id="callTrTbSel" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
 		SELECT	TO_CHAR(TO_DATE('1970-01-01','yyyy-mm-dd') + ((timets + 32400) / 86400),'YYYY-MM-DD') as row_date,
-				TO_CHAR(TO_DATE('1970-01-01','yyyy-mm-dd') + ((timets + 32400) / 86400),'hh24miss') starttime,
-        		TO_CHAR(TO_DATE('1970-01-01','yyyy-mm-dd') + ((timets + 32400) / 86400),'hh24miss') endtime,
-				connid as connid,
+				substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((timets + 32400) / 86400), 'hh24miss'),0,2) || ':' || substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((timets + 32400) / 86400), 'hh24miss'),3,2) || ':' || substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((timets + 32400) / 86400), 'hh24miss'),5,2) starttime,
+                substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((timets + 32400) / 86400), 'hh24miss'),0,2) || ':' || substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((timets + 32400) / 86400), 'hh24miss'),3,2) || ':' || substr(TO_CHAR(TO_DATE('1970-01-01', 'yyyy-mm-dd') + ((timets + 32400) / 86400), 'hh24miss'),5,2) endtime,
+                connid as connid,
 				decode(calltype,1,'Internal',2,'Inbound',3,'Outbound',4,'Consult',null) as calltype,
 				(SELECT NAME FROM WINK1.codes WHERE ID = EVENT) as event,
 				(SELECT DES  FROM WINK1.codes WHERE ID = EVENT) as des,
@@ -80,6 +89,7 @@
 				otherdn as otherdn,
 				thirddn as thirddn,
 				thisqueue as thisqueue,
+				otherdn as ani,
 				c.group_name as group_name,
 				b.agent_id as agent_id,
         		b.agent_name as agent_name,

@@ -1010,26 +1010,27 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	    	        {key: "CONNID", label: "최종CONNID", width: 170, align: "center", sortable: true}	,  
 	        		{key: "CALLTYPE", label: "호유형", width: 130, align: "center", sortable: true},
 	        		{key: "ANI", label: "고객전화번호", width: 130, align: "center", sortable: true,
-	    	        	formatter:function(){
-//	    	        		if(this.value != null)
-//	                		{
-//	    	        			var ani = this.value;
-//	    	        			
-//	                			if(ani != "" && ani != null) {
-//	                				var len = ani.length;
-//	                    			// 자리수 체크
-//	                    	        if(len == 11) { // 010****1234
-//	                    	        	return ani.substr(0, 3) + "****" + ani.substr(7, 4);
-//	                    	        } else if(len == 10) { // 02****1234
-//	                    	        	return ani.substr(0, 2) + "****" + ani.substr(6, 4);
-//	                    	        } else if(len == 9) { // 02***1234
-//	                    	        	return ani.substr(0, 2) + "***" + ani.substr(5, 4);
-//	                    	        } else {
-//	                    	        	//return "****";
-//	                    	        	return ani;
-//	                    	        }
-//	                			}
-//	                		}
+	        			/*	
+	        			formatter:function(){
+	    	        		if(this.value != null)
+	                		{
+	    	        			var ani = this.value;
+	    	        			
+	                			if(ani != "" && ani != null) {
+	                				var len = ani.length;
+	                    			// 자리수 체크
+	                    	        if(len == 11) { // 010****1234
+	                    	        	return ani.substr(0, 3) + "****" + ani.substr(7, 4);
+	                    	        } else if(len == 10) { // 02****1234
+	                    	        	return ani.substr(0, 2) + "****" + ani.substr(6, 4);
+	                    	        } else if(len == 9) { // 02***1234
+	                    	        	return ani.substr(0, 2) + "***" + ani.substr(5, 4);
+	                    	        } else {
+	                    	        	//return "****";
+	                    	        	return ani;
+	                    	        }
+	                			}
+	                		}
 	    	        		
 	    	        		if(this.value != null) {
 	    	        			var regex = /(\d{2,3})(\d{3,4})(\d{4})/g; // 000-0000-0000
@@ -1054,9 +1055,11 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	    	        		
 	                		return null;
 	                	}
+	                	*/
 	        		},
 	                {key: "DNIS", label: "인입VDN", width: 130, align: "center", sortable: true,
-		    	        	formatter:function(){
+		    	        /*	
+	        			formatter:function(){
 		                		if(this.value != null)
 		                		{
 		                			var dnis = this.value;
@@ -1078,6 +1081,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 		                		}
 		                		return null;
 		                	}
+		                	*/
 	        		},	
 	        		{key: "COM_NAME", label: "센터", width: 130, align: "center", sortable: true},
 	            	{key: "DEPT_NAME", label: "브랜드", width: 130, align: "center", sortable: true},
@@ -1174,7 +1178,8 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    detailbodyStr += "<td colspan=1 rowspan=1>" + nullChk(m.CALLTYPE) + "</td>";
 		    
 		    if(m.ANI != null)
-    		{
+    		{	
+		    	/*
 		    	var gil = m.ANI.length;
         		var val = "";
         		if(gil > 5)
@@ -1194,12 +1199,16 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
             	        	val = ani;
             	        }
         			}
+        			
         			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(val) + "</td>";
+        		
         		}
         		else
         		{
+        		*/
         			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(m.ANI) + "</td>";
-        		}
+        		//}
+        		
     		}
 		    else
 		    {
@@ -1209,6 +1218,7 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    
 		    if(m.DNIS != null)
     		{
+		    	/*
 		    	var gil = m.DNIS.length;
         		var val = "";
         		if(gil > 5)
@@ -1233,8 +1243,9 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
         		}
         		else
         		{
+        		*/
         			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(m.DNIS) + "</td>";
-        		}
+        		//}
     		}
 		    else
 		    {

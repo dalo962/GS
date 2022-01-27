@@ -323,7 +323,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     				}
     			}
     		}
-    		else if(statgubun == "31(1DAY)" || statgubun == "40(1DAY)")
+    		else if(statgubun == "31(1DAY)" || statgubun == "40(1DAY)" || statgubun == "43(1DAY)")
     		{
     			if(targettime1.length != 8 || targettime2.length != 8)
     			{
@@ -864,7 +864,8 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
 		gubun.push({text:"1시간" ,value:"30(1HOUR)"});
 		gubun.push({text:"1일" ,value:"31(1DAY)"});
 		gubun.push({text:"1월" ,value:"50(1MONTH)"});
-		//gubun.push({text:"1일상세" ,value:"40(1DAY)"});		
+		gubun.push({text:"IVR 1일" ,value:"43(1DAY)"});
+		//gubun.push({text:"1일상세" ,value:"40(1DAY)"});
 		gubun.push({text:"상담사목록" ,value:"AX_A_STRUCT"});
 		gubun.push({text:"WINK2->WINK1" ,value:"WINK2->WINK1"});
 		$("[data-ax5select='gubun']").ax5select({
@@ -1021,6 +1022,7 @@ $("#hover").hover(
 							 '\n1시간 주기는 시간형식이 년월일시간(10자리) 입력 (1시간간격)' +
 							 '\n1일 주기는 시간형식이 년월일(8자리) 입력' +
 							 '\n1월 주기는 시간형식이 년월(6자리) 입력' +
+							 '\nIVR 1일 주기는 시간형식이 년월일(8자리) 입력' +
 							 '\n상담사 목록 주기는 시간형식이 년월일(8자리) 입력' +
 							 '\nWINK2->WINK1 주기는 시간형식이 년월일시간분초(14자리) 입력');
 	}, 

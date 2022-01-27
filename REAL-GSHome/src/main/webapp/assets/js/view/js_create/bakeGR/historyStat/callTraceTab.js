@@ -194,25 +194,32 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	            columns: [
 	            	{key: "ROW_DATE", label: "날짜", width: 100, align: "center", sortable: true},
 	            	{key: "STARTTIME", label: "인입시간", width: 100, align: "center", sortable: true, 
+	            	/*
 	            		formatter: function(){	            	
         				var stime = "";
         				stime = this.item.STARTTIME.substr(0,2) + " : " + this.item.STARTTIME.substr(2,2) + " : " + this.item.STARTTIME.substr(4,2)
         				
         				return stime;
-        			}},
+        			}
+        			*/
+	            	},
 	            	{key: "ENDTIME", label: "종료시간", width: 100, align: "center", sortable: true, 
+	            	/*
 	            		formatter: function(){	            	
 	        				var etime = "";
 	        				etime = this.item.ENDTIME.substr(0,2) + " : " + this.item.ENDTIME.substr(2,2) + " : " + this.item.ENDTIME.substr(4,2)
 	        				
 	        				return etime;
-	        		}},
+	        		}
+	        		*/
+	            	},
 	            	{key: "CONNID", label: "CONNID", width: 130, align: "center", sortable: true},
 	            	{key: "CALLTYPE", label: "콜타입", width: 100, align: "center", sortable: true},
 	            	{key: "EVENT", label: "이벤트", width: 115, align: "center", sortable: true},
 	            	{key: "DES", label: "이벤트명", width: 115, align: "center", sortable: true},
 	            	{key: "THISDN", label: "THISDN", width: 100, align: "center", sortable: true,
-	    	        	formatter:function(){
+	    	        	/*
+	            		formatter:function(){
 	                		if(this.value != null)
 	                		{
 	                			var thisdn = this.value;
@@ -233,9 +240,12 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                			}
 	                		}
 	                		return null;
-	                	}},
+	                	}
+	                	*/
+	            	},
 	            	{key: "OTHERDN", label: "OTHERDN", width: 100, align: "center", sortable: true,
-		    	        	formatter:function(){
+		    	        	/*
+	            			formatter:function(){
 		                		if(this.value != null)
 		                		{
 		                			var otherdn = this.value;
@@ -256,9 +266,12 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 		                			}
 		                		}
 		                		return null;
-		                	}},
+		                	}
+		                	*/
+		                	},
 	    	        {key: "THIRDDN", label: "THIRDDN", width: 100, align: "center", sortable: true,
-			    	        	formatter:function(){
+			    	        	/*
+		                		formatter:function(){
 			                		if(this.value != null)
 			                		{
 			                			var thirddn = this.value;
@@ -279,9 +292,12 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 			                			}
 			                		}
 			                		return null;
-			                	}},   	        
+			                	}
+			                	*/
+		                		},   	        
 	    	        {key: "THISQUEUE", label: "인입경로", width: 90, align: "center", sortable: true},
 	    	        {key: "ANI", label: "고객번호", width: 90, align: "center", sortable: true,
+	    	        	/*
 	    	        	formatter:function(){
 	                		if(this.value != null)
 	                		{
@@ -303,7 +319,9 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 	                			}
 	                		}
 	                		return null;
-	                	}},
+	                	}
+	                	*/
+	    	        },
 	                {key: "GROUP_NAME", label: "연결스킬명", width: 100, align: "center", sortable: true},
 	                {key: "AGENT_ID", label: "상담사사번", width: 100, align: "center", sortable: true},
 	    	        {key: "AGENT_NAME", label: "상담사명", width: 100, align: "center", sortable: true},
@@ -397,6 +415,7 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    
 		    if(m.THISDN != null)
     		{
+		    	/*
         		var gil = m.THISDN.length;
         		var val = "";
         		if(gil > 5)
@@ -420,8 +439,9 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
         		}
         		else
         		{
+        		*/
         			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(m.THISDN) + "</td>";
-        		}        		
+        		//}        		
     		}
 		    else
 		    {
@@ -430,6 +450,7 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    
 		    if(m.OTHERDN != null)
     		{
+		    	/*
         		var gil = m.OTHERDN.length;
         		var val = "";
         		if(gil > 5)
@@ -453,8 +474,9 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
         		}
         		else
         		{
+        		*/
         			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(m.OTHERDN) + "</td>";
-        		}        		
+        		//}        		
     		}
 		    else
 		    {
@@ -463,6 +485,7 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 
 		    if(m.THIRDDN != null)
     		{
+		    	/*
         		var gil = m.THIRDDN.length;
         		var val = "";
         		if(gil > 5)
@@ -486,8 +509,9 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
         		}
         		else
         		{
+        		*/
         			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(m.THIRDDN) + "</td>";
-        		}        		
+        		//}        		
     		}
 		    else
 		    {
@@ -498,6 +522,7 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
 		    
 		    if(m.ANI != null)
     		{
+		    	/*
 		    	var gil = m.ANI.length;
         		var val = "";
         		if(gil > 5)
@@ -520,9 +545,10 @@ fnObj.excelgrid = axboot.viewExtend(axboot.gridView, {
         			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(val) + "</td>";
         		}
         		else
-        		{
+        		{*/
+        		
         			detailbodyStr += "<td colspan=1 rowspan=1>" + "'" + nullChk(m.ANI) + "</td>";
-        		}
+        		//}		    	
     		}		    
 		    else
 		    {

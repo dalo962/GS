@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -189,7 +190,26 @@ public class callTraceController extends commController{
 		
 		logger.info("callTrService.callTrSel Query Start...");
 		List<Map<String,Object>> search = callTrService.callTrSel(params);		
-
+		
+		// ANI, DNIS 마스킹
+		if(search.size() > 0)
+		{
+			for(int i = 0; i < search.size(); i++)
+			{
+				if(search.get(i).get("ANI") != null && !"".equals(search.get(i).get("ANI")))
+				{
+					String sani = search.get(i).get("ANI").toString();
+					search.get(i).put("ANI", maskPhoneNumber(sani));
+				}
+				
+				if(search.get(i).get("DNIS") != null && !"".equals(search.get(i).get("DNIS")))
+				{
+					String sdnis = search.get(i).get("DNIS").toString();
+					search.get(i).put("DNIS", maskPhoneNumber(sdnis));
+				}
+			}
+		}
+		
 		return search;
 	}	
 	
@@ -225,6 +245,37 @@ public class callTraceController extends commController{
 		
 		logger.info("callTrService.callTrTbSel Query Start...");
 		List<Map<String,Object>> search = callTrService.callTrTbSel(params);
+		
+		// THISDN, OTHERDN, THIRDDN, ANI 마스킹
+		if(search.size() > 0)
+		{
+			for(int i = 0; i < search.size(); i++)
+			{
+				if(search.get(i).get("THISDN") != null && !"".equals(search.get(i).get("THISDN")))
+				{
+					String sthisdn = search.get(i).get("THISDN").toString();
+					search.get(i).put("THISDN", maskPhoneNumber(sthisdn));					
+				}
+				
+				if(search.get(i).get("OTHERDN") != null && !"".equals(search.get(i).get("OTHERDN")))
+				{
+					String sotherdn = search.get(i).get("OTHERDN").toString();
+					search.get(i).put("OTHERDN", maskPhoneNumber(sotherdn));					
+				}
+				
+				if(search.get(i).get("THIRDDN") != null && !"".equals(search.get(i).get("THIRDDN")))
+				{
+					String sthirddn = search.get(i).get("THIRDDN").toString();
+					search.get(i).put("THIRDDN", maskPhoneNumber(sthirddn));					
+				}
+				
+				if(search.get(i).get("ANI") != null && !"".equals(search.get(i).get("ANI")))
+				{
+					String sani = search.get(i).get("ANI").toString();
+					search.get(i).put("ANI", maskPhoneNumber(sani));
+				}
+			}
+		}
 
 		return search;
 	}
@@ -239,6 +290,31 @@ public class callTraceController extends commController{
 		List<Map<String,Object>> search = callTrService.sessionidget(params);
 		
 		return search;
+	}
+	
+	// 전화번호 가운데자리 마스킹하는 메서드 //
+	private String maskPhoneNumber (String sani) 
+	{
+		// 숫자인지 문자인지 확인
+		if(StringUtils.isNumeric(sani))
+		{
+			if(sani.length() > 5)
+			{
+				if(sani.length() == 6) 		{ sani = "**"   + sani.substring(2, 6); } 							   // 01 0123 -> ** 0123
+				else if(sani.length() == 7) { sani = "***"  + sani.substring(3, 7); } 							   // 010 1234 -> *** 1234
+				else if(sani.length() == 8) { sani = "****" + sani.substring(4, 8); } 							   // 0101 2345 -> **** 2345
+				else if(sani.length() == 9) { sani = sani.substring(0, 3) + "**"       + sani.substring(5, 9);   } // 010 12 3456 -> 010 ** 3456  
+				else if(sani.length() == 10){ sani = sani.substring(0, 3) + "***"      + sani.substring(6, 10);  } // 010 123 4567 -> 010 *** 4567
+				else if(sani.length() == 11){ sani = sani.substring(0, 3) + "****"     + sani.substring(7, 11);  } // 010 1234 5678 -> 010 **** 5678
+				else if(sani.length() == 12){ sani = sani.substring(0, 4) + "****"     + sani.substring(8, 12);  } // 9010 1234 5678 -> 9010 **** 5678
+				else if(sani.length() == 13){ sani = sani.substring(0, 4) + "*****"    + sani.substring(9, 13);  } // 9901 01234 5678 -> 9901 ***** 5678
+				else if(sani.length() == 14){ sani = sani.substring(0, 4) + "******"   + sani.substring(10, 14); } // 9990 101234 5678 -> 9990 ****** 5678
+				else if(sani.length() == 15){ sani = sani.substring(0, 5) + "******"   + sani.substring(11, 15); } // 99990 101234 5678 -> 99990 ****** 5678
+				else if(sani.length() == 16){ sani = sani.substring(0, 5) + "*******"  + sani.substring(12, 16); } // 99999 0101234 5678 -> 99999 ******* 5678
+				else 						{ sani = sani.substring(0, 3) + "****"     + sani.substring(7, 11);  } // 16자리 초과이면 기본 핸드폰 형식으로 지정
+			}
+		}
+		return sani;
 	}
 }
 
