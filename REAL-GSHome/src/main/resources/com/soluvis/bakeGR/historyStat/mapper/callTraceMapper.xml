@@ -64,7 +64,6 @@
 		from 	WINK1.callinfo wc1, WINK1.callinfo wc2
 		where 	wc1.connidfst = wc2.connidfst
   		and 	wc2.connid = #{connidfst}
-		order by wc1.connid
     </select>
     
     

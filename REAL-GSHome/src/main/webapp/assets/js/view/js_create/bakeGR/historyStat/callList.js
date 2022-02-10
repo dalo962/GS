@@ -176,7 +176,8 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     	var extension = caller.gridView01.getData("selected")[0].EXTENSION;
     	
     	// window.open 시 필요한 값들 :: url, name, specs //
-    	var url = rec_url + "/recseePlayer/?ext=" + extension + "&SEQNO=" + connid;
+    	//var url = rec_url + "/recseePlayer/?EXT=" + extension + "&SEQNO=" + connid;
+    	var url = rec_url + "/recseePlayer/?SEQNO=" + connid;
     	var name = "recPopup";
     	var specs = "width=800,height=300,menubar=no,status=no";
     	
