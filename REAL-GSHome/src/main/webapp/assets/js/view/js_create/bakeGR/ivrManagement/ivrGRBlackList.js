@@ -559,19 +559,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
                 	if(key == "ani") {
                 		var ani = this.item.ani.replaceAll('-', '');		// 현재 입력된 ani에서 - 제외
 	                    var index = this.item.__index;						// 현재 입력된 ani의 위치
-
-	                    var regex = /^\d+$/gi;
-	                    var matcher = regex.exec(ani);
-
-	                    if(ani != "" && !matcher) {	// 입력된 ani가 전화번호 형식과 다른 경우
-	                    	alert("전화번호를 올바르게 입력하시기 바랍니다."); // alert 띄우고
-            	    		ani = "";	// 입력된 값을 빈칸으로
-            			} else {
-            				if(ani.length != '' && (ani.length < 6 || ani.length > 16)) { // 자릿수 //
-            					alert("전화번호를 올바르게 입력하시기 바랍니다."); // alert 띄우고
-                	    		ani = "";	// 입력된 값을 빈칸으로
-            				}
-            			}
 	                    
 	                    this.self.setValue(index, key, ani);
                 	}
@@ -814,11 +801,14 @@ function getCsvToJson($csv){
     });
 
     var errorCase = 0;
+    var errorMsg = '';
     
     csvRow.forEach(function(item, index, array){
         var row = item.split(":");
         var obj = {};
     	var error = 0;
+    	var eMsg = '  [' + (index + startRow) + '행]';
+    	
         row.forEach(function(item, index, array){
     		var length = item.length;
         	if(index == 0) { // 이슈고객 번호
@@ -827,54 +817,74 @@ function getCsvToJson($csv){
         		}
         		
         		item = item.replaceAll('-', '');
-
-                var regex = /^\d+$/gi;
-                var matcher = regex.exec(item);
-
-    			if(item != "" && !matcher) {	// 입력된 ani가 전화번호 형식과 다른 경우
+                
+                // ani가 빈칸인경우
+                if(item == "") {
+                	eMsg += ' 전화번호빈값';
     				error++;
-    			} else {
-    				if(length < 6 || length > 16) { // 자릿수 //
-    					error++;
-    				}
-    			}
+                }
         	} else if(index == 1) { // 사용유무
-        		if(item == "사용") {
+        		if(item == "") {
+                	eMsg += ' 사용유무빈값';
+        			error++;
+        		} else if(item == "사용") {
         			item = "1";
         		} else if(item == "미사용") {
         			item = "0";
         		} else {
+                	eMsg += ' 사용유무입력오류';
         			error++;
         		}
         	} else if(index == 2) { // 차수
-        		if(item != "1" && item != "2") {
+        		if(item == "") {
+                	eMsg += ' 차수빈값';
+        			error++;
+        		} else if(item != "1" && item != "2") {
+                	eMsg += ' 차수입력오류';
         			error++;
         		}
         	} else if(index == 3) { // 사유
     			var _length = getByteLength(item);
     			if(_length > 3000){
+                	eMsg += ' 사유입력오류';
     				error++;
             	}
         	} else if(index == 4) { // 사번
-        		if(length == 0 || length > 10) {
+        		if(length == 0) {
+                	eMsg += ' 사번빈값';
+        			error++;
+        		} else if(length > 10) {
+                	eMsg += ' 사번입력오류';
         			error++;
         		}
         	} else if(index == 5) { // 상담사
         		var regex = /[a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]*/g; // 영문자 또는 한글 정규식
         		var exec = regex.exec(item);
         		
-        		if(length == 0 || (!exec || !(exec[0] == exec.input))) {
+        		if(length == 0) {
+                	eMsg += ' 상담사이름빈값';
+        			error++;
+        		} else if(!exec || !(exec[0] == exec.input)) {
+                	eMsg += ' 상담사이름입력오류';
         			error++;
         		} else if(length > 10) {
+                	eMsg += ' 상담사이름입력오류';
         			error++;
         		}
         	} else if(index == 6) { // ConnId
+        		item = item.replaceAll(' ', '');
+        		
         		var regex = /[a-z|0-9]*/g; // 숫자문자 또는 영문자 정규식
         		var exec = regex.exec(item);
         		
-        		if(length == 0 || (!exec || !(exec[0] == exec.input))) {
+        		if(length == 0) {
+                	eMsg += ' connid빈값';
         			error++;
-        		} else if(length != 0 && length != 16) {
+        		} else if(!exec || !(exec[0] == exec.input)) {
+                	eMsg += ' connid입력오류';
+        			error++;
+        		} else if(length != 0 && item.length != 16) {
+                	eMsg += ' connid입력오류';
         			error++;
         		}
 			}
@@ -886,9 +896,10 @@ function getCsvToJson($csv){
         	csvCell[index - errorCase] = obj;
         } else {
         	errorCase++;
+        	errorMsg += eMsg + '\n';
         }
     });
-    return { total: csvCell.length + errorCase, items: csvCell, error: errorCase };
+    return { total: csvCell.length + errorCase, items: csvCell, error: errorCase, errorMsg };
 }
 
 function handleFile(e) {
@@ -935,18 +946,26 @@ function handleFile(e) {
 	                
  					console.log(csvJson);
  					
- 					for(var i = 0; i < items.length; i++) {
- 						fnObj.gridView01.addRowExcel(items[i].ani, items[i].bl_useyn, items[i].degree, items[i].description, items[i].agentid, items[i].agentname, items[i].connid);
+ 					// 에러가 있는 경우
+ 					if(csvJson.error > 0) {
+ 						alert("[엑셀업로드] " + csvJson.error + "건 실패\n" + csvJson.errorMsg);
+ 						console.log("[실패내역]\n" + csvJson.errorMsg);
+ 					}
+ 					// 에러가 없는 경우
+ 					else {
+ 						for(var i = 0; i < items.length; i++) {
+ 	 						fnObj.gridView01.addRowExcel(items[i].ani, items[i].bl_useyn, items[i].degree, items[i].description, items[i].agentid, items[i].agentname, items[i].connid);
+ 	 					}
+ 	 					
+ 						alert("[엑셀업로드] " + csvJson.total + "건 성공 ");
  					}
  					
-					alert("[엑셀업로드] " + csvJson.total + "명 중 " + items.length + "명 성공 " + csvJson.error + "명 실패");
-					
 					return true;
  				}
  			});//end. workbook.forEach
  			
  			if(!find) {
- 				console.log("[이슈고객 엑셀업로드] Sheet1을 찾을 수 없습니다.");
+ 				// console.log("[이슈고객 엑셀업로드] Sheet1을 찾을 수 없습니다.");
 				// alert("[엑셀업로드] Sheet1을 찾을 수 없습니다.");
  			}
         }; //end reader.onload
