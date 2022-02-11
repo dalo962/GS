@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.ivrManagement.mapper.ivrEmerMentMapper">
+   <select id="EmerMentGet" parameterType="hashmap" resultType="ivrEmerMent" fetchSize="1000">
+		SELECT  seq            	as seq,
+		        dnis           	as dnis,
+		        sdate           as sdate,
+		        stime           as stime,
+		        edate           as edate,
+		        etime           as etime,
+		        location		as location,
+		        emer_type       as emer_type,
+		        ment            as ment,
+		        crt_dt          as crt_dt,
+		        crt_by          as crt_by,
+		        upt_dt          as upt_dt,
+		        upt_by          as upt_by
+		FROM    givr.ax_ivr_emerment
+		WHERE   1=1
+		<if test="ment != '' and ment != null">
+		AND		ment LIKE '%' || #{ment} || '%'
+		</if>
+		<if test="dnis != '' and dnis != null">
+		AND	dnis 	= #{dnis}
+		</if>
+		<if test="sdate != '' and sdate != null and edate != '' and edate !=null">
+		AND	sdate 	BETWEEN #{sdate} AND #{edate}
+		</if>
+		ORDER BY stime asc, dnis asc
+    </select>
+
+    <select id="EmerMentExist" parameterType="hashmap" resultType="ivrEmerMent" fetchSize="1000">
+    	SELECT	seq				as seq
+    	FROM
+			(SELECT  seq      	as seq
+			FROM    givr.ax_ivr_emerment
+			WHERE   sdate||stime > #{sdate}||#{stime}
+			AND		#{edate}||#{etime} BETWEEN sdate||stime AND edate||etime
+			<if test="dnis != '' and dnis != null">
+			AND		dnis IN (#{dnis}, 'ALL')
+			</if>
+			UNION ALL
+			SELECT  seq      	as seq
+			FROM    givr.ax_ivr_emerment
+			WHERE   #{sdate}||#{stime} BETWEEN sdate||stime AND edate||etime
+			AND		#{edate}||#{etime} BETWEEN sdate||stime AND edate||etime
+			<if test="dnis != '' and dnis != null">
+			AND		dnis IN (#{dnis}, 'ALL')
+			</if>
+			UNION ALL
+			SELECT  seq      	as seq
+			FROM    givr.ax_ivr_emerment
+			WHERE   #{sdate}||#{stime} BETWEEN sdate||stime AND edate||etime
+			AND		#{edate}||#{etime} > edate||etime
+			<if test="dnis != '' and dnis != null">
+			AND		dnis IN (#{dnis})
+			</if>
+			)
+		WHERE	1=1
+		<if test="seq != '' and seq != null">
+		AND	seq 	!= #{seq}
+		</if>
+    </select>
+
+    <insert id="EmerMentIst" parameterType="hashmap">
+		INSERT 	INTO givr.ax_ivr_emerment (seq, dnis, sdate, stime, edate, etime, location, emer_type, ment, crt_dt, crt_by)
+		VALUES	(givr.seq_ax_ivr_emerment.nextval, #{dnis}, #{sdate}, #{stime}, #{edate}, #{etime}, #{location}, #{emer_type}, #{ment, jdbcType=VARCHAR}, #{crt_dt}, #{crt_by})
+	</insert>
+
+    <update id="EmerMentUdt" parameterType="hashmap">
+		UPDATE	givr.ax_ivr_emerment
+		SET		dnis = #{dnis},
+				sdate = #{sdate},
+				stime = #{stime},
+				edate = #{edate},
+				etime = #{etime},
+				location = #{location},
+				emer_type = #{emer_type},
+				ment = #{ment, jdbcType=VARCHAR},
+				upt_dt = #{upt_dt},
+				upt_by = #{upt_by}
+		WHERE	seq = #{seq}
+	</update>
+
+    <delete id="EmerMentDel" parameterType="hashmap">
+		DELETE
+		FROM	gsivr.ax_ivr_emerment
+		WHERE	seq = #{seq}
+	</delete>
+
+	<select id="EmerMentTTS" parameterType="hashmap" resultType="ivrEmerMent" fetchSize="1000">
+    	SELECT	code	as code,
+    			name	as name
+    	FROM	ax_common_code_m
+    	WHERE 	group_cd = 'TTSSOCKET'
+    	ORDER BY sort
+    </select>
+</mapper>
