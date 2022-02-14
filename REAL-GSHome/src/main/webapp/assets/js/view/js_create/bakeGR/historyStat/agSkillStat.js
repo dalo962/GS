@@ -1336,10 +1336,10 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
         data.partId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
         
-        if(info.grpcd != "S0001" && info.grpcd != "S0002" && info.grpcd != "S0003" && data.partId == "")
-        {
-        	data.partId = info.cencd;
-        }
+        //if(info.grpcd != "S0001" && info.grpcd != "S0002" && info.grpcd != "S0003" && data.partId == "")
+        //{
+        //	data.partId = info.cencd;
+        //}
         
 	    axboot.ajax({
             type: "POST",

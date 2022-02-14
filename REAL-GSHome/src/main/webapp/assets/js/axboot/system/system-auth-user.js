@@ -93,7 +93,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		if(form.company_cd == "2") //개발
     		//if(form.company_cd == "3") //운영    		    		
     		{
-    			if(grpauth != "S0002" && grpauth != "S0003" && grpauth != "S0004")
+    			if(grpauth != "S0002" && grpauth != "S0003" && grpauth != "S0004" && grpauth != "S0005" && grpauth != "S0006" && grpauth != "S0007" && grpauth != "S0008" && grpauth != "S0009")
     			{
     				alert("소속과 권한을 다르게 설정할 수 없습니다.");
     	    		return;
@@ -101,7 +101,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     		}
     		else
     		{
-    			if(grpauth != "G0002" && grpauth != "G0003" && grpauth != "G0004")
+    			if(grpauth != "G0002" && grpauth != "G0003" && grpauth != "G0004" && grpauth != "G0005" && grpauth != "G0006" && grpauth != "G0007" && grpauth != "G0008" && grpauth != "G0009")
     			{
     				alert("소속과 권한을 다르게 설정할 수 없습니다.");
     	    		return;
@@ -383,7 +383,7 @@ fnObj.pageStart = function () {
 	        		if(info.comcd == "2") //개발
 	        		//if(info.comcd == "3") //운영
 	            	{
-	        			if(n.code == "S0001" || n.code == "S0002" || n.code == "S0003" || n.code == "S0004")
+	        			if(n.code == "S0001" || n.code == "S0002" || n.code == "S0003" || n.code == "S0004" || n.code == "S0005" || n.code == "S0006" || n.code == "S0007" || n.code == "S0008" || n.code == "S0009")
 	        			{
 	        				authlst.push({
 	        					value: n.code, text: n.name,
@@ -392,7 +392,7 @@ fnObj.pageStart = function () {
 	            	}
 	        		else
 	        		{
-	        			if(n.code == "S0001" || n.code == "G0002" || n.code == "G0003" || n.code == "G0004")
+	        			if(n.code == "S0001" || n.code == "G0002" || n.code == "G0003" || n.code == "G0004" || n.code == "G0005" || n.code == "G0006" || n.code == "G0007" || n.code == "G0008" || n.code == "G0009")
 	        			{
 	        				authlst.push({
 	        					value: n.code, text: n.name,

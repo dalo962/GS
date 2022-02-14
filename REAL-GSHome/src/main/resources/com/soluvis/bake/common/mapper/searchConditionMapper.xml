@@ -172,7 +172,6 @@
 		</if>
 		and 	t2.deleted_at is null
 		and 	t3.deleted_at is null
-		and   	t2.id not in ('638','645','702','649','657')
 		order by t1.ssort asc, t1.sort, t2.sort asc
     
     </select>
@@ -193,7 +192,6 @@
 		<if test="Id != '' and Id != null">
 		and		t1.Id = #{Id}
 		</if>
-		and		t1.id not in ('637','644','648','656')
 		order by s1.sort asc, t1.sort asc
     
     </select>
@@ -384,7 +382,6 @@
 		<if test="Id != '' and Id != null">
 		and		t1.Id in (${Id})
 		</if>
-		and		t1.id not in ('637','644','648','656')
 		order by s1.sort asc, t1.sort asc
     
     </select>
@@ -422,7 +419,6 @@
 		</if>
 		and 	t2.deleted_at is null
 		and 	t3.deleted_at is null
-		and   	t2.id not in ('638','645','702','649','657')
 		order by t1.ssort asc, t1.sort, t2.sort asc
     
     </select>

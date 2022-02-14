@@ -183,7 +183,7 @@
 	
 	
 	<select id="userAuthSel" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
-		SELECT	A1.USER_CD AS user_cd, A2.GRP_AUTH_CD AS grp_auth_cd, A1.COMPANY_CD as company_cd, A3.SORT as sort
+		SELECT	A1.USER_CD AS user_cd, A2.GRP_AUTH_CD AS grp_auth_cd, A1.COMPANY_CD as company_cd,  '' as center_cd, '' as team_cd, A3.SORT as sort
 		FROM	AX_USER_M A1, AX_USER_AUTH_M A2, AX_COMMON_CODE_M A3
 		where 	a1.user_cd = a2.user_cd
 		AND     a2.GRP_AUTH_CD = a3.code
@@ -205,7 +205,7 @@
 	
 	
 	<select id="userAuthLst" parameterType="hashmap" resultType="statLstMng" fetchSize="1000">
-		SELECT	A1.USER_CD AS user_cd, A2.GRP_AUTH_CD AS grp_auth_cd, A1.COMPANY_CD as company_cd, A3.SORT as sort
+		SELECT	A1.USER_CD AS user_cd, A2.GRP_AUTH_CD AS grp_auth_cd, A1.COMPANY_CD as company_cd, '' as center_cd, '' as team_cd, A3.SORT as sort
 		FROM	AX_USER_M A1, AX_USER_AUTH_M A2, ax_common_code_m A3
 		where 	a1.user_cd = a2.user_cd
 		AND     a2.GRP_AUTH_CD = a3.code
