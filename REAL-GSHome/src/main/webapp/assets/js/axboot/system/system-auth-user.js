@@ -426,12 +426,18 @@ fnObj.pageStart = function () {
             		$("#" + 3).attr('disabled', true);
             		$("#" + 5).attr('disabled', true);
             		$("#" + 7).attr('disabled', true);
+            		$("#" + 9).attr('disabled', true);
+            		$("#" + 11).attr('disabled', true);
+            		$("#" + 13).attr('disabled', true);
             	}
             	else
             	{
             		$("#" + 2).attr('disabled', true);
             		$("#" + 4).attr('disabled', true);
             		$("#" + 6).attr('disabled', true);
+            		$("#" + 8).attr('disabled', true);
+            		$("#" + 10).attr('disabled', true);
+            		$("#" + 12).attr('disabled', true); 
             	}
         	}
             
