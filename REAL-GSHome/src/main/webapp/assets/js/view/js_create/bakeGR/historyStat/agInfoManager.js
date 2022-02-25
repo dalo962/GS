@@ -355,8 +355,8 @@ fnObj.initsearch = function(){
 fnObj.initsearchView = axboot.viewExtend(axboot.searchView, {
     getData: function () {    	
         return {
-        	comSelect: 75, //개발
-        	//comSelect: 260, //운영
+        	//comSelect: 75, //개발
+        	comSelect: 260, //운영
         	deptSelect: "",
         	teamSelect: "",
         	selText: "",
@@ -931,8 +931,8 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
         var data = {}; 
         //data.compId = $("[data-ax5select='comSelect']").ax5select("getValue")[0].value;
         //data.chnId = $("[data-ax5select='deptSelect']").ax5select("getValue")[0].value;
-        data.compId = 75; //개발
-        //data.compId = 260; //운영
+        //data.compId = 75; //개발
+        data.compId = 260; //운영
         data.chnId = "";    	
         data.skId = "";
 	    axboot.ajax({

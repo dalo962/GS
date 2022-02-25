@@ -486,16 +486,16 @@ public class ivrGRBlackListController extends commController{
 			}else{
 				ivrGRBlackList elist = new ivrGRBlackList();
 				elist.setCode("HOSTP");
-				elist.setName("https://devrecm.gsts.kr"); //개발
-				//elist.setName("https://recm.gsts.kr"); //운영
+				//elist.setName("https://devrecm.gsts.kr"); //개발
+				elist.setName("https://recm.gsts.kr"); //운영
 				recList.add(elist);
 			}
 		} catch (Exception e) {
 			logger.info("ivrGRBlackListService.RecGet Query Fail..." + e.getMessage());
 			ivrGRBlackList elist = new ivrGRBlackList();
 			elist.setCode("HOSTP");
-			elist.setName("https://devrecm.gsts.kr"); //개발
-			//elist.setName("https://recm.gsts.kr"); //운영
+			//elist.setName("https://devrecm.gsts.kr"); //개발
+			elist.setName("https://recm.gsts.kr"); //운영
 			recList.add(elist);
 		}
 		

@@ -58,8 +58,8 @@ public class searchConditionController extends commController {
     public @ResponseBody Responses.ListResponse companyHO(@Valid @RequestBody searchCondition reqParam, HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		
-		map.put("Id", "2"); //개발
-		//map.put("Id", "3"); //운영
+		//map.put("Id", "2"); //개발
+		map.put("Id", "3"); //운영
 		List<searchCondition> search = searchConditionService.company(map);
         return Responses.ListResponse.of(search);
     }
@@ -68,8 +68,8 @@ public class searchConditionController extends commController {
     public @ResponseBody Responses.ListResponse companyGr(@Valid @RequestBody searchCondition reqParam, HttpServletRequest request) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		
-		map.put("Id", "75"); //개발
-		//map.put("Id", "260"); //운영
+		//map.put("Id", "75"); //개발
+		map.put("Id", "260"); //운영
 		List<searchCondition> search = searchConditionService.company(map);
         return Responses.ListResponse.of(search);
     }
