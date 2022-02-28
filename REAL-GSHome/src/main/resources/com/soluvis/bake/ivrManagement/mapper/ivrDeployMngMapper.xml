@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.ivrManagement.mapper.ivrDeployMngMapper">
+
+   <select id="DeployMngGet" parameterType="hashmap" resultType="ivrDeployMng" fetchSize="1000">
+		SELECT	seq 		as seq, 
+				directory 	as directory,
+				filename 	as filename,
+				filesize 	as filesize,
+				description as description,
+				step		as step, 
+				uuid 		as uuid,
+				mpvivrmcp001 	as mpvivrmcp001, 
+				mpvivrmcp002 	as mpvivrmcp002, 
+				mpvivrmcp003 	as mpvivrmcp003, 
+				mpvivrmcp004 	as mpvivrmcp004, 
+				mpvivrmcp005 	as mpvivrmcp005, 
+				mpvivrmcp006 	as mpvivrmcp006, 
+				dpvivrmcp001 	as dpvivrmcp001, 
+				dpvivrmcp002 	as dpvivrmcp002, 
+				dpvivrmcp003 	as dpvivrmcp003, 
+				dpvivrmcp004 	as dpvivrmcp004, 
+				dpvivrmcp005 	as dpvivrmcp005,
+				dpvivrmcp006 	as dpvivrmcp006,
+				work_flag		as work_flag,
+				backup_dt 		as backup_dt,     
+				crt_dt 		as crt_dt, 
+				crt_by 		as crt_by, 
+				upt_dt 		as upt_dt, 
+				upt_by  	as upt_by
+		FROM 	gsivr.ax_ivr_deploymng
+		WHERE	1=1
+		<if test="step != null and step != ''">
+		AND		step IN
+			<foreach collection="stepList" item="step" index="index" separator="," open="(" close=")">
+	        	#{step}
+	     	</foreach>
+		</if>
+		<if test="sdate != '' and sdate != null and edate != '' and edate != null">
+		AND		crt_dt BETWEEN #{sdate}||'000000' AND #{edate}||'235959'
+		</if>
+		<if test="filename != '' and filename != null">
+		AND		filename = #{filename}
+		</if>
+		<if test="work_flag != '' and work_flag != null">
+		AND		work_flag = #{work_flag}
+		</if>
+		ORDER BY seq desc
+    </select>
+    
+    <select id="DeployMngGetUuid" parameterType="hashmap" resultType="ivrDeployMng" fetchSize="1000">
+		SELECT	uuid 		as uuid
+		FROM 	gsivr.ax_ivr_deploymng
+		WHERE	1=1
+		<if test="uuid != '' and uuid != null">
+		AND		uuid = #{uuid}
+		</if>
+		AND		step IN ('1','2','3')
+		ORDER BY seq desc
+    </select>
+    
+    <select id="DeployMngCodeCheck" parameterType="hashmap" resultType="hashmap" fetchSize="1000">
+		SELECT 	code as code, name as name
+		FROM 	AX_COMMON_CODE_M
+		WHERE 	GROUP_CD = 'IVR_DEPLOY'
+		AND		USE_YN = 'Y'
+	</select>
+    
+    <insert id="DeployMngIst" parameterType="hashmap">
+		INSERT 	INTO gsivr.ax_ivr_deploymng (
+			seq,
+			directory, 
+			filename,
+			filesize,  
+			description,
+			step,  
+			uuid,
+			work_flag,
+			crt_dt, 
+			crt_by)	
+		VALUES	(
+			gsivr.seq_ax_ivr_deploymng.nextval, 
+			#{directory, jdbcType=VARCHAR}, 
+			#{filename, jdbcType=VARCHAR},
+			#{filesize, jdbcType=INTEGER},
+			#{description, jdbcType=VARCHAR},
+			#{step, jdbcType=VARCHAR},   
+			#{uuid, jdbcType=VARCHAR},
+			#{work_flag, jdbcType=VARCHAR},
+			#{crt_dt}, 
+			#{crt_by}) 
+	</insert>
+	
+    <update id="DeployMngUdt" parameterType="hashmap">
+		UPDATE	gsivr.ax_ivr_deploymng
+		SET		directory = #{directory, jdbcType=VARCHAR},
+				filename = #{filename, jdbcType=VARCHAR},
+				filesize = #{filesize, jdbcType=INTEGER},
+				description = #{description, jdbcType=VARCHAR},
+				step = #{step, jdbcType=VARCHAR},
+				uuid = #{uuid, jdbcType=VARCHAR},
+				work_flag = #{work_flag, jdbcType=VARCHAR},		
+				backup_dt = #{backup_dt, jdbcType=VARCHAR},		
+				upt_dt = #{upt_dt},
+				upt_by = #{upt_by}
+		WHERE	seq = #{seq}
+	</update>
+	
+	<update id="DeployMngUdtResult" parameterType="hashmap">
+		UPDATE	gsivr.ax_ivr_deploymng
+		SET		step = #{step, jdbcType=VARCHAR},
+				mpvivrmcp001 = #{MPVIVRMCP001, jdbcType=VARCHAR},
+				mpvivrmcp002 = #{MPVIVRMCP002, jdbcType=VARCHAR},
+				mpvivrmcp003 = #{MPVIVRMCP003, jdbcType=VARCHAR},
+				mpvivrmcp004 = #{MPVIVRMCP004, jdbcType=VARCHAR},
+				mpvivrmcp005 = #{MPVIVRMCP005, jdbcType=VARCHAR},
+				mpvivrmcp006 = #{MPVIVRMCP006, jdbcType=VARCHAR},
+				dpvivrmcp001 = #{DPVIVRMCP001, jdbcType=VARCHAR},
+				dpvivrmcp002 = #{DPVIVRMCP002, jdbcType=VARCHAR},
+				dpvivrmcp003 = #{DPVIVRMCP003, jdbcType=VARCHAR},
+				dpvivrmcp004 = #{DPVIVRMCP004, jdbcType=VARCHAR},
+				dpvivrmcp005 = #{DPVIVRMCP005, jdbcType=VARCHAR},
+				dpvivrmcp006 = #{DPVIVRMCP006, jdbcType=VARCHAR},
+				upt_dt = #{upt_dt},
+				upt_by = #{upt_by}
+		WHERE	seq = #{seq}
+	</update>
+	
+    <delete id="DeployMngDel" parameterType="hashmap">
+		DELETE	
+		FROM	gsivr.ax_ivr_deploymng
+		WHERE	seq = #{seq}	
+	</delete>    
+	
+	<select id="DeployFileGet" parameterType="hashmap" resultType="ivrDeployFile" fetchSize="1000">
+		SELECT	uuid 		as uuid, 
+				filename 	as filename,
+				filesize 	as filesize,
+				crt_dt 		as crt_dt, 
+				crt_by 		as crt_by, 
+				upt_dt 		as upt_dt, 
+				upt_by  	as upt_by
+		FROM 	gsivr.ax_ivr_deployfile
+		WHERE	1=1
+		<if test="uuid != '' and uuid != null">
+		AND		uuid = #{uuid}
+		</if>
+		ORDER BY filename desc
+	</select>
+	
+	<insert id="DeployFileIst" parameterType="hashmap">
+		INSERT 	INTO gsivr.ax_ivr_deployfile (
+			uuid,
+			filename,
+			filesize,  
+			crt_dt, 
+			crt_by)	
+		VALUES	(
+			#{uuid, jdbcType=VARCHAR}, 
+			#{filename, jdbcType=VARCHAR},
+			#{filesize, jdbcType=INTEGER},  
+			#{crt_dt}, 
+			#{crt_by}) 
+	</insert>
+	
+	<update id="DeployFileUdt" parameterType="hashmap">
+		UPDATE	gsivr.ax_ivr_deployfile
+		SET		filename = #{filename, jdbcType=VARCHAR},
+				upt_dt = #{upt_dt},
+				upt_by = #{upt_by}
+		WHERE	uuid = #{uuid}
+	</update>
+	
+    <delete id="DeployFileDel" parameterType="hashmap">
+		DELETE	
+		FROM	gsivr.ax_ivr_deployfile
+		WHERE	uuid = 	#{uuid}		
+	</delete>  
+</mapper>
