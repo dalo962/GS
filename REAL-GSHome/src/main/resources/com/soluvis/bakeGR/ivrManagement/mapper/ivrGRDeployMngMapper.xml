@@ -41,7 +41,7 @@
 		AND		crt_dt BETWEEN #{sdate}||'000000' AND #{edate}||'235959'
 		</if>
 		<if test="filename != '' and filename != null">
-		AND		filename = #{filename}
+		AND		filename LIKE '%'|| #{filename} || '%'
 		</if>
 		<if test="work_flag != '' and work_flag != null">
 		AND		work_flag = #{work_flag}

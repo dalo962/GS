@@ -62,7 +62,7 @@ public class ivrDeployMngController extends commController{
 	
 	MDCLoginUser loginUser;
 	
-	SseEmitter emitter = null;
+	List<SseEmitter> listEmitter = new ArrayList<>();
 	
 	/** 
 	 * @desc 공통코드 확인 및 세팅
@@ -136,8 +136,10 @@ public class ivrDeployMngController extends commController{
 	 * @desc 배포 현황 확인 용 에미터
 	 */
 	@RequestMapping("/ConnectEmitter") 
-	public SseEmitter emitterTest(HttpServletRequest req) { 
-		emitter = new SseEmitter(-1L);
+	public SseEmitter emitterTest(HttpServletRequest req) {
+		
+		SseEmitter emitter = new SseEmitter(-1L);
+		listEmitter.add(emitter);
 		return emitter; 
 	}
 	
@@ -377,9 +379,12 @@ public class ivrDeployMngController extends commController{
 	 */
 	@RequestMapping(value="/DeployMngSimple", method = RequestMethod.POST)
 	public @ResponseBody ApiResponse DeployMngSimple(@Valid @RequestBody List<ivrDeployMng> deployMng, HttpServletRequest request) throws Exception {
-		DeployMngMkdir(deployMng,request);
-//		DeployMngValid(deployMng,request);
-		DeployMngBackup(deployMng,request);
+		if(DeployMngMkdir(deployMng,request).getMessage().indexOf("fail") > -1){
+			return ok("디렉토리 체크 실패\n관리자에게 문의하세요.");
+		}
+		if(DeployMngBackup(deployMng,request).getMessage().indexOf("fail") > -1){
+			return ok("시나리오 백업 실패\n관리자에게 문의하세요.");
+		}		
 		DeployMngDeploy(deployMng, request);
 		return ok();
 	}
@@ -430,7 +435,8 @@ public class ivrDeployMngController extends commController{
 			try {
 				
 				if(sFTPUtil.isOperation()){	// 개발서버의 경우 remoteIP가 없다.
-					emitter.send("UPLOAD;CONNECT;"+SFTPUtil.getIp_remote());
+					for (SseEmitter emitter : listEmitter) {emitter.send("UPLOAD;CONNECT;"+SFTPUtil.getIp_remote());}
+					
 					if(!sFTPUtil.connectSession()){
 						return "SFTP 연결 실패";	
 					};
@@ -443,7 +449,8 @@ public class ivrDeployMngController extends commController{
 					String uuid = UUID.randomUUID().toString();	// 같은 이름 파일 처리를 위한 UUID 생성
 					System.out.println(sFile.getSize());
 					
-					emitter.send("UPLOAD;"+SFTPUtil.getLocalAddress()+";"+originFilename);
+					for (SseEmitter emitter : listEmitter) {emitter.send("UPLOAD;"+SFTPUtil.getLocalAddress()+";"+originFilename);}
+					
 					logger.info("DeployFileUpload... try upload "+ originFilename+" to "+uuid);
 					File tFile = new File(SFTPUtil.getUploadPath()+uuid);
 					InputStream is = null;
@@ -454,7 +461,8 @@ public class ivrDeployMngController extends commController{
 						logger.info("DeployFileUpload... success upload "+ originFilename+" to "+uuid);
 						boolean bresult = true;
 						if(sFTPUtil.isOperation()){
-							emitter.send("UPLOAD;SYNC-"+SFTPUtil.getIp_remote()+";"+originFilename);
+							for (SseEmitter emitter : listEmitter) {emitter.send("UPLOAD;SYNC-"+SFTPUtil.getIp_remote()+";"+originFilename);}
+							
 							bresult = sFTPUtil.upload(uuid,uuid);
 							
 							if(bresult){
@@ -525,7 +533,8 @@ public class ivrDeployMngController extends commController{
 						if(is != null)	is.close();
 					}
 				}
-				emitter.send("UPLOAD;END");
+				for (SseEmitter emitter : listEmitter) {emitter.send("UPLOAD;END");}
+				
 				Thread.sleep(300);
 			} catch (Exception e) {
 				logger.info("DeployFileUpload Fail :" + e.getMessage());
@@ -593,7 +602,7 @@ public class ivrDeployMngController extends commController{
 				try {
 					logger.info("DeployMngValid... try connect Session");
 					
-					emitter.send("VALID;CONNECT;"+Urlsearch.get(i).getUrl_nm());
+					for (SseEmitter emitter : listEmitter) {emitter.send("VALID;CONNECT;"+Urlsearch.get(i).getUrl_nm());}
 					if(!sFTPUtil.connectSession(Urlsearch.get(i).getSvr_ip())){
 						return ok("SFTP 연결 실패");	
 					};
@@ -603,7 +612,7 @@ public class ivrDeployMngController extends commController{
 						String directory = dm.getDirectory();
 						String fullPath = SFTPUtil.getDeployPath()+directory;
 						
-						emitter.send("VALID;"+Urlsearch.get(i).getUrl_nm()+";"+fullPath);
+						for (SseEmitter emitter : listEmitter) {emitter.send("VALID;"+Urlsearch.get(i).getUrl_nm()+";"+fullPath);}
 						
 						boolean bResult = sFTPUtil.isExist(fullPath);
 						
@@ -621,7 +630,7 @@ public class ivrDeployMngController extends commController{
 				}
 				
 			}
-			emitter.send("VALID;END");
+			for (SseEmitter emitter : listEmitter) {emitter.send("VALID;END");}
 			Thread.sleep(300);
 			
 			resultMsg += "success\n";
@@ -682,16 +691,16 @@ public class ivrDeployMngController extends commController{
 		for (int i = 0; i < Urlsearch.size(); i++) {
 			try {
 				resultMsg += Urlsearch.get(i).getUrl_nm()+": ";
-				emitter.send("MKDIR;CONNECT;"+Urlsearch.get(i).getUrl_nm());
+				for (SseEmitter emitter : listEmitter) {emitter.send("MKDIR;CONNECT;"+Urlsearch.get(i).getUrl_nm());}
 				if(!sFTPUtil.connectSession(Urlsearch.get(i).getSvr_ip())){
-					return ok("SFTP 연결 실패");	
+					return ok("SFTP 연결 실패 : fail");	
 				};
 				sFTPUtil.connectSFTP();
 				for (ivrDeployMng dm : deployMng) {
 					String directory = dm.getDirectory();
 
 					if(!sFTPUtil.isExist(SFTPUtil.getDeployPath()+directory)){ // 경로가 없을 경우 만들어준다.
-						emitter.send("MKDIR;"+Urlsearch.get(i).getUrl_nm()+";"+SFTPUtil.getDeployPath()+directory);
+						for (SseEmitter emitter : listEmitter) {emitter.send("MKDIR;"+Urlsearch.get(i).getUrl_nm()+";"+SFTPUtil.getDeployPath()+directory);}
 						if(!sFTPUtil.makeDirectory(SFTPUtil.getDeployPath()+directory)){
 							resultMsg += "\n"+SFTPUtil.getDeployPath()+directory+": 디렉토리 생성 fail";
 							return ok(resultMsg);
@@ -707,7 +716,7 @@ public class ivrDeployMngController extends commController{
 				sFTPUtil.close();
 			}
 		}
-		emitter.send("MKDIR;END");
+		for (SseEmitter emitter : listEmitter) {emitter.send("MKDIR;END");}
 		Thread.sleep(300);
 		
 		return ok(resultMsg);
@@ -739,9 +748,9 @@ public class ivrDeployMngController extends commController{
 		for (int i = 0; i < Urlsearch.size(); i++) {
 			try {
 				resultMsg += Urlsearch.get(i).getUrl_nm()+":";
-				emitter.send("BACKUP;CONNECT;"+Urlsearch.get(i).getUrl_nm());
+				for (SseEmitter emitter : listEmitter) {emitter.send("BACKUP;CONNECT;"+Urlsearch.get(i).getUrl_nm());}
 				if(!sFTPUtil.connectSession(Urlsearch.get(i).getSvr_ip())){
-					return ok("SFTP 연결 실패");	
+					return ok("SFTP 연결 실패 : fail");	
 				};
 				sFTPUtil.connectSFTP();
 				if(!sFTPUtil.isExist(backupYmdPath)){
@@ -768,12 +777,12 @@ public class ivrDeployMngController extends commController{
 							}
 						}
 						
-						emitter.send("BACKUP;"+Urlsearch.get(i).getUrl_nm()+";"+SFTPUtil.getDeployPath()+directory+filename);
+						for (SseEmitter emitter : listEmitter) {emitter.send("BACKUP;"+Urlsearch.get(i).getUrl_nm()+";"+SFTPUtil.getDeployPath()+directory+filename);}
 						
 						commandStr +="cp "+SFTPUtil.getDeployPath()+directory+filename+" "+backupFullPath+filename+"; ";
 						
 					}else{
-						emitter.send("BACKUP;NEW-"+Urlsearch.get(i).getUrl_nm()+";"+SFTPUtil.getDeployPath()+directory+filename);
+						for (SseEmitter emitter : listEmitter) {emitter.send("BACKUP;NEW-"+Urlsearch.get(i).getUrl_nm()+";"+SFTPUtil.getDeployPath()+directory+filename);}
 						newFileFlag[dmNum] = true;
 					}
 					dmNum++;
@@ -790,7 +799,7 @@ public class ivrDeployMngController extends commController{
 				sFTPUtil.close();
 			}
 		}
-		emitter.send("BACKUP;END");
+		for (SseEmitter emitter : listEmitter) {emitter.send("BACKUP;END");}
 		Thread.sleep(300);
 		
 		int sqlrst = 0;
@@ -866,7 +875,7 @@ public class ivrDeployMngController extends commController{
 		for (int i = 0; i < Urlsearch.size(); i++) {
 			try {
 				resultMsg += Urlsearch.get(i).getUrl_nm()+": ";
-				emitter.send("DEPLOY;CONNECT;"+Urlsearch.get(i).getUrl_nm());
+				for (SseEmitter emitter : listEmitter) {emitter.send("DEPLOY;CONNECT;"+Urlsearch.get(i).getUrl_nm());}
 				if(!sFTPUtil.connectSession(Urlsearch.get(i).getSvr_ip())){
 					return ok("SFTP 연결 실패");	
 				};
@@ -882,7 +891,7 @@ public class ivrDeployMngController extends commController{
 					String filename = dm.getFilename();
 					
 					try{
-						emitter.send("DEPLOY;"+Urlsearch.get(i).getUrl_nm()+";"+SFTPUtil.getDeployPath()+directory+filename);
+						for (SseEmitter emitter : listEmitter) {emitter.send("DEPLOY;"+Urlsearch.get(i).getUrl_nm()+";"+SFTPUtil.getDeployPath()+directory+filename);}
 						boolean bresult = sFTPUtil.deploy(uuid,directory+filename);
 						
 						if(bresult){
@@ -910,7 +919,7 @@ public class ivrDeployMngController extends commController{
 			}
 			
 		}
-		emitter.send("DEPLOY;END");
+		for (SseEmitter emitter : listEmitter) {emitter.send("DEPLOY;END");}
 		Thread.sleep(300);
 		
 		int sqlrst = 0;
@@ -987,7 +996,7 @@ public class ivrDeployMngController extends commController{
 		for (int i = 0; i < Urlsearch.size(); i++) {
 			try {
 				resultMsg += Urlsearch.get(i).getUrl_nm()+":";
-				emitter.send("ROLLBACK;CONNECT;"+Urlsearch.get(i).getUrl_nm());
+				for (SseEmitter emitter : listEmitter) {emitter.send("ROLLBACK;CONNECT;"+Urlsearch.get(i).getUrl_nm());}
 				if(!sFTPUtil.connectSession(Urlsearch.get(i).getSvr_ip())){
 					return ok("SFTP 연결 실패");	
 				};
@@ -1002,7 +1011,7 @@ public class ivrDeployMngController extends commController{
 						String backupDt = dm.getBackup_dt();
 						String backupFilePath = SFTPUtil.getBackupPath()+backupDt+"/"+directory+filename;
 						String operFilePath = SFTPUtil.getDeployPath()+directory+filename;
-						emitter.send("ROLLBACK;"+Urlsearch.get(i).getUrl_nm()+";"+operFilePath);
+						for (SseEmitter emitter : listEmitter) {emitter.send("ROLLBACK;"+Urlsearch.get(i).getUrl_nm()+";"+operFilePath);}
 						
 						commandStr += "cp "+ backupFilePath + " " + operFilePath + "; ";
 						
@@ -1028,7 +1037,7 @@ public class ivrDeployMngController extends commController{
 			
 		}
 		
-		emitter.send("ROLLBACK;END");
+		for (SseEmitter emitter : listEmitter) {emitter.send("ROLLBACK;END");}
 		Thread.sleep(300);
 		
 		int sqlrst = 0;
