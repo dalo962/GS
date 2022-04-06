@@ -19,6 +19,8 @@ public interface progManagerService {
 	public int penIst(Map<String,Object> params);
 	
 	
+	public int ivrretry(Map<String,Object> params);
+
 	public int winkDataAgg(Map<String,Object> params);
 	
 	public int axastruct(Map<String,Object> params);

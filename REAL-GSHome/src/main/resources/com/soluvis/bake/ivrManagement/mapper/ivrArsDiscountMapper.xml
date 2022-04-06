@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.soluvis.bake.ivrManagement.mapper.ivrArsDiscountMapper">
+   <select id="ArsDcListGet" parameterType="hashmap" resultType="ivrArsDiscount" fetchSize="1000">
+		SELECT	media as media,
+				useyn as useyn,
+				wait_cnt as wait_cnt,
+				dis_cnt as dis_cnt,
+				crt_dt as crt_dt,
+				crt_by as crt_by,
+				upt_dt as upt_dt,
+				upt_by as upt_by
+		FROM 	givr.ax_ivr_arsdiscount
+		<if test="media != '' and media != null">
+		WHERE	media = #{media}
+		</if>
+		ORDER BY media asc, crt_dt asc
+    </select>
+    
+    <insert id="ArsDcListIst" parameterType="hashmap">
+		INSERT 	INTO givr.ax_ivr_arsdiscount (media, useyn, wait_cnt, dis_cnt, crt_dt, crt_by)	
+		VALUES	(#{media}, #{useyn}, #{wait_cnt}, #{dis_cnt}, #{crt_dt}, #{crt_by})
+	</insert>
+	
+    <update id="ArsDcListUdt" parameterType="hashmap">
+		UPDATE	givr.ax_ivr_arsdiscount
+		SET		useyn = #{useyn},
+				wait_cnt = #{wait_cnt},
+				dis_cnt = #{dis_cnt},
+				upt_dt = #{upt_dt},
+				upt_by = #{upt_by}
+		WHERE	media = #{media}
+	</update>
+	
+    <delete id="ArsDcListDel" parameterType="hashmap">
+		DELETE
+		FROM	givr.ax_ivr_arsdiscount
+		WHERE	media = #{media}
+	</delete>
+</mapper>

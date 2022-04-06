@@ -24,6 +24,8 @@ public interface progManagerMapper extends MyBatisMapper{
 	int penIst(Map<String,Object> params);
 	
 	
+	int ivrretry(Map<String,Object> params);
+
 	int winkDataAgg(Map<String,Object> params);
 	
 	int axastruct(Map<String,Object> params);

@@ -50,6 +50,12 @@ public class progManagerServiceImpl implements progManagerService{
 	
 	
 	@Override
+	public int ivrretry(Map<String,Object> params)
+	{		
+		return progMngMapper.ivrretry(params);
+	}
+	
+	@Override
 	public int winkDataAgg(Map<String,Object> params)
 	{		
 		return progMngMapper.winkDataAgg(params);

@@ -68,9 +68,15 @@
 	</insert>    
 	
 	
+	<update id="ivrretry" statementType="CALLABLE" parameterType="hashmap">
+		{
+			CALL WINK1.SP_DAY_IVR_RETRY(#{targettime1}, #{s, mode=OUT, jdbcType=INTEGER}, #{o, mode=OUT, jdbcType=VARCHAR})
+		}
+    </update>
+    
 	<update id="winkDataAgg" statementType="CALLABLE" parameterType="hashmap">
 		{
-			CALL DC_WINK1.SP_WINK2_WINK1_AGGJOB(#{targettime1}, #{targettime2}, #{s, mode=OUT, jdbcType=INTEGER}, #{o, mode=OUT, jdbcType=VARCHAR})
+			CALL WINK1.SP_WINK2_WINK1_AGGJOB(#{targettime1}, #{targettime2}, #{s, mode=OUT, jdbcType=INTEGER}, #{o, mode=OUT, jdbcType=VARCHAR})
 		}
     </update>
         
